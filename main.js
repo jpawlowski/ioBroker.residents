@@ -999,54 +999,90 @@ class Residents extends utils.Adapter {
                                         name: 'SecuritySystemCurrentState',
                                         enabled: true,
                                         properties: {
-                                            maxValue: residentType == 'pet' ? 1 : 2,
-                                            validValues: residentType == 'pet' ? [0, 1] : [0, 1, 2],
+                                            maxValue: 2,
+                                            validValues: [0, 1, 2],
                                         },
                                         inOutFunction: 'ioBroker.State.OnlyACK',
                                         inOutParameters: this.namespace + '.' + id + '.presence.state',
                                         conversionFunction: 'map',
                                         conversionParameters: {
-                                            mappings: [
-                                                {
-                                                    left: 0,
-                                                    right: 1,
-                                                },
-                                                {
-                                                    left: 1,
-                                                    right: 0,
-                                                },
-                                                {
-                                                    left: 2,
-                                                    right: 2,
-                                                },
-                                            ],
+                                            /* eslint-disable */
+                                            mappings:
+                                                residentType == 'pet'
+                                                    ? [
+                                                          {
+                                                              left: 0,
+                                                              right: 1,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 2,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 0,
+                                                          },
+                                                      ]
+                                                    : [
+                                                          {
+                                                              left: 0,
+                                                              right: 1,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 0,
+                                                          },
+                                                          {
+                                                              left: 2,
+                                                              right: 2,
+                                                          },
+                                                      ],
+                                            /* eslint-enable */
                                         },
                                     },
                                     {
                                         name: 'SecuritySystemTargetState',
                                         enabled: true,
                                         properties: {
-                                            validValues: residentType == 'pet' ? [0, 1] : [0, 1, 2],
-                                            maxValue: residentType == 'pet' ? 1 : 2,
+                                            validValues: [0, 1, 2],
+                                            maxValue: 2,
                                         },
                                         inOutFunction: 'ioBroker.State',
                                         inOutParameters: this.namespace + '.' + id + '.presence.state',
                                         conversionFunction: 'map',
                                         conversionParameters: {
-                                            mappings: [
-                                                {
-                                                    left: 0,
-                                                    right: 1,
-                                                },
-                                                {
-                                                    left: 1,
-                                                    right: 0,
-                                                },
-                                                {
-                                                    left: 2,
-                                                    right: 2,
-                                                },
-                                            ],
+                                            /* eslint-disable */
+                                            mappings:
+                                                residentType == 'pet'
+                                                    ? [
+                                                          {
+                                                              left: 0,
+                                                              right: 1,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 2,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 0,
+                                                          },
+                                                      ]
+                                                    : [
+                                                          {
+                                                              left: 0,
+                                                              right: 1,
+                                                          },
+                                                          {
+                                                              left: 1,
+                                                              right: 0,
+                                                          },
+                                                          {
+                                                              left: 2,
+                                                              right: 2,
+                                                          },
+                                                      ],
+                                            /* eslint-enable */
                                         },
                                     },
                                 ],
