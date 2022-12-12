@@ -1,7 +1,13 @@
+/* eslint-disable no-irregular-whitespace */
+/* eslint-disable-next-line no-undef */
+/* eslint-env jquery, browser */ // https://eslint.org/docs/user-guide/configuring#specifying-environments
+/* global values2table, table2values, M */ // for eslint
+
 let roomie = [];
 let guest = [];
 let pet = [];
 
+/* eslint-disable-next-line no-unused-vars */
 function load(settings, onChange) {
     // select elements with id=key and class=value and insert value
     if (!settings) return;
@@ -82,7 +88,7 @@ function load(settings, onChange) {
     }
 }
 
-// This will be called by the admin adapter when the user presses the save button
+/* eslint-disable-next-line no-unused-vars */
 function save(callback) {
     // select elements with class=value and build settings object
     const obj = {};
