@@ -9,7 +9,7 @@ function load(settings, onChange) {
 
     // select elements with id=key and class=value and insert value
     for (const key in settings) {
-        // if (!settings.hasOwnProperty(key)) continue;
+        if (!settings.prototype.hasOwnProperty.call(key)) continue;
         const value = $('#' + key + '.value');
         if (value.attr('type') === 'checkbox') {
             value.prop('checked', settings[key]).on('change', function () {
@@ -35,7 +35,7 @@ function load(settings, onChange) {
     pet = settings.pet || [];
 
     for (const key in settings) {
-        if (!settings.hasOwnProperty(key)) continue;
+        if (!settings.prototype.hasOwnProperty.call(key)) continue;
         setValue(key, settings[key], onChange);
     }
 
@@ -85,7 +85,7 @@ function load(settings, onChange) {
 // This will be called by the admin adapter when the user presses the save button
 function save(callback) {
     // select elements with class=value and build settings object
-    let obj = {};
+    const obj = {};
     $('#mainSettings .value').each(function () {
         const $this = $(this);
         if ($this.attr('type') === 'checkbox') {
