@@ -1569,7 +1569,7 @@ class Residents extends utils.Adapter {
      * @param {string | number | boolean} state
      */
     async setResidentDevicePresenceFollowing(device, presence, state) {
-        // await this.setStateAsync(device + '.presenceFollowing.' + presence, { val: state, ack: true });
+        await this.setStateAsync(device + '.presenceFollowing.' + presence, { val: state, ack: true });
     }
 
     /**
@@ -1812,7 +1812,7 @@ class Residents extends utils.Adapter {
         this.log.debug('Calculated overall state: ' + residentsState);
         await this.setStateAsync('state', { val: residentsState, ack: true });
 
-        let moodAverage = homeCount > 0 ? moodCount / homeCount : 0;
+        const moodAverage = homeCount > 0 ? moodCount / homeCount : 0;
         await this.setStateAsync('mood', {
             // Strive for the golden middle
             val: moodAverage > 0 ? Math.floor(moodAverage) : Math.ceil(moodAverage),
