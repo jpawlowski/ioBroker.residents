@@ -1,0 +1,2308 @@
+{
+    "common": {
+        "name": "residents",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung"
+            }
+        },
+        "title": "Residents",
+        "titleLang": {
+            "en": "Residents",
+            "de": "Bewohner"
+        },
+        "desc": {
+            "en": "The adapter helps to map the presence and activity status of the individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home. Several resident instances can be combined with each other, so that, for example, adults and children are registered in their own instance and both instances form the overall status for all residents in a third instance.",
+            "de": "Dieser Adapter hilft dabei, den Anwesenheits- und Aktivitätsstatus der einzelnen Mitbewohner abzubilden. Daraus wird ein logischer Gesamtstatus über alle Mitbewohner und deren Anwesenheit bzw. momentane Aktivität zu Hause gebildet. Mehrere Bewohner-Instanzen können dabei miteinander kombiniert werden, so dass beispielsweise Erwachsene und Kinder in ihrer eigenen Instanz abgebeldet sind und beide Instanzen in einer dritten Instanz den übergeordneten Status für alle Mitbewohner insgesamt bilden."
+        },
+        "authors": ["Julian Pawlowski <julian.pawlowski@gmail.com>"],
+        "keywords": ["residents", "roommate", "roomie", "guest", "pet", "Bewohner", "Mitbewohner", "Gast", "Haustier"],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "residents.svg",
+        "enabled": false,
+        "extIcon": "https://raw.githubusercontent.com/jpawlowski/ioBroker.residents/main/admin/residents.svg",
+        "readme": "https://github.com/jpawlowski/ioBroker.residents/blob/main/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "logic",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "assumption",
+        "adminUI": {
+            "config": "materialize"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.0.0"
+            }
+        ]
+    },
+    "native": {
+        "roomie": [],
+        "guest": [],
+        "pet": [],
+        "residentsParentInstanceIDs": [],
+        "DisableAbsentResidentsDailyTimer": "04:59"
+    },
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "state",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Overall residential state",
+                    "de": "Allgemeiner Wohnstatus"
+                },
+                "type": "number",
+                "role": "value.resident.mode",
+                "min": -1,
+                "max": 7,
+                "read": true,
+                "write": false,
+                "def": -1,
+                "desc": {
+                    "en": "Cumulative overall presence state",
+                    "de": "Kummulierter Gesamtstatus für die Bewohner Anwesenheit",
+                    "ru": "Совокупное общее состояние присутствия",
+                    "pt": "Estado de presença global cumulativo",
+                    "nl": "Cumulatief over alle aanwezigheid staat",
+                    "fr": "État de présence générale cumulatif",
+                    "it": "Stato di presenza complessiva cumulativa",
+                    "es": "Estado de presencia general acumulativo",
+                    "pl": "Stan powszechny",
+                    "uk": "Приниження загального стану присутності",
+                    "zh-cn": "总体存在"
+                },
+                "states": {
+                    "7": "Night",
+                    "6": "Wake Up",
+                    "5": "Awake",
+                    "4": "Bedtime",
+                    "3": "Home",
+                    "2": "Way Home",
+                    "1": "Pet Home",
+                    "0": "Away",
+                    "-1": "Disabled"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "mood",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Average mood of residents at home",
+                    "de": "Durchschnittliche Laune der anwesenden Bewohner"
+                },
+                "type": "number",
+                "role": "value.residents.mood",
+                "read": true,
+                "write": false,
+                "def": 0,
+                "desc": {
+                    "en": "Mood of the residents with negative or positive tendency",
+                    "de": "Laune des Bewohners mit negativer oder positiver Tendenz"
+                },
+                "states": {
+                    "-5": "-5: Couldn't Get Worse",
+                    "-4": "-4: Extraordinary Bad",
+                    "-3": "-3: Extremely Bad",
+                    "-2": "-2: Pretty Bad",
+                    "-1": "-1: Somewhat Bad",
+                    "0": "0: Neutral",
+                    "1": "+1: Somewhat Good",
+                    "2": "+2: Pretty Good",
+                    "3": "+3: Extremely Good",
+                    "4": "+4: Extraordinary Good",
+                    "5": "+5: Couldn't Be Better"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info",
+            "type": "folder",
+            "common": {
+                "name": {
+                    "en": "Information about the residents group",
+                    "de": "Informationen über die Bewohnergruppe",
+                    "ru": "Информация о группе жителей",
+                    "pt": "InformaÃ§Ãμes sobre o grupo de residentes",
+                    "nl": "Informatie over de bewonersgroep",
+                    "fr": "Information sur le groupe de résidents",
+                    "it": "Informazioni sul gruppo residenti",
+                    "es": "Información sobre el grupo de residentes",
+                    "pl": "Informacje o grupie mieszkańców",
+                    "uk": "Інформація про групу мешканців",
+                    "zh-cn": "关于居民群体的资料"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.reachable",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Residents reachable?",
+                    "de": "Bewohner erreichbar?",
+                    "ru": "Жители доступны?",
+                    "pt": "Moradores acessíveis?",
+                    "nl": "Bereikbaar?",
+                    "fr": "Les résidents accessibles ?",
+                    "it": "I residenti sono raggiungibili?",
+                    "es": "¿Los residentes son accesibles?",
+                    "pl": "Mieszkańcy docierają do miejsca zamieszkania?",
+                    "uk": "Жителі досягають?",
+                    "zh-cn": "居民可以达到?"
+                },
+                "type": "boolean",
+                "role": "indicator.reachable.residents",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are some residents nearby, returning soon?",
+                    "de": "Sind irgendwelche Bewohner in der Nähe, die bald zurückkehren?",
+                    "ru": "Немного жителей поблизости, в ближайшее время?",
+                    "pt": "Alguns moradores estão próximos, retornando em breve?",
+                    "nl": "Zijn er inwoners in de buurt, binnenkort terug?",
+                    "fr": "Y a-t-il des résidents à proximité ?",
+                    "it": "Alcuni residenti sono vicini, tornando presto?",
+                    "es": "¿Hay residentes cerca, regresando pronto?",
+                    "pl": "Niedługo po powrocie do kraju mieszkali mieszkańcy?",
+                    "uk": "Чи знаходяться поруч жителі?",
+                    "zh-cn": "一些居民是否很快返回?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Information about the residents group's state",
+                    "de": "Informationen über den Status der Bewohnergruppe",
+                    "ru": "Информация о состоянии группы жителей",
+                    "pt": "InformaÃ§Ãμes sobre o estado do grupo de residentes",
+                    "nl": "Informatie over de staatsgroep",
+                    "fr": "Information sur l'état du groupe de résidents",
+                    "it": "Informazioni sullo stato del gruppo dei residenti",
+                    "es": "Información sobre el estado del grupo de residentes",
+                    "pl": "Informacje o państwie mieszkańców",
+                    "uk": "Інформація про стан групи мешканців",
+                    "zh-cn": "关于居民群体状况的资料"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabled",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident absent for longer period?",
+                    "de": "Irgendein Bewohner länger abwesend?",
+                    "ru": "Некоторый резидент отсутствует на более длительный период?",
+                    "pt": "Algum residente ausente por período mais longo?",
+                    "nl": "Een inwoner die langer ongesteld is?",
+                    "fr": "Certains résidents sont absents pendant plus longtemps?",
+                    "it": "Un residente assente per un periodo più lungo?",
+                    "es": "¿Algún residente ausente durante más tiempo?",
+                    "pl": "Niektórzy mieszkańcy nieobecni przez dłuższy okres?",
+                    "uk": "Чи не існує резидента?",
+                    "zh-cn": "有些居民长期缺席?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.disabled",
+                "read": true,
+                "write": false,
+                "def": true,
+                "desc": {
+                    "en": "Is some resident absent for longer period?",
+                    "de": "Ist irgendein Bewohner für längere Zeit abwesend?",
+                    "ru": "Некоторый резидент отсутствует в течение длительного периода?",
+                    "pt": "Algum residente está ausente por um período mais longo?",
+                    "nl": "Is een inwoner langer ongesteld?",
+                    "fr": "Certains résidents sont absents pendant plus longtemps?",
+                    "it": "Qualche residente è assente per un periodo più lungo?",
+                    "es": "¿Hay algún residente ausente durante más tiempo?",
+                    "pl": "Nie ma już żadnego miejsca na dłużej?",
+                    "uk": "Чи не існує резидента протягом тривалого періоду?",
+                    "zh-cn": "是否有些居民长期不在?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabledAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents absent for longer period?",
+                    "de": "Alle Bewohner länger abwesend?",
+                    "ru": "Все резиденты, отсутствующие на более длительный период?",
+                    "pt": "Todos os residentes ausentes por período mais longo?",
+                    "nl": "Zijn alle bewoners afwezig voor langere tijd?",
+                    "fr": "Tous les résidents absents pendant plus longtemps?",
+                    "it": "Tutti i residenti assenti per un periodo più lungo?",
+                    "es": "¿Todos los residentes ausentes durante más tiempo?",
+                    "pl": "Wszyscy mieszkańcy nieobecni przez dłuższy okres?",
+                    "uk": "Всім мешканцям не вистачає часу?",
+                    "zh-cn": "所有长期没有居民?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.disabledAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents absent for longer period?",
+                    "de": "Sind alle Bewohner für längere Zeit abwesend?",
+                    "ru": "Отсутствует ли все жители на более длительный период?",
+                    "pt": "Todos os residentes estão ausentes por um período mais longo?",
+                    "nl": "Zijn alle bewoners afwezig voor langere tijd?",
+                    "fr": "Tous les résidents sont absents pendant plus longtemps?",
+                    "it": "Tutti i residenti sono assenti per un periodo più lungo?",
+                    "es": "¿Todos los residentes están ausentes durante más tiempo?",
+                    "pl": "Wszyscy mieszkańcy nieobecni przez dłuższy okres?",
+                    "uk": "Чи відсутні всі мешканці довший період?",
+                    "zh-cn": "是否所有长期居民?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabledCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents absent for longer period",
+                    "de": "Anzahl der länger abwesenden Bewohner",
+                    "ru": "Количество отсутствующих жителей на более длительный период",
+                    "pt": "Número de residentes ausentes por período mais longo",
+                    "nl": "Nummer van afwezige bewoners voor langere tijd",
+                    "fr": "Nombre de résidents absents pendant une plus longue période",
+                    "it": "Numero di residenti assenti per un periodo più lungo",
+                    "es": "Número de residentes ausentes durante más tiempo",
+                    "pl": "Liczba nieobecnych mieszkańców przez dłuższy czas",
+                    "uk": "Кількість нерезидентів на більш тривалий термін",
+                    "zh-cn": "A. 长期居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.disabled",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabledFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident reaching disabled state",
+                    "de": "Bewohner, welcher zuerst den Inaktiv-Status erreicht hat"
+                },
+                "type": "string",
+                "role": "json.residents.disabledFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabledLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident reaching disabled state",
+                    "de": "Bewohner, welcher zuletzt den Inaktiv-Status erreicht hat"
+                },
+                "type": "string",
+                "role": "json.residents.disabledLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.disabledList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents absent for longer period",
+                    "de": "Namen der länger abwesenden Bewohner",
+                    "ru": "Имена отсутствующих жителей на более длительный период",
+                    "pt": "Nomes de residentes ausentes por período mais longo",
+                    "nl": "Namen van afwezige bewoners voor langere tijd",
+                    "fr": "Noms des résidents absents pour une période plus longue",
+                    "it": "Nomi di residenti assenti per un periodo più lungo",
+                    "es": "Nombres de los residentes ausentes durante más tiempo",
+                    "pl": "Nazwy nieobecnych mieszkańców przez dłuższy czas",
+                    "uk": "Назви відсутніх резидентів на більш тривалий період",
+                    "zh-cn": "长期居民姓名"
+                },
+                "type": "array",
+                "role": "list.residents.disabledList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.totalCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Total number of all active creatures",
+                    "de": "Gesamtzahl aller momentan aktiver Lebewesen",
+                    "ru": "Общее количество всех активных существ",
+                    "pt": "Número total de todas as criaturas ativas",
+                    "nl": "Totale hoeveelheid actieve wezens",
+                    "fr": "Nombre total de toutes les créatures actives",
+                    "it": "Numero totale di tutte le creature attive",
+                    "es": "Número total de todas las criaturas activas",
+                    "pl": "Liczba wszystkich aktywnych stworzeń",
+                    "uk": "Загальна кількість всіх активних істот",
+                    "zh-cn": "所有积极创作者总数"
+                },
+                "type": "number",
+                "role": "value.residents.total",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.parentInstanceIDs",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Parent residents instances",
+                    "de": "Übergeordnete Bewohnerinstanzen",
+                    "ru": "Родители инстанций",
+                    "pt": "Casos de moradores de pais",
+                    "nl": "Oude bewoners bijvoorbeeld",
+                    "fr": "Nombre de parents",
+                    "it": "Parent residenti istanze",
+                    "es": "Casos de residentes",
+                    "pl": "Instancja mieszkańców",
+                    "uk": "Парентні резиденти",
+                    "zh-cn": "父母居民"
+                },
+                "type": "array",
+                "role": "list.residents.parent",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.totalResidentsCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Total number of active residents",
+                    "de": "Gesamtzahl momentan aktiver Bewohner",
+                    "ru": "Общее количество активных жителей",
+                    "pt": "Número total de residentes ativos",
+                    "nl": "Volledig aantal actieve bewoners",
+                    "fr": "Nombre total de résidents actifs",
+                    "it": "Numero totale di residenti attivi",
+                    "es": "Número total de residentes activos",
+                    "pl": "Liczba aktywnych mieszkańców",
+                    "uk": "Загальна кількість активних мешканців",
+                    "zh-cn": "在职居民总数"
+                },
+                "type": "number",
+                "role": "value.residents.totalResidents",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.state.totalPetsCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Total number of active pets",
+                    "de": "Gesamtzahl momentan aktiver Haustiere",
+                    "ru": "Общее количество активных домашних животных",
+                    "pt": "Número total de animais de estimação ativos",
+                    "nl": "Volledig aantal actieve dieren",
+                    "fr": "Nombre total d'animaux actifs",
+                    "it": "Numero totale di animali attivi",
+                    "es": "Número total de mascotas activas",
+                    "pl": "Liczba aktywnych zwierząt",
+                    "uk": "Загальна кількість активних домашніх тварин",
+                    "zh-cn": "活页总数"
+                },
+                "type": "number",
+                "role": "value.residents.totalPets",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Information about the residents group's presence",
+                    "de": "Informationen über die Anwesenheit der Bewohnergruppe",
+                    "ru": "Информация о присутствии группы жителей",
+                    "pt": "InformaÃ§Ãμes sobre a presença do grupo de residentes",
+                    "nl": "Informatie over de aanwezigheid van de groep",
+                    "fr": "Information sur la présence du groupe de résidents",
+                    "it": "Informazioni sulla presenza del gruppo dei residenti",
+                    "es": "Información sobre la presencia del grupo de residentes",
+                    "pl": "Informacje o obecności mieszkańców grupy",
+                    "uk": "Інформація про наявність групи мешканців",
+                    "zh-cn": "关于居民群体存在的资料"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.home",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident at home?",
+                    "de": "Irgendein Bewohner zu Hause?",
+                    "ru": "Некоторые резиденты дома?",
+                    "pt": "Um residente em casa?",
+                    "nl": "Een inwoner thuis?",
+                    "fr": "Un habitant à la maison ?",
+                    "it": "Un residente a casa?",
+                    "es": "¿Algún residente en casa?",
+                    "pl": "Niektórzy mieszkają w domu?",
+                    "uk": "Деякі мешканці будинку?",
+                    "zh-cn": "留在家里的一些居民?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.home",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident at home?",
+                    "de": "Ist irgendein Bewohner zu Hause?",
+                    "ru": "Есть ли резидент дома?",
+                    "pt": "Algum residente em casa?",
+                    "nl": "Is er iemand thuis?",
+                    "fr": "Y a-t-il un résident à la maison?",
+                    "it": "C'e' qualche residente a casa?",
+                    "es": "¿Hay algún residente en casa?",
+                    "pl": "Czy mieszkasz w domu?",
+                    "uk": "Чи є власник будинку?",
+                    "zh-cn": "是否住在家?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.homeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents at home?",
+                    "de": "Alle Bewohner zu Hause?",
+                    "ru": "Все жители дома?",
+                    "pt": "Todos os residentes em casa?",
+                    "nl": "Alle bewoners thuis?",
+                    "fr": "Tous les résidents à la maison ?",
+                    "it": "Tutti i residenti a casa?",
+                    "es": "¿Todos los residentes en casa?",
+                    "pl": "Wszyscy mieszkańcy w domu?",
+                    "uk": "Всі мешканці будинку?",
+                    "zh-cn": "所有居民在家里?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.homeAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all enabled residents at home?",
+                    "de": "Sind alle aktivierten Bewohner zu Hause?",
+                    "ru": "Разрешены ли все жители дома?",
+                    "pt": "Todos os residentes habilitados em casa?",
+                    "nl": "Zijn alle bekwame bewoners thuis?",
+                    "fr": "Les résidents sont-ils tous autorisés à la maison?",
+                    "it": "Tutti i residenti sono abilitati a casa?",
+                    "es": "¿Están habilitados todos los residentes en casa?",
+                    "pl": "Wszyscy mieszkali w domu?",
+                    "uk": "Чи всі ввімкнені мешканці будинку?",
+                    "zh-cn": "是否使居民能够返回家园?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.homeCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents at home",
+                    "de": "Anzahl der Bewohner zu Hause",
+                    "ru": "Количество жителей дома",
+                    "pt": "Número de moradores em casa",
+                    "nl": "Nummer van bewoners thuis",
+                    "fr": "Nombre de résidents à la maison",
+                    "it": "Numero di residenti a casa",
+                    "es": "Número de residentes en casa",
+                    "pl": "Liczba mieszkańców w domu",
+                    "uk": "Кількість жителів будинку",
+                    "zh-cn": "家庭居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.homeCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.homeFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident reaching home state",
+                    "de": "Bewohner, welcher zuerst nach Hause gekommen ist"
+                },
+                "type": "string",
+                "role": "json.residents.homeFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.homeLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident reaching home state",
+                    "de": "Bewohner, welcher zuletzt nach Hause gekommen ist"
+                },
+                "type": "string",
+                "role": "json.residents.homeLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.homeList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents at home",
+                    "de": "Namen der Bewohner zu Hause",
+                    "ru": "Имена жителей дома",
+                    "pt": "Nomes de residentes em casa",
+                    "nl": "Namen van bewoners thuis",
+                    "fr": "Nom des résidents à la maison",
+                    "it": "Nomi di residenti a casa",
+                    "es": "Nombres de los residentes en casa",
+                    "pl": "Nazwy mieszkańców w domu",
+                    "uk": "Назва жителів будинку",
+                    "zh-cn": "住宅居民姓名"
+                },
+                "type": "array",
+                "role": "list.residents.homeList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHome",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some pet at home?",
+                    "de": "Irgendein Haustier zu Hause?",
+                    "ru": "Некоторые домашние животные дома?",
+                    "pt": "Um animal de estimação em casa?",
+                    "nl": "Een huisdier thuis?",
+                    "fr": "Un animal à la maison ?",
+                    "it": "Un animale domestico a casa?",
+                    "es": "¿Alguna mascota en casa?",
+                    "pl": "Niektóre zwierzęta domowe?",
+                    "uk": "Деякі домашні тварини в домашніх умовах?",
+                    "zh-cn": "留在家里?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.petHome",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident at home?",
+                    "de": "Ist irgendein Bewohner zu Hause?",
+                    "ru": "Есть ли резидент дома?",
+                    "pt": "Algum residente em casa?",
+                    "nl": "Is er iemand thuis?",
+                    "fr": "Y a-t-il un résident à la maison ?",
+                    "it": "C'e' qualche residente a casa?",
+                    "es": "¿Hay algún residente en casa?",
+                    "pl": "Czy mieszkasz w domu?",
+                    "uk": "Чи є власник будинку?",
+                    "zh-cn": "是否住在家?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHomeAlone",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some pet is home alone?",
+                    "de": "Irgendein Haustier alleine zu Hause?",
+                    "ru": "Некоторые домашние животные дома в одиночку?",
+                    "pt": "Um animal de estimação está em casa sozinho?",
+                    "nl": "Is een huisdier alleen thuis?",
+                    "fr": "Un animal est seul ?",
+                    "it": "C'e' un animale domestico da solo?",
+                    "es": "¿Alguna mascota está sola en casa?",
+                    "pl": "Część zwierząt jest samotna?",
+                    "uk": "Хтось домашніх тварин?",
+                    "zh-cn": "仅存在一些重复?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.petHomeAlone",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any pet alone at home?",
+                    "de": "Ist irgendein Haustier alleine zu Hause?",
+                    "ru": "Есть ли дома домашний питомец?",
+                    "pt": "Algum animal de estimação está sozinho em casa?",
+                    "nl": "Is een huisdier alleen thuis?",
+                    "fr": "Un animal de compagnie est-il seul à la maison ?",
+                    "it": "C'è un animale domestico solo a casa?",
+                    "es": "¿Hay mascotas solas en casa?",
+                    "pl": "Czy pies jest sam w domu?",
+                    "uk": "Чи є в домашніх умовах тварини?",
+                    "zh-cn": "是否单独留在家里?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHomeCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of pets at home",
+                    "de": "Anzahl der Haustiere zu Hause",
+                    "ru": "Количество домашних животных дома",
+                    "pt": "Número de animais de estimação em casa",
+                    "nl": "Nummer van huisdieren thuis",
+                    "fr": "Nombre d'animaux à la maison",
+                    "it": "Numero di animali domestici a casa",
+                    "es": "Número de mascotas en casa",
+                    "pl": "Liczba zwierząt w domu",
+                    "uk": "Кількість домашніх тварин в домашніх умовах",
+                    "zh-cn": "家里的书目编号"
+                },
+                "type": "number",
+                "role": "value.residents.petHomeCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHomeFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First pet reaching home state",
+                    "de": "Haustier, welches zuerst nach Hause gekommen ist"
+                },
+                "type": "string",
+                "role": "json.residents.petsHomeFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHomeLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last pet reaching home state",
+                    "de": "Haustier, welches zuletzt nach Hause gekommen ist"
+                },
+                "type": "string",
+                "role": "json.residents.petsHomeLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.petsHomeList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of pets at home",
+                    "de": "Namen der Haustiere zu Hause",
+                    "ru": "Имена домашних животных дома",
+                    "pt": "Nomes de animais de estimação em casa",
+                    "nl": "Namen van huisdieren",
+                    "fr": "Noms des animaux à la maison",
+                    "it": "Nomi di animali domestici a casa",
+                    "es": "Nombres de mascotas en casa",
+                    "pl": "Nazwy zwierząt w domu",
+                    "uk": "Назви домашніх тварин в домашніх умовах",
+                    "zh-cn": "B. 家里的著作名称"
+                },
+                "type": "array",
+                "role": "list.residents.petHomeList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.night",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident asleep?",
+                    "de": "Irgendein Bewohner schläft?",
+                    "ru": "Некоторые резиденты спят?",
+                    "pt": "Um residente a dormir?",
+                    "nl": "Een inwoner die slaapt?",
+                    "fr": "Des résidents dorment ?",
+                    "it": "Un residente dorme?",
+                    "es": "¿Algún residente dormido?",
+                    "pl": "Niektórzy mieszkają w śpiączce?",
+                    "uk": "Хтось резидент?",
+                    "zh-cn": "有些居民被赶走?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.night",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident present asleep right now?",
+                    "de": "Schläft irgendein anwesender Bewohner gerade?",
+                    "ru": "Есть ли нынешний резидент сейчас?",
+                    "pt": "Algum residente está a dormir?",
+                    "nl": "Slaapt er nu een inwoner?",
+                    "fr": "Y a-t-il un résident qui dort ?",
+                    "it": "C'e' qualcuno che dorme in questo momento?",
+                    "es": "¿Hay algún residente presente dormido?",
+                    "pl": "Czy obecnie mieszkasz w domu?",
+                    "uk": "Чи є будь-який присутній резидент, який засвоюється прямо зараз?",
+                    "zh-cn": "现在是否有任何现任居民被掠夺的权利?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.nightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents asleep?",
+                    "de": "Alle Bewohner schlafen?",
+                    "ru": "Все жители спят?",
+                    "pt": "Todos os residentes a dormir?",
+                    "nl": "Slapen alle bewoners?",
+                    "fr": "Tous les résidents dorment ?",
+                    "it": "Tutti i residenti dormono?",
+                    "es": "¿Todos los residentes duermen?",
+                    "pl": "Wszyscy mieszkańcy śpią?",
+                    "uk": "Всі мешканці евакуації?",
+                    "zh-cn": "所有居民都被赶走?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.nightAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents present asleep right now?",
+                    "de": "Schlafen alle anwesenden Bewohner gerade?",
+                    "ru": "Все нынешние жители сейчас спят?",
+                    "pt": "Todos os residentes estão a dormir?",
+                    "nl": "Slapen alle inwoners nu in slaap?",
+                    "fr": "Tous les résidents actuels dorment-ils maintenant ?",
+                    "it": "Tutti i residenti presenti dormono ora?",
+                    "es": "¿Están todos los residentes presentes durmiendo ahora mismo?",
+                    "pl": "Czy wszyscy mieszkają teraz?",
+                    "uk": "Чи є всі присутні мешканці, які зараз подобаються?",
+                    "zh-cn": "现在是否所有现任居民都享有权利?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.nightCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents asleep",
+                    "de": "Anzahl der schlafenden Bewohner",
+                    "ru": "Количество спальных резидентов",
+                    "pt": "Número de residentes adormecidos",
+                    "nl": "Nummer van slapende bewoners",
+                    "fr": "Nombre de résidents endormis",
+                    "it": "Numero di persone che dormono",
+                    "es": "Número de residentes dormidos",
+                    "pl": "Liczba mieszkańców snu",
+                    "uk": "Кількість спальних осіб",
+                    "zh-cn": "睡觉居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.nightCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.nightFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident falling asleep",
+                    "de": "Bewohner, welcher zuerst eingeschlafen ist"
+                },
+                "type": "string",
+                "role": "json.residents.nightFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.nightLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident falling asleep",
+                    "de": "Bewohner, welcher zuletzt eingeschlafen ist"
+                },
+                "type": "string",
+                "role": "json.residents.nightLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.nightList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents asleep",
+                    "de": "Namen der schlafenden Bewohner",
+                    "ru": "Имена спальных жителей",
+                    "pt": "Nomes de residentes adormecidos",
+                    "nl": "Namen van slapende bewoners",
+                    "fr": "Noms des résidents endormis",
+                    "it": "Nomi dei residenti addormentati",
+                    "es": "Nombres de los residentes dormidos",
+                    "pl": "Nazwa mieszkańców snu",
+                    "uk": "Назви спальних мешканців",
+                    "zh-cn": "睡觉居民姓名"
+                },
+                "type": "array",
+                "role": "list.residents.nightList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.away",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident away?",
+                    "de": "Irgendein Bewohner abwesend?",
+                    "ru": "Некоторые резиденты?",
+                    "pt": "Algum residente?",
+                    "nl": "Een inwoner weg?",
+                    "fr": "Des résidents ?",
+                    "it": "Un residente lontano?",
+                    "es": "¿Algún residente?",
+                    "pl": "Część mieszkalna?",
+                    "uk": "Хто житель?",
+                    "zh-cn": "有些居民离开?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.away",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident away from home?",
+                    "de": "Ist irgendein Bewohner nicht zu Hause?",
+                    "ru": "Вдали от дома?",
+                    "pt": "Algum residente está longe de casa?",
+                    "nl": "Is er iemand van huis weg?",
+                    "fr": "Est-ce qu'un résident est loin de chez lui ?",
+                    "it": "C'e' qualche residente lontano da casa?",
+                    "es": "¿Hay algún residente fuera de casa?",
+                    "pl": "Czy ktokolwiek mieszka z domu?",
+                    "uk": "Чи є власник від дому?",
+                    "zh-cn": "是否有任何居民离开家园?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.awayAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents away?",
+                    "de": "Alle Bewohner abwesend?",
+                    "ru": "Все жители вдали?",
+                    "pt": "Todos os residentes?",
+                    "nl": "Alle bewoners weg?",
+                    "fr": "Tous les résidents ?",
+                    "it": "A tutti i residenti?",
+                    "es": "¿Todos los residentes?",
+                    "pl": "Wszyscy mieszkańcy uciekają?",
+                    "uk": "Всім мешканцям?",
+                    "zh-cn": "所有居民都可以离开?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.awayAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all enabled residents away?",
+                    "de": "Sind alle aktivierten Bewohner abwesend?",
+                    "ru": "Есть ли у вас все включенные жители?",
+                    "pt": "Todos os residentes habilitados estão fora?",
+                    "nl": "Zijn alle bekwame bewoners weg?",
+                    "fr": "Les résidents sont-ils tous autorisés?",
+                    "it": "Tutti i residenti sono abilitati via?",
+                    "es": "¿Están todos los residentes habilitados?",
+                    "pl": "Czy wszyscy mieszkańcy mogliby się wyjechać?",
+                    "uk": "Чи всі ввімкнені мешканці?",
+                    "zh-cn": "是否让居民离开?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.awayCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents away",
+                    "de": "Anzahl der abwesenden Bewohner",
+                    "ru": "Количество жителей вдали",
+                    "pt": "Número de moradores de distância",
+                    "nl": "Nummer van bewoners weg",
+                    "fr": "Nombre de résidents éloignés",
+                    "it": "Numero di residenti",
+                    "es": "Número de residentes fuera",
+                    "pl": "Liczba mieszkańców",
+                    "uk": "Кількість жителів",
+                    "zh-cn": "居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.awayCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.awayFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident leaving home",
+                    "de": "Bewohner, welcher zuerst das Haus verlassen hat"
+                },
+                "type": "string",
+                "role": "json.residents.awayFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.awayLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident leaving home",
+                    "de": "Bewohner, welcher zuletzt das Haus verlassen hat"
+                },
+                "type": "string",
+                "role": "json.residents.awayLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.presence.awayList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents away",
+                    "de": "Namen der abswesenden Bewohner",
+                    "ru": "Имена жителей вдали",
+                    "pt": "Nomes de residentes fora",
+                    "nl": "Namen van bewoners weg",
+                    "fr": "Noms des résidents éloignés",
+                    "it": "Nomi di residenti via",
+                    "es": "Nombres de los residentes lejos",
+                    "pl": "Nazwy mieszkańców odległe od mieszkańców",
+                    "uk": "Назва жителів",
+                    "zh-cn": "居民姓名"
+                },
+                "type": "array",
+                "role": "list.residents.awayList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Information about the residents group's activity",
+                    "de": "Informationen über die Aktivität der Bewohnergruppe",
+                    "ru": "Информация о деятельности группы жителей",
+                    "pt": "InformaÃ§Ãμes sobre a atividade do grupo de residentes",
+                    "nl": "Informatie over de activiteiten van de groep",
+                    "fr": "Information sur l'activité du groupe de résidents",
+                    "it": "Informazioni sull'attività del gruppo dei residenti",
+                    "es": "Información sobre la actividad del grupo de residentes",
+                    "pl": "Informacje o działalności grupy mieszkańców",
+                    "uk": "Інформація про діяльність резидентів",
+                    "zh-cn": "关于居民群体活动的资料"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awake",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident awake at night?",
+                    "de": "Irgendein Bewohner nachts wach?",
+                    "ru": "Кто-то житель пробуждает ночью?",
+                    "pt": "Um residente acordado à noite?",
+                    "nl": "Een inwoner 's nachts wakker?",
+                    "fr": "Un résident s'est réveillé la nuit ?",
+                    "it": "Un residente sveglio di notte?",
+                    "es": "¿Algún residente despierto por la noche?",
+                    "pl": "Niektórzy mieszkają w nocy?",
+                    "uk": "Який життєдіяльник вночі?",
+                    "zh-cn": "一些居民在夜里有心?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.awake",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident awake at night?",
+                    "de": "Ist irgendein Bewohner nachts wach?",
+                    "ru": "Пробуждается ли резидент ночью?",
+                    "pt": "Algum residente está acordado à noite?",
+                    "nl": "Is er iemand 's nachts wakker?",
+                    "fr": "Est-ce qu'un résident est réveillé la nuit ?",
+                    "it": "C'e' un residente sveglio di notte?",
+                    "es": "¿Hay algún residente despierto por la noche?",
+                    "pl": "Czy ktokolwiek mieszka?",
+                    "uk": "Чи є на ніч резидент?",
+                    "zh-cn": "是否有任何居民在夜间睡觉?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awakeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents awake at night?",
+                    "de": "Alle Bewohner nachts wach?",
+                    "ru": "Все жители проснулись ночью?",
+                    "pt": "Todos os residentes acordados à noite?",
+                    "nl": "Zijn alle bewoners 's nachts wakker?",
+                    "fr": "Tous les résidents sont réveillés la nuit ?",
+                    "it": "Tutti i residenti si svegliano di notte?",
+                    "es": "¿Todos los residentes despiertos por la noche?",
+                    "pl": "Wszyscy mieszkańcy śpią nocą?",
+                    "uk": "Всім мешканцям нічного віку?",
+                    "zh-cn": "所有居民在夜间有心智?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.awakeAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents awake at night?",
+                    "de": "Sind alle Bewohner nachts wach?",
+                    "ru": "Все жители проснулись ночью?",
+                    "pt": "Todos os residentes estão acordados à noite?",
+                    "nl": "Zijn alle bewoners 's nachts wakker?",
+                    "fr": "Tous les résidents sont réveillés la nuit ?",
+                    "it": "Tutti i residenti sono svegli di notte?",
+                    "es": "¿Están todos los residentes despiertos por la noche?",
+                    "pl": "Wszyscy mieszkańcy nocą przebudzają się?",
+                    "uk": "Чи є всі мешканці нічим?",
+                    "zh-cn": "是否所有居民都在夜里瓦?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awakeCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents awake at night",
+                    "de": "Anzahl der nachts wachen Bewohner",
+                    "ru": "Количество жителей пробуждают ночью",
+                    "pt": "Número de moradores acordados à noite",
+                    "nl": "Nummers wakker 's nachts",
+                    "fr": "Nombre de résidents éveillés la nuit",
+                    "it": "Numero di residenti svegli di notte",
+                    "es": "Número de residentes despiertos por la noche",
+                    "pl": "Liczba mieszkańców budzi się w nocy",
+                    "uk": "Кількість мешканців нічного віку",
+                    "zh-cn": "夜间居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.awakeCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awakeFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident woken up",
+                    "de": "Bewohner, welcher zuerst aufgestanden ist"
+                },
+                "type": "string",
+                "role": "json.residents.awakeFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awakeLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident woken up",
+                    "de": "Bewohner, welcher zuletzt aufgestanden ist"
+                },
+                "type": "string",
+                "role": "json.residents.awakeLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.awakeList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents awake at night",
+                    "de": "Namen der nachts wachen Bewohner",
+                    "ru": "Имена жителей пробуждаются ночью",
+                    "pt": "Nomes de moradores acordados à noite",
+                    "nl": "Namen van bewoners 's nachts wakker",
+                    "fr": "Nom des résidents éveillés la nuit",
+                    "it": "I nomi dei residenti svegli di notte",
+                    "es": "Nombres de los residentes despiertos por la noche",
+                    "pl": "Nazwa mieszkańców budzi się nocą",
+                    "uk": "Назви життєздатних мешканців вночі",
+                    "zh-cn": "A. 居民在夜间有瓦砾"
+                },
+                "type": "array",
+                "role": "list.residents.awakeList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtime",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident gets ready for bed?",
+                    "de": "Irgendein Bewohner macht sich bettfertig?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.bedtime",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident getting ready for bed?",
+                    "de": "Macht sich irgendein Bewohner bettfertig?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtimeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents get ready for bed?",
+                    "de": "Alle Bewohner machen sich bettfertig?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.bedtimeAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents getting ready for bed?",
+                    "de": "Machen sich alle Bewohner bettfertig?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtimeCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents getting ready for bed",
+                    "de": "Anzahl der sich bettfertig machenden Bewohner"
+                },
+                "type": "number",
+                "role": "value.residents.bedtimeCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtimeFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident getting ready for bed",
+                    "de": "Bewohner, welcher sich zuerst bettfertig gemacht hat"
+                },
+                "type": "string",
+                "role": "json.residents.bedtimeFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtimeLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident getting ready for bed",
+                    "de": "Bewohner, welcher sich zuletzt bettfertig gemacht hat"
+                },
+                "type": "string",
+                "role": "json.residents.bedtimeLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.bedtimeList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents getting ready for bed",
+                    "de": "Namen der sich bettfertig machenden Bewohner"
+                },
+                "type": "array",
+                "role": "list.residents.bedtimeList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnight",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident overnight today?",
+                    "de": "Irgendein Bewohner heute übernachten?",
+                    "ru": "Некоторые резиденты сегодня?",
+                    "pt": "Algum residente hoje?",
+                    "nl": "Een inwoner vandaag?",
+                    "fr": "Un habitant du jour au lendemain ?",
+                    "it": "Un residente oggi?",
+                    "es": "¿Algún residente hoy?",
+                    "pl": "Obecnie mieszka w nocy?",
+                    "uk": "Що сьогодні?",
+                    "zh-cn": "今天晚上有些居民?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.overnight",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Will some resident stay overnight today?",
+                    "de": "Wird heute irgendein Bewohner übernachten?",
+                    "ru": "Будет ли сегодня оставаться резидентом?",
+                    "pt": "Algum residente vai ficar hoje à noite?",
+                    "nl": "Zal een inwoner vannacht blijven?",
+                    "fr": "Est-ce qu'un résident passera la nuit aujourd'hui ?",
+                    "it": "C'e' qualcuno che soggiorna oggi?",
+                    "es": "¿Se quedará algún residente esta noche?",
+                    "pl": "Czy mieszkają tam nocą?",
+                    "uk": "Чи буде на сьогодні резидент?",
+                    "zh-cn": "某些居民今天晚上会留住?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents overnight today?",
+                    "de": "Alle Bewohner heute übernachten?",
+                    "ru": "Все жители сегодня ночью?",
+                    "pt": "Todos os residentes hoje à noite?",
+                    "nl": "Alle bewoners in de nacht?",
+                    "fr": "Tous les résidents aujourd'hui ?",
+                    "it": "Tutti i residenti oggi?",
+                    "es": "¿Todos los residentes de la noche?",
+                    "pl": "Obecnie wszyscy mieszkańcy nocują?",
+                    "uk": "Всі мешканці сьогодні?",
+                    "zh-cn": "今天一夜间所有居民?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.overnightAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Will all residents stay overnight today?",
+                    "de": "Werden heute alle Bewohner über Nacht bleiben?",
+                    "ru": "Сегодня все жители будут оставаться на ночь?",
+                    "pt": "Todos os residentes vão passar a noite hoje?",
+                    "nl": "Blijven alle bewoners overnachten vandaag?",
+                    "fr": "Tous les résidents vont-ils passer la nuit aujourd'hui?",
+                    "it": "Tutti i residenti pernottano oggi?",
+                    "es": "¿Se quedarán todos los residentes hoy?",
+                    "pl": "Czy wszyscy mieszkańcy przebywają nocą?",
+                    "uk": "На сьогодні всі мешканці, які проживають сьогодні?",
+                    "zh-cn": "是否能够让所有居民今天一夜停留?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnightCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents to stay overnight today",
+                    "de": "Anzahl der Bewohner, die heute übernachten",
+                    "ru": "Количество жителей, чтобы остаться на ночь сегодня",
+                    "pt": "Número de moradores para ficar durante a noite hoje",
+                    "nl": "Nummers van de bewoners blijven overnachten vandaag",
+                    "fr": "Nombre de résidents pour passer la nuit aujourd'hui",
+                    "it": "Numero di residenti pernottare oggi",
+                    "es": "Número de residentes para quedarse esta noche",
+                    "pl": "Liczba mieszkańców musi pozostać nocą",
+                    "uk": "Кількість мешканців сьогодні",
+                    "zh-cn": "居民今天夜间停留的人数"
+                },
+                "type": "number",
+                "role": "value.residents.overnightCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnightFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident planning to overnight",
+                    "de": "Bewohner, welcher zuerst seine Übernachtung angemeldet hat"
+                },
+                "type": "string",
+                "role": "json.residents.overnightFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnightLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident planning to overnight",
+                    "de": "Bewohner, welcher zuletzt seine Übernachtung angemeldet hat"
+                },
+                "type": "string",
+                "role": "json.residents.overnightLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.overnightList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents to stay overnight today",
+                    "de": "Namen der Bewohner, die heute übernachten",
+                    "ru": "Имена жителей, чтобы остаться на ночь сегодня",
+                    "pt": "Nomes de moradores para ficar durante a noite hoje",
+                    "nl": "Namen van bewoners om vannacht te blijven",
+                    "fr": "Noms des résidents pour passer la nuit aujourd'hui",
+                    "it": "I nomi dei residenti per rimanere durante la notte di oggi",
+                    "es": "Nombres de los residentes para quedarse esta noche",
+                    "pl": "Nazwy mieszkańców na noc",
+                    "uk": "Назви жителів, які проживають сьогодні",
+                    "zh-cn": "居民在今天夜间停留的名称"
+                },
+                "type": "array",
+                "role": "list.residents.overnightList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeup",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident has a wake-up call?",
+                    "de": "Irgendein Bewohner wird geweckt?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.wakeup",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident currently having a wake-up call running?",
+                    "de": "Wird irgendein Bewohner gerade geweckt?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeupAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents have a wake-up call?",
+                    "de": "Werden alle Bewohner geweckt?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.wakeupAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Do all residents currently have a wake-up call running?",
+                    "de": "Werden gerade alle Bewohner geweckt?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeupCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents having a wake-up call",
+                    "de": "Anzahl der Bewohner, die geweckt werden"
+                },
+                "type": "number",
+                "role": "value.residents.wakeupCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeupFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident starting to have a wake-up call",
+                    "de": "Bewohner, dessen Wecker zuerst geklingelt hat"
+                },
+                "type": "string",
+                "role": "json.residents.wakeupFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeupLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident starting to have a wake-up call",
+                    "de": "Bewohner, dessen Wecker zuletzt geklingelt hat"
+                },
+                "type": "string",
+                "role": "json.residents.wakeupLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wakeupList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents having a wake-up call",
+                    "de": "Namen der Bewohner, die geweckt werden"
+                },
+                "type": "array",
+                "role": "list.residents.wakeupList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhome",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident on way home?",
+                    "de": "Irgendein Bewohner auf dem Heimweg?",
+                    "ru": "Некоторые резиденты на пути домой?",
+                    "pt": "Um residente a caminho de casa?",
+                    "nl": "Een inwoner op weg naar huis?",
+                    "fr": "Un résident en chemin ?",
+                    "it": "Un residente che torna a casa?",
+                    "es": "¿Algún residente de camino a casa?",
+                    "pl": "Niektórzy mieszkają w drodze do domu?",
+                    "uk": "Деякі мешканці будинку?",
+                    "zh-cn": "一些居民如何在家里?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.wayhome",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any absent resident on their way home?",
+                    "de": "Ist irgendein abwesender Bewohner auf dem Heimweg?",
+                    "ru": "Есть ли отсутствующий на пути домой?",
+                    "pt": "Algum residente ausente está a caminho de casa?",
+                    "nl": "Is er een afwezige bewoner onderweg naar huis?",
+                    "fr": "Est-ce qu'un résident absent est en chemin ?",
+                    "it": "Qualche residente assente sta tornando a casa?",
+                    "es": "¿Hay algún residente ausente en su camino a casa?",
+                    "pl": "Czy nie mieszkasz w drodze do domu?",
+                    "uk": "Чи не існує резидента вдома?",
+                    "zh-cn": "是否有人留在家里?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhomeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All absent residents on their way home?",
+                    "de": "Alle abwesenden Bewohner auf dem Heimweg?",
+                    "ru": "Все отсутствующие жители на дороге домой?",
+                    "pt": "Todos os residentes ausentes a caminho de casa?",
+                    "nl": "Alle afwezige bewoners op weg naar huis?",
+                    "fr": "Tous les résidents absents en rentrant chez eux ?",
+                    "it": "Tutti i residenti assenti mentre tornano a casa?",
+                    "es": "¿Todos los residentes ausentes en su camino a casa?",
+                    "pl": "Wszyscy nieobecni mieszkańcy w drodze do domu?",
+                    "uk": "Всі відсутні мешканці будинку?",
+                    "zh-cn": "所有没有居民在家里?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.wayhomeAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all absent residents on their way home?",
+                    "de": "Sind alle abwesenden Bewohner auf dem Heimweg?",
+                    "ru": "Все отсутствующие жители на их пути домой?",
+                    "pt": "Estão todos ausentes a caminho de casa?",
+                    "nl": "Zijn alle afwezige bewoners onderweg naar huis?",
+                    "fr": "Tous les résidents absents sont-ils chez eux ?",
+                    "it": "Tutti gli abitanti assenti stanno tornando a casa?",
+                    "es": "¿Están todos los residentes ausentes en su camino a casa?",
+                    "pl": "Wszyscy nieobecni mieszkańcy w drodze do domu?",
+                    "uk": "Чи не всі мешканці будинку?",
+                    "zh-cn": "是否所有的居民都留在家里?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhomeCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents on their way home",
+                    "de": "Anzahl der Bewohner auf dem Heimweg",
+                    "ru": "Количество жителей на их пути домой",
+                    "pt": "Número de moradores a caminho de casa",
+                    "nl": "Nummer van bewoners op weg naar huis",
+                    "fr": "Nombre de résidents en chemin",
+                    "it": "Numero di residenti sul loro ritorno a casa",
+                    "es": "Número de residentes en su camino a casa",
+                    "pl": "Liczba mieszkańców w drodze do domu",
+                    "uk": "Кількість жителів будинку",
+                    "zh-cn": "居民在家中的人数"
+                },
+                "type": "number",
+                "role": "value.residents.wayhomeCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhomeFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident being on their way home",
+                    "de": "Bewohner, welcher sich zuerst auf den Heimweg gemacht hat"
+                },
+                "type": "string",
+                "role": "json.residents.wayhomeFirst",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhomeLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident being on their way home",
+                    "de": "Bewohner, welcher sich zuletzt auf den Heimweg gemacht hat"
+                },
+                "type": "string",
+                "role": "json.residents.wayhomeLast",
+                "read": true,
+                "write": false,
+                "def": "{}"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.wayhomeList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Names of residents on their way home",
+                    "de": "Namen der Bewohner auf dem Heimweg",
+                    "ru": "Имена жителей на их пути домой",
+                    "pt": "Nomes de moradores em seu caminho para casa",
+                    "nl": "Namen van bewoners op weg naar huis",
+                    "fr": "Noms des résidents sur leur chemin",
+                    "it": "Nomi di residenti sulla loro strada di casa",
+                    "es": "Nombres de los residentes en su camino a casa",
+                    "pl": "Nazwy mieszkańców w drodze do domu",
+                    "uk": "Назва жителів будинку",
+                    "zh-cn": "居民在家里的名称"
+                },
+                "type": "array",
+                "role": "list.residents.wayhomeList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+        {
+            "_id": "control",
+            "type": "folder",
+            "common": {
+                "name": {
+                    "en": "Control many resident objects together",
+                    "de": "Mehrere Bewohnerobjekte zusammen bedienen",
+                    "ru": "Контролировать многие объекты резидентов вместе",
+                    "pt": "Controlar muitos objetos residentes juntos",
+                    "nl": "Controleer veel inwonende objecten samen",
+                    "fr": "Contrôler plusieurs objets résidents ensemble",
+                    "it": "Controllare molti oggetti residenti insieme",
+                    "es": "Controlar muchos objetos residentes juntos",
+                    "pl": "Kontrolować wiele obiektów mieszkalnych",
+                    "uk": "Контроль об'єктів резидента разом",
+                    "zh-cn": "控制许多居民目标"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.state",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Control activation of many resident objects together",
+                    "de": "Die Aktivierung von mehreren Bewohnerobjekten zusammen bedienen",
+                    "ru": "Контролировать активацию многих объектов резидентов вместе",
+                    "pt": "Controle de ativação de muitos objetos residentes juntos",
+                    "nl": "Controleactivatie van vele inwoners objecten samen",
+                    "fr": "Activation de contrôle de nombreux objets résidents ensemble",
+                    "it": "Attivazione di controllo di molti oggetti residenti insieme",
+                    "es": "Control de activación de muchos objetos residentes juntos",
+                    "pl": "Kontrola aktywacji wielu obiektów mieszkalnych razem",
+                    "uk": "Управління активацією багатьох об'єктів резидента разом",
+                    "zh-cn": "控制许多居民物品的启动"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.state.disableAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Disable any absent resident",
+                    "de": "Abwesende Bewohner deaktivieren",
+                    "ru": "Отключить любой отсутствующий резидент",
+                    "pt": "Desativar qualquer residente ausente",
+                    "nl": "Stuur elke afwezige bewoner",
+                    "fr": "Invalider tout résident absent",
+                    "it": "Disattivare qualsiasi residente assente",
+                    "es": "Desactivar a cualquier residente ausente",
+                    "pl": "Niezamieszkany",
+                    "uk": "Вимкніть будь-який нерезидент",
+                    "zh-cn": "任何缺席居民"
+                },
+                "type": "boolean",
+                "role": "button.residents.disabled",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "This disables any resident that is currently already away, implying longer absence.",
+                    "de": "Dadurch wird jeder Bewohner, der bereits abwesend ist, deaktiviert, was eine längere Abwesenheit impliziert.",
+                    "ru": "Это отключает любого резидента, который в настоящее время уже далеко, подразумевая более длительное отсутствие.",
+                    "pt": "Isso desabilita qualquer residente que já esteja ausente, implicando uma ausência maior.",
+                    "nl": "Deze schakelt elke inwoner uit die momenteel al weg is, impliceert langer afwezigheid.",
+                    "fr": "Cela désactive tout résident qui est déjà absent, impliquant une absence plus longue.",
+                    "it": "Questo disabilita qualsiasi residente che attualmente è già lontano, implicando una maggiore assenza.",
+                    "es": "Esto desactiva a cualquier residente que ya esté ausente, lo que implica una ausencia más larga.",
+                    "pl": "To niemożliwe jest, że jakikolwiek mieszkaniec, który obecnie jest już poza tym, co oznacza dłuższy brak.",
+                    "uk": "Це відключає будь-якого резидента, який в даний час вже далеко, незважаючи на більш тривалий час.",
+                    "zh-cn": "这种令人失望的居民目前已经离去,意味着不再存在。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.state.enableAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Turn deactivated residents back on",
+                    "de": "Deaktivierte Einwohner wieder aktivieren",
+                    "ru": "Превратите деактивированные жители обратно",
+                    "pt": "Vire os residentes desativados novamente em",
+                    "nl": "Vertaling:",
+                    "fr": "Retourner les résidents désactivés",
+                    "it": "Riattivare i residenti disattivati",
+                    "es": "Gire a los residentes desactivados",
+                    "pl": "Zwolnić mieszkańców z powrotem do kraju",
+                    "uk": "Поверніть деактивованих мешканців",
+                    "zh-cn": "移居居民返回"
+                },
+                "type": "boolean",
+                "role": "button.residents.enabled",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "This will set any resident that is currently deactivated to active again, implying a return soon.",
+                    "de": "Dadurch wird jeder Bewohner, das gerade deaktiviert ist, wieder aktiv gesetzt, was eine baldige Rückkehr impliziert.",
+                    "ru": "Это установит любой резидент, который в настоящее время деактивирован для активации снова, подразумевая возвращение в ближайшее время.",
+                    "pt": "Isso irá definir qualquer residente que está atualmente desativado para ativo novamente, implicando um retorno em breve.",
+                    "nl": "Dit zal elke inwoner die momenteel weer actief wordt gedeactiveerd, een terugkeer indienen.",
+                    "fr": "Cela permettra à tout résident qui est actuellement désactivé à une nouvelle activité, impliquant un retour bientôt.",
+                    "it": "Ciò imposterà qualsiasi residente che è attualmente disattivato di nuovo attivo, implicando un ritorno presto.",
+                    "es": "Esto establecerá a cualquier residente que esté actualmente desactivado para activos de nuevo, lo que implica un regreso pronto.",
+                    "pl": "Powoduje to, że każdy rezydent, który zdezaktywowany jest ponownie, implikuje powrót do kraju.",
+                    "uk": "В даний час ми встановимо будь-який резидент, який в даний час деактивується до активного знову, намагаючись повернутися найближчим часом.",
+                    "zh-cn": "这将使目前不再活跃的居民尽快返回。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Control presence of many resident objects together",
+                    "de": "Anwesenheit von Bewohnerobjekten zusammenm bedienen",
+                    "ru": "Контролируйте наличие множества объектов резидентов вместе",
+                    "pt": "Controlar a presença de muitos objetos residentes juntos",
+                    "nl": "Controle aanwezigheid van vele inwonende objecten samen",
+                    "fr": "Contrôle de la présence de nombreux objets résidents ensemble",
+                    "it": "Presenza di controllo di molti oggetti residenti insieme",
+                    "es": "Control de la presencia de muchos objetos residentes juntos",
+                    "pl": "Przestrzenie wielu obiektów mieszkalnych",
+                    "uk": "Контроль наявності багатьох об'єктів резидента",
+                    "zh-cn": "控制许多居民物品的存在"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.setHomeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Revert absent residents to home",
+                    "de": "Abwesende Bewohner auf anwesend umkehren",
+                    "ru": "Переверните отсутствующих жителей в дом",
+                    "pt": "Reverter residentes ausentes em casa",
+                    "nl": "Eerwaarde bewoners naar huis",
+                    "fr": "Retourner les résidents absents à la maison",
+                    "it": "Revertire i residenti assenti a casa",
+                    "es": "Revertir a los residentes ausentes en casa",
+                    "pl": "Nieobecni mieszkańcy",
+                    "uk": "Відновити недоступні мешканці будинку",
+                    "zh-cn": "避免居民留在家里"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.home",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any absent resident who is currently activated to home.",
+                    "de": "Jeden abwesenden Bewohner, der derzeit aktiviert ist, auf anwesend setzen.",
+                    "ru": "Установите любого отсутствующего резидента, который в настоящее время активируется домой.",
+                    "pt": "Defina qualquer residente ausente que esteja atualmente ativado para casa.",
+                    "nl": "Zet elke afwezige bewoner die momenteel wordt geactiveerd naar huis.",
+                    "fr": "Définir tout résident absent qui est actuellement activé à la maison.",
+                    "it": "Impostare qualsiasi residente assente che è attualmente attivato a casa.",
+                    "es": "Establecer cualquier residente ausente que esté activado actualmente en casa.",
+                    "pl": "Nieobecny mieszkaniec, obecnie aktywowany do domu.",
+                    "uk": "Встановити будь-який нерезидент, який в даний час активується в домашніх умовах.",
+                    "zh-cn": "规定目前没有居住的居民。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.unsetHomeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Revert present residents from home to away",
+                    "de": "Anwesende Bewohner auf abwesend umkehren",
+                    "ru": "Переверните нынешних жителей из дома вдали",
+                    "pt": "Reverter residentes presentes de casa para longe",
+                    "nl": "Revert present bewoners van huis tot weg",
+                    "fr": "Retourner les résidents actuels de la maison à l'extérieur",
+                    "it": "Revertire i residenti presenti da casa a distanza",
+                    "es": "Revertir a los residentes actuales de casa a distancia",
+                    "pl": "Rezydent",
+                    "uk": "Перевернути присутніх жителів з дому",
+                    "zh-cn": "避免将居民留在家里"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.home",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any resident present to away who is not currently performing sleep-related activities.",
+                    "de": "Setze jeden anwesenden Bewohner auf abwesend, der gerade keine schlafbezogene Aktivitäten ausführt.",
+                    "ru": "Установите любого резидента, присутствующего к тому, кто в настоящее время не выполняет действия, связанные с с сном.",
+                    "pt": "Defina qualquer residente presente para fora que não está realizando atividades relacionadas ao sono.",
+                    "nl": "Regel een inwoner die momenteel geen slaapgerelateerde activiteiten uitvoert.",
+                    "fr": "Déposer tout résident présent à l'extérieur qui n'effectue pas actuellement d'activités liées au sommeil.",
+                    "it": "Impostare qualsiasi residente presente a lontano che attualmente non svolge attività relative al sonno.",
+                    "es": "Establecer cualquier residente presente a distancia que no esté realizando actividades relacionadas con el sueño.",
+                    "pl": "Każdy mieszkaniec, który nie jest obecnie w pełni związany ze snu.",
+                    "uk": "Налаштуйте будь-який резидент, який зараз не виконує функції сну.",
+                    "zh-cn": "规定目前没有进行与睡觉有关的活动的居民。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.setNightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Set present residents from home to night",
+                    "de": "Anwesende Bewohner von zu Hause auf Nacht setzen",
+                    "ru": "Установите нынешних жителей от дома до ночи",
+                    "pt": "Definir residentes presentes de casa a noite",
+                    "nl": "Regel bewoners van huis tot nacht",
+                    "fr": "Ensemble des résidents présents de la maison à la nuit",
+                    "it": "Impostare i residenti presenti da casa a notte",
+                    "es": "Establecer residentes presentes de casa a noche",
+                    "pl": "Osiedlać się w mieszkaniu",
+                    "uk": "Встановити присутніх жителів будинку в ніч",
+                    "zh-cn": "A. 居家的居民"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.night",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any resident present to night.",
+                    "de": "Setze jeden anwesenden Bewohner auf Nacht.",
+                    "ru": "Установите любого резидента, присутствующего на ночь.",
+                    "pt": "Defina qualquer residente presente à noite.",
+                    "nl": "Maak een inwoner voor de nacht.",
+                    "fr": "Déposez tout résident de la nuit.",
+                    "it": "Impostare qualsiasi residente presente a notte.",
+                    "es": "Establece cualquier regalo residente de noche.",
+                    "pl": "Każdy mieszkaniec nocą.",
+                    "uk": "Встановити будь-який резидент, який присутній на ніч.",
+                    "zh-cn": "规定任何居民晚。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.unsetNightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Revert sleeping residents from night to home",
+                    "de": "Schlafende Bewohner von Nacht auf anwesend umkehren",
+                    "ru": "Переверните спальных жителей с ночи до дома",
+                    "pt": "Reverter residentes de sono de noite para casa",
+                    "nl": "Revert slapende bewoners van nacht naar huis",
+                    "fr": "Revertir les résidents de nuit à la maison",
+                    "it": "Revertire i residenti di notte a casa",
+                    "es": "Revertir a los residentes de dormir de noche a casa",
+                    "pl": "Odbywa się nocą do domu",
+                    "uk": "Відновити сплячих мешканців з ночі до дому",
+                    "zh-cn": "避免夜间睡觉居民"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.night",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any resident from Night to Home, including people who are currently performing other sleep-related activities.",
+                    "de": "Setze jeden Bewohner von Nacht auf anwesend, auch Personen, die gerade andere schlafbezogene Tätigkeiten ausführen.",
+                    "ru": "Установите любого резидента с ночи до дома, включая людей, которые в настоящее время выполняют другие действия, связанные с сном.",
+                    "pt": "Defina qualquer residente de Noite para Casa, incluindo pessoas que estão atualmente realizando outras atividades relacionadas ao sono.",
+                    "nl": "Zet elke bewoner van Night naar Home, inclusief mensen die momenteel andere slaapgerelateerde activiteiten uitvoeren.",
+                    "fr": "Définir tout résident de Night to Home, y compris les personnes qui effectuent actuellement d'autres activités liées au sommeil.",
+                    "it": "Imposta qualsiasi residente da Night a Home, comprese le persone che attualmente svolgono altre attività legate al sonno.",
+                    "es": "Establecer cualquier residente de la noche al hogar, incluyendo personas que actualmente están realizando otras actividades relacionadas con el sueño.",
+                    "pl": "Każdy mieszkaniec z Night to Home, w tym ludzie, którzy obecnie prowadzą działalność związaną z snu.",
+                    "uk": "Налаштуйте будь-який мешканець з ночі до дому, у тому числі людей, які наразі виконують інші функції сну.",
+                    "zh-cn": "规定任何居民,包括目前从事其他与睡觉有关的活动的人。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.setAwayAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Revert present residents to away",
+                    "de": "Anwesende Bewohner auf abwesend umkehren",
+                    "ru": "Переверните нынешних жителей вдали",
+                    "pt": "Reverter residentes presentes para fora",
+                    "nl": "Revert presenteer bewoners om weg te gaan",
+                    "fr": "Retourner les résidents actuels à l'extérieur",
+                    "it": "Revertire i residenti presenti a fuggire",
+                    "es": "Revertir a los residentes presentes a distancia",
+                    "pl": "Rezydent",
+                    "uk": "Перевернути присутніх",
+                    "zh-cn": "避免居民离开"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.away",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any resident present to away who is not currently performing sleep-related activities.",
+                    "de": "Setze jeden anwesenden Bewohner auf abwesend, der gerade keine schlafbezogene Aktivitäten ausführt.",
+                    "ru": "Установите любого резидента, присутствующего к тому, кто в настоящее время не выполняет действия, связанные с с сном.",
+                    "pt": "Defina qualquer residente presente para fora que não está realizando atividades relacionadas ao sono.",
+                    "nl": "Regel een inwoner die momenteel geen slaapgerelateerde activiteiten uitvoert.",
+                    "fr": "Déposer tout résident présent à l'extérieur qui n'effectue pas actuellement d'activités liées au sommeil.",
+                    "it": "Impostare qualsiasi residente presente a lontano che attualmente non svolge attività relative al sonno.",
+                    "es": "Establecer cualquier residente presente a distancia que no esté realizando actividades relacionadas con el sueño.",
+                    "pl": "Każdy mieszkaniec, który nie jest obecnie w pełni związany ze snu.",
+                    "uk": "Налаштуйте будь-який резидент, який зараз не виконує функції сну.",
+                    "zh-cn": "规定目前没有进行与睡觉有关的活动的居民。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.presence.unsetAwayAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Revert absent residents to home",
+                    "de": "Abwesende Bewohner auf anwesend umkehren",
+                    "ru": "Переверните отсутствующих жителей в дом",
+                    "pt": "Reverter residentes ausentes em casa",
+                    "nl": "Eerwaarde bewoners naar huis",
+                    "fr": "Retourner les résidents absents à la maison",
+                    "it": "Revertire i residenti assenti a casa",
+                    "es": "Revertir a los residentes ausentes en casa",
+                    "pl": "Nieobecni mieszkańcy",
+                    "uk": "Відновити недоступні мешканці будинку",
+                    "zh-cn": "避免居民留在家里"
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.away",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "Set any absent resident to home, independent its enablement state.",
+                    "de": "Jeden abwesenden Bewohner auf anwesend setzen, unabhängig des Aktivierungsstatus.",
+                    "ru": "Установите любого отсутствующего резидента в дом, независимо от состояния его включения.",
+                    "pt": "Defina qualquer residente ausente para casa, independente de seu estado de capacitação.",
+                    "nl": "Zet elke afwezige inwoner in huis, onafhankelijk van zijn beschikbare toestand.",
+                    "fr": "Définir tout résident absent à la maison, indépendant son état de fonctionnement.",
+                    "it": "Impostare qualsiasi residente assente a casa, indipendente il suo stato di attivazione.",
+                    "es": "Establecer cualquier residente ausente en casa, independiente de su estado de habilitación.",
+                    "pl": "Nieobecny mieszkaniec w domu, niezależnie od państwa.",
+                    "uk": "Встановити будь-який нерезидент будинку, незалежно від його стану.",
+                    "zh-cn": "规定任何居民没有居住,独立于其有利条件。."
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity",
+            "type": "channel",
+            "common": {
+                "name": {
+                    "en": "Control activity of many resident objects together",
+                    "de": "Aktivität von Bewohnerobjekten zusammenm bedienen",
+                    "ru": "Контроль активности многих объектов резидентов вместе",
+                    "pt": "Atividade de controle de muitos objetos residentes juntos",
+                    "nl": "Controle activiteiten van vele inwonende objecten samen",
+                    "fr": "Activité de contrôle de nombreux objets résidents ensemble",
+                    "it": "Controllo dell'attività di molti oggetti residenti insieme",
+                    "es": "Actividad de control de muchos objetos residentes juntos",
+                    "pl": "Zajmowanie wielu obiektów mieszkalnych",
+                    "uk": "Контрольна активність багатьох об’єктів резидента",
+                    "zh-cn": "许多居民物品的控制活动"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity.setOvernightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "",
+                    "de": ""
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.overnight",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "",
+                    "de": ""
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity.unsetOvernightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "",
+                    "de": ""
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.overnight",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "",
+                    "de": ""
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity.resetOvernightAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "",
+                    "de": ""
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.overnight",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "",
+                    "de": ""
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity.setWayhomeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "",
+                    "de": ""
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.wayhome",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "",
+                    "de": ""
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "control.activity.unsetWayhomeAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "",
+                    "de": ""
+                },
+                "type": "boolean",
+                "role": "button.mode.residents.wayhome",
+                "read": false,
+                "write": true,
+                "def": true,
+                "desc": {
+                    "en": "",
+                    "de": ""
+                }
+            },
+            "native": {}
+        }
+    ]
+}

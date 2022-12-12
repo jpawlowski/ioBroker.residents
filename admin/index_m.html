@@ -1,0 +1,350 @@
+<html>
+    <head>
+        <!-- Load ioBroker scripts and styles-->
+        <link rel="stylesheet" type="text/css" href="../../lib/css/fancytree/ui.fancytree.min.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css" />
+
+        <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+
+        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+        <script type="text/javascript" src="../../lib/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="../../lib/js/jquery.fancytree-all.min.js"></script>
+
+        <script type="text/javascript" src="../../js/translate.js"></script>
+        <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+        <!-- Load our own files -->
+        <script type="text/javascript" src="words.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <script type="text/javascript" src="index_m.js"></script>
+    </head>
+
+    <body>
+        <div class="m adapter-container">
+            <div id="header-area" class="row">
+                <div id="header-logo-title" class="col s6">
+                    <img class="logo" src="residents.svg" />
+                    <p>
+                        <span class="translate h-title">Residents</span><br />
+                        <span class="translate h-sub-title">Administration</span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12" id="tab-area">
+                    <ul class="tabs blue lighten-4" width="4%">
+                        <li class="tab col s3 lighten-4">
+                            <a href="#tab-roomies" class="translate active"
+                                ><img src="roomie.svg" class="inline-svg-icon" />Roomies</a
+                            >
+                        </li>
+                        <li class="tab col s3 lighten-4">
+                            <a href="#tab-guests" class="translate"
+                                ><img src="guest.svg" class="inline-svg-icon" />Guests</a
+                            >
+                        </li>
+                        <li class="tab col s3 lighten-4">
+                            <a href="#tab-pets" class="translate"><img src="pet.svg" class="inline-svg-icon" />Pets</a>
+                        </li>
+                        <li class="tab col s3 lighten-4">
+                            <a href="#tab-settings" class="translate"
+                                ><i class="material-icons inline-icon">build</i>Settings</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+                <div class="row" id="mainSettings">
+                    <!-- roomie settings -->
+                    <div id="tab-roomies" class="col s12 page">
+                        <div class="row">
+                            <div class="col s12">
+                                <h6 class="translate title" style="background-color: #174475">Roomie configuration</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12" id="roomie">
+                                <div class="row">
+                                    <div class="col s2 m1 l1 left">
+                                        <a
+                                            id="responseOIDDialog"
+                                            class="btn-floating waves-effect waves-light blue table-button-add"
+                                            ><i class="material-icons">add</i></a
+                                        >
+                                    </div>
+                                </div>
+                                <div class="table-values-div">
+                                    <table class="table-values">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    data-name="_index"
+                                                    id="events_col_0"
+                                                    style="width: 80px; background: #174475; text-align: center"
+                                                    data-style="text-align: center"
+                                                >
+                                                    Nr
+                                                </th>
+                                                <th
+                                                    data-name="name"
+                                                    id="events_col_1"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Name
+                                                </th>
+                                                <th
+                                                    data-name="id"
+                                                    id="events_col_2"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Object-ID Name
+                                                </th>
+                                                <!-- <th
+                                                    data-name="role"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 30%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Role
+                                                </th> -->
+                                                <th
+                                                    data-name="yahkaInstanceId"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Yahka instance (Homekit)
+                                                </th>
+                                                <th
+                                                    data-buttons="delete"
+                                                    style="width: 120px; background: #174475"
+                                                ></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- guest settings -->
+                    <div id="tab-guests" class="col s12 page">
+                        <div class="row">
+                            <div class="col s12">
+                                <h6 class="translate title" style="background-color: #174475">Guest configuration</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12" id="guest">
+                                <div class="row">
+                                    <div class="col s2 m1 l1 left">
+                                        <a
+                                            id="responseOIDDialog"
+                                            class="btn-floating waves-effect waves-light blue table-button-add"
+                                            ><i class="material-icons">add</i></a
+                                        >
+                                    </div>
+                                </div>
+                                <div class="table-values-div">
+                                    <table class="table-values">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    data-name="_index"
+                                                    id="events_col_0"
+                                                    style="width: 80px; background: #174475; text-align: center"
+                                                    data-style="text-align: center"
+                                                >
+                                                    Nr
+                                                </th>
+                                                <th
+                                                    data-name="name"
+                                                    id="events_col_1"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Name
+                                                </th>
+                                                <th
+                                                    data-name="id"
+                                                    id="events_col_2"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Object-ID Name
+                                                </th>
+                                                <!-- <th
+                                                    data-name="role"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 30%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Role
+                                                </th> -->
+                                                <th
+                                                    data-name="yahkaInstanceId"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Yahka instance (Homekit)
+                                                </th>
+                                                <th
+                                                    data-buttons="delete"
+                                                    style="width: 120px; background: #174475"
+                                                ></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- pet settings -->
+                    <div id="tab-pets" class="col s12 page">
+                        <div class="row">
+                            <div class="col s12">
+                                <h6 class="translate title" style="background-color: #174475">Pet configuration</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12" id="pet">
+                                <div class="row">
+                                    <div class="col s2 m1 l1 left">
+                                        <a
+                                            id="responseOIDDialog"
+                                            class="btn-floating waves-effect waves-light blue table-button-add"
+                                            ><i class="material-icons">add</i></a
+                                        >
+                                    </div>
+                                </div>
+                                <div class="table-values-div">
+                                    <table class="table-values">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    data-name="_index"
+                                                    id="events_col_0"
+                                                    style="width: 80px; background: #174475; text-align: center"
+                                                    data-style="text-align: center"
+                                                >
+                                                    Nr
+                                                </th>
+                                                <th
+                                                    data-name="name"
+                                                    id="events_col_1"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Name
+                                                </th>
+                                                <th
+                                                    data-name="id"
+                                                    id="events_col_2"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Object-ID Name
+                                                </th>
+                                                <!-- <th
+                                                    data-name="role"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 30%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Role
+                                                </th> -->
+                                                <th
+                                                    data-name="yahkaInstanceId"
+                                                    id="events_col_3"
+                                                    data-type="text"
+                                                    style="width: 20%; background: #174475"
+                                                    class="translate"
+                                                >
+                                                    Yahka instance (Homekit)
+                                                </th>
+                                                <th
+                                                    data-buttons="delete"
+                                                    style="width: 120px; background: #174475"
+                                                ></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- global settings -->
+                    <div id="tab-settings" class="col s12 page">
+                        <div class="row">
+                            <div class="col s12">
+                                <h6 class="translate title" style="background-color: #174475">
+                                    Global residents configuration
+                                </h6>
+                            </div>
+                        </div>
+                        <ul class="collapsible">
+                            <!-- Settings for timers -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Timers</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <div class="col s6 l2 input-field">
+                                            <input
+                                                type="text"
+                                                class="timepicker value"
+                                                id="DisableAbsentResidentsDailyTimer"
+                                            />
+                                            <label for="DisableAbsentResidentsDailyTimer" class="translate"
+                                                >Auto disable</label
+                                            >
+                                            <span class="translate"
+                                                >Daily deactivation of residents who have not stayed overnight</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="collapsible">
+                            <!-- Settings for resident groups -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Resident groups</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <div class="col s6 l2 input-field">
+                                            <input type="text" class="value" id="residentsParentInstanceIDs" />
+                                            <label for="residentsParentInstanceIDs" class="translate"
+                                                >Parent instances</label
+                                            >
+                                            <span class="translate">Object IDs of the parent residents instances</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
