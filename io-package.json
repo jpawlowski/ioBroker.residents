@@ -5,20 +5,59 @@
         "news": {
             "0.0.1": {
                 "en": "initial release",
-                "de": "Erstveröffentlichung"
+                "de": "Erstveröffentlichung",
+                "ru": "Первый выпуск",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "uk": "початковий випуск",
+                "zh-cn": "初始发行"
             }
         },
         "title": "Residents",
         "titleLang": {
             "en": "Residents",
-            "de": "Bewohner"
+            "de": "Bewohner",
+            "ru": "Жители",
+            "pt": "Moradores",
+            "nl": "Bewoners",
+            "fr": "Résidents",
+            "it": "Residenti",
+            "es": "Residentes",
+            "pl": "Mieszkańcy",
+            "uk": "Мешканці",
+            "zh-cn": "居民"
         },
         "desc": {
             "en": "The adapter helps to map the presence and activity status of the individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home. Several resident instances can be combined with each other, so that, for example, adults and children are registered in their own instance and both instances form the overall status for all residents in a third instance.",
-            "de": "Dieser Adapter hilft dabei, den Anwesenheits- und Aktivitätsstatus der einzelnen Mitbewohner abzubilden. Daraus wird ein logischer Gesamtstatus über alle Mitbewohner und deren Anwesenheit bzw. momentane Aktivität zu Hause gebildet. Mehrere Bewohner-Instanzen können dabei miteinander kombiniert werden, so dass beispielsweise Erwachsene und Kinder in ihrer eigenen Instanz abgebeldet sind und beide Instanzen in einer dritten Instanz den übergeordneten Status für alle Mitbewohner insgesamt bilden."
+            "de": "Dieser Adapter hilft dabei, den Anwesenheits- und Aktivitätsstatus der einzelnen Mitbewohner abzubilden. Daraus wird ein logischer Gesamtstatus über alle Mitbewohner und deren Anwesenheit bzw. momentane Aktivität zu Hause gebildet. Mehrere Bewohner-Instanzen können dabei miteinander kombiniert werden, so dass beispielsweise Erwachsene und Kinder in ihrer eigenen Instanz abgebeldet sind und beide Instanzen in einer dritten Instanz den übergeordneten Status für alle Mitbewohner insgesamt bilden.",
+            "ru": "Адаптер помогает отображать присутствие и статус активности отдельных резидентов. Это используется для создания логического общего состояния всех жителей и их присутствия или текущей активности дома. Несколько экземпляров резидентов можно комбинировать друг с другом, так что, например, взрослые и дети регистрируются в своем экземпляре, а оба экземпляра формируют общий статус для всех резидентов в третьем экземпляре.",
+            "pt": "O adaptador ajuda a mapear a presença e o status de atividade dos residentes individuais. Isso é usado para criar um status geral lógico de todos os residentes e sua presença ou atividade atual em casa. Várias instâncias residentes podem ser combinadas entre si, de modo que, por exemplo, adultos e crianças sejam registrados em sua própria instância e ambas as instâncias formem o status geral de todos os residentes em uma terceira instância.",
+            "nl": "De adapter helpt om de aanwezigheid en activiteitsstatus van de individuele bewoners in kaart te brengen. Dit wordt gebruikt om een ​​logische algemene status te creëren van alle bewoners en hun aanwezigheid of huidige activiteit thuis. Meerdere ingezeten instanties kunnen met elkaar worden gecombineerd, zodat bijvoorbeeld volwassenen en kinderen in hun eigen instantie worden ingeschreven en beide instanties de overkoepelende status vormen voor alle ingezetenen in een derde instantie.",
+            "fr": "L'adaptateur permet de cartographier la présence et l'état d'activité des résidents individuels. Ceci est utilisé pour créer un statut global logique de tous les résidents et leur présence ou activité actuelle à la maison. Plusieurs instances de résidents peuvent être combinées les unes avec les autres, de sorte que, par exemple, les adultes et les enfants sont enregistrés dans leur propre instance et que les deux instances forment le statut global de tous les résidents dans une troisième instance.",
+            "it": "L'adattatore aiuta a mappare la presenza e lo stato di attività dei singoli residenti. Questo viene utilizzato per creare uno stato generale logico di tutti i residenti e la loro presenza o attività corrente a casa. Più istanze residenti possono essere combinate tra loro, in modo che, ad esempio, adulti e bambini siano registrati nella propria istanza ed entrambe le istanze formino lo stato complessivo per tutti i residenti in una terza istanza.",
+            "es": "El adaptador ayuda a mapear el estado de presencia y actividad de los residentes individuales. Esto se utiliza para crear un estado general lógico de todos los residentes y su presencia o actividad actual en el hogar. Se pueden combinar varias instancias de residentes entre sí, de modo que, por ejemplo, adultos y niños se registren en su propia instancia y ambas instancias formen el estado general para todos los residentes en una tercera instancia.",
+            "pl": "Adapter pomaga mapować obecność i status aktywności poszczególnych mieszkańców. Służy to do stworzenia logicznego ogólnego statusu wszystkich mieszkańców i ich obecności lub bieżącej aktywności w domu. Kilka instancji rezydentów można ze sobą łączyć, tak że na przykład dorośli i dzieci są rejestrowani we własnej instancji, a obie instancje tworzą ogólny status dla wszystkich rezydentów w trzeciej instancji.",
+            "uk": "Адаптер допомагає визначити присутність і статус активності окремих мешканців. Це використовується для створення логічного загального статусу всіх мешканців та їхньої присутності або поточної діяльності вдома. Кілька екземплярів мешканців можна поєднувати один з одним, щоб, наприклад, дорослі та діти реєструвалися в окремому екземплярі, а обидва екземпляри формували загальний статус для всіх мешканців у третьому екземплярі.",
+            "zh-cn": "该适配器有助于映射各个居民的存在和活动状态。这用于创建所有居民的逻辑整体状态以及他们在家中的存在或当前活动。多个居民实例可以相互组合，例如，成人和儿童在他们自己的实例中注册，这两个实例构成第三个实例中所有居民的总体状态。"
         },
-        "authors": ["Julian Pawlowski <julian.pawlowski@gmail.com>"],
-        "keywords": ["residents", "roommate", "roomie", "guest", "pet", "Bewohner", "Mitbewohner", "Gast", "Haustier"],
+        "authors": [
+            "Julian Pawlowski <julian.pawlowski@gmail.com>"
+        ],
+        "keywords": [
+            "residents",
+            "roommate",
+            "roomie",
+            "guest",
+            "pet",
+            "Bewohner",
+            "Mitbewohner",
+            "Gast",
+            "Haustier"
+        ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
@@ -84,14 +123,14 @@
                     "zh-cn": "总体存在"
                 },
                 "states": {
-                    "7": "Night",
-                    "6": "Wake Up",
-                    "5": "Awake",
-                    "4": "Bedtime",
-                    "3": "Home",
-                    "2": "Way Home",
-                    "1": "Pet Home",
                     "0": "Away",
+                    "1": "Pet Home",
+                    "2": "Way Home",
+                    "3": "Home",
+                    "4": "Bedtime",
+                    "5": "Awake",
+                    "6": "Wake Up",
+                    "7": "Night",
                     "-1": "Disabled"
                 }
             },
@@ -115,17 +154,17 @@
                     "de": "Laune des Bewohners mit negativer oder positiver Tendenz"
                 },
                 "states": {
-                    "-5": "-5: Couldn't Get Worse",
-                    "-4": "-4: Extraordinary Bad",
-                    "-3": "-3: Extremely Bad",
-                    "-2": "-2: Pretty Bad",
-                    "-1": "-1: Somewhat Bad",
                     "0": "0: Neutral",
                     "1": "+1: Somewhat Good",
                     "2": "+2: Pretty Good",
                     "3": "+3: Extremely Good",
                     "4": "+4: Extraordinary Good",
-                    "5": "+5: Couldn't Be Better"
+                    "5": "+5: Couldn't Be Better",
+                    "-5": "-5: Couldn't Get Worse",
+                    "-4": "-4: Extraordinary Bad",
+                    "-3": "-3: Extremely Bad",
+                    "-2": "-2: Pretty Bad",
+                    "-1": "-1: Somewhat Bad"
                 }
             },
             "native": {}
