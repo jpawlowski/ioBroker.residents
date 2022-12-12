@@ -1,6 +1,6 @@
-var roomie = [];
-var guest = [];
-var pet = [];
+let roomie = [];
+let guest = [];
+let pet = [];
 
 function load(settings, onChange) {
     // select elements with id=key and class=value and insert value
@@ -8,16 +8,16 @@ function load(settings, onChange) {
     console.log('##on change');
 
     // select elements with id=key and class=value and insert value
-    for (var key in settings) {
-        if (!settings.hasOwnProperty(key)) continue;
-        var $value = $('#' + key + '.value');
-        if ($value.attr('type') === 'checkbox') {
-            $value.prop('checked', settings[key]).on('change', function () {
+    for (const key in settings) {
+        // if (!settings.hasOwnProperty(key)) continue;
+        const value = $('#' + key + '.value');
+        if (value.attr('type') === 'checkbox') {
+            value.prop('checked', settings[key]).on('change', function () {
                 showHideSettings();
                 onChange();
             });
         } else {
-            $value
+            value
                 .val(settings[key])
                 .on('change', function () {
                     console.log('on change');
@@ -25,7 +25,7 @@ function load(settings, onChange) {
                     onChange();
                 })
                 .on('keyup', function () {
-                    $(this).trigger('change');
+                    this.trigger('change');
                 });
         }
     }
@@ -34,7 +34,7 @@ function load(settings, onChange) {
     guest = settings.guest || [];
     pet = settings.pet || [];
 
-    for (var key in settings) {
+    for (const key in settings) {
         if (!settings.hasOwnProperty(key)) continue;
         setValue(key, settings[key], onChange);
     }
@@ -85,9 +85,9 @@ function load(settings, onChange) {
 // This will be called by the admin adapter when the user presses the save button
 function save(callback) {
     // select elements with class=value and build settings object
-    var obj = {};
+    let obj = {};
     $('#mainSettings .value').each(function () {
-        var $this = $(this);
+        const $this = $(this);
         if ($this.attr('type') === 'checkbox') {
             obj[$this.attr('id')] = $this.prop('checked');
         } else {
@@ -108,12 +108,12 @@ function showHideSettings() {
 }
 
 function setValue(id, value, onChange) {
-    var $value = $('#' + id + '.value');
+    const objectId = $('#' + id + '.value');
 
-    if ($value.attr('type') === 'checkbox') {
+    if (objectId.attr('type') === 'checkbox') {
         //
     } else {
-        $value
+        objectId
             .val(value)
             .on('change', function () {
                 onChange();
