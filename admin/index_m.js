@@ -15,7 +15,7 @@ function load(settings, onChange) {
 
     // select elements with id=key and class=value and insert value
     for (const key in settings) {
-        if (!settings.prototype.hasOwnProperty.call(key)) continue;
+        // if (!settings.prototype.hasOwnProperty.call(key)) continue;
         const value = $('#' + key + '.value');
         if (value.attr('type') === 'checkbox') {
             value.prop('checked', settings[key]).on('change', function () {
@@ -41,7 +41,7 @@ function load(settings, onChange) {
     pet = settings.pet || [];
 
     for (const key in settings) {
-        if (!settings.prototype.hasOwnProperty.call(key)) continue;
+        // if (!settings.prototype.hasOwnProperty.call(key)) continue;
         setValue(key, settings[key], onChange);
     }
 
