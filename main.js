@@ -1532,7 +1532,10 @@ class Residents extends utils.Adapter {
         const residentType = (await this.getObjectAsync(device))?.native.type;
         let stateNight = false;
         let stateHome = false;
-        await this.setStateAsync(device + '.mood.state', { val: 0, ack: true });
+
+        if (residentType != 'pet') {
+            await this.setStateAsync(device + '.mood.state', { val: 0, ack: true });
+        }
 
         switch (presence) {
             case 'state':
@@ -1589,7 +1592,6 @@ class Residents extends utils.Adapter {
 
             case 'away':
                 if (state) {
-                    await this.setStateAsync(device + '.mood.state', { val: 0, ack: true });
                     await this.setStateAsync(device + '.presence.state', { val: 0, ack: false });
                 } else {
                     await this.setStateAsync(device + '.presence.state', { val: 1, ack: false });
