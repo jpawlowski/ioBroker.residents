@@ -11,6 +11,9 @@ class Residents extends utils.Adapter {
             ...options,
             name: 'residents',
         });
+
+        this.absentTimeout = null;
+
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
@@ -38,8 +41,9 @@ class Residents extends utils.Adapter {
             }
 
             if (subscribedToParentEvents) {
-                const objectTemplates = (await this.getForeignObjectAsync('system.adapter.' + this.namespace))
-                    ?.instanceObjects;
+                const objectTemplates =
+                    // @ts-ignore
+                    (await this.getForeignObjectAsync('system.adapter.' + this.namespace))?.instanceObjects;
 
                 await this.setObjectNotExistsAsync('group', {
                     type: 'folder',
@@ -83,8 +87,6 @@ class Residents extends utils.Adapter {
             val: JSON.stringify(this.config.residentsParentInstanceIDs),
             ack: true,
         });
-
-        this.subscribeStates('control.*');
 
         ///////////////////////////
         // Create/Update resident objects
@@ -935,7 +937,11 @@ class Residents extends utils.Adapter {
                 this.subscribeStates(id + '.presenceFollowing.*');
 
                 // Yahka instance update
-                if (resident['yahkaInstanceId'] && resident['yahkaInstanceId'] !== 'none') {
+                if (
+                    resident['yahkaInstanceId'] &&
+                    resident['yahkaInstanceId'] !== '' &&
+                    resident['yahkaInstanceId'] !== 'none'
+                ) {
                     const yahkaDeviceConfig = {
                         configType: 'customdevice',
                         manufacturer: 'ioBroker',
@@ -1098,6 +1104,7 @@ class Residents extends utils.Adapter {
 
                     if (
                         currentYahkaConf &&
+                        currentYahkaConf.common.name === 'yahka' &&
                         currentYahkaConf.native.bridge.devices.filter((e) => e.serial == this.namespace + '.' + id)
                             .length == 0
                     ) {
@@ -1120,11 +1127,45 @@ class Residents extends utils.Adapter {
         }
 
         this.setResidentsSummary();
+        this.subscribeStates('control.*');
+
+        this.disableAbsentResidents(true);
+    }
+
+    /**
+     * @param {boolean} [initialize]
+     */
+    disableAbsentResidents(initialize) {
+        if (!initialize) {
+            // Disable any resident that is currently away,
+            // assuming to be away for the day as there was no overnight
+            this.setStateAsync(this.namespace + '.control.state.disableAll', { val: true, ack: false });
+        }
+
+        // Create new timeout
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.DisableAbsentResidentsDailyTimer);
+        if (runtimeMilliseconds) {
+            this.log.debug(
+                `Creating absent timeout in ${runtimeMilliseconds}ms (in ${this.convertMillisecondsToDuration(
+                    runtimeMilliseconds,
+                )} HH:mm:ss)`,
+            );
+            this.absentTimeout = this.setTimeout(() => {
+                this.log.debug('Started nightly absent timeout');
+                this.absentTimeout = null;
+                this.disableAbsentResidents();
+            }, runtimeMilliseconds);
+        }
     }
 
     onUnload(callback) {
         try {
-            // clearTimeout(timeout1);
+            this.log.info('Clean up everything ...');
+
+            if (this.absentTimeout) {
+                this.clearTimeout(this.absentTimeout);
+                this.log.debug('Cleared absent timeout');
+            }
 
             callback();
         } catch (e) {
@@ -1139,8 +1180,8 @@ class Residents extends utils.Adapter {
      */
     onStateChange(id, state) {
         const a = id.split('.');
-        let eventNamespace = a.shift(); // adapter name
-        eventNamespace = eventNamespace + '.' + a.shift(); // adapter instance
+        const adapterName = a.shift(); // adapter name
+        const eventNamespace = adapterName + '.' + a.shift(); // adapter instance
         const device = a.shift(); // first level ID
         const channel = a.shift(); // second level ID
         const subChannel = a.shift(); // third level ID
@@ -1157,7 +1198,7 @@ class Residents extends utils.Adapter {
                         residents = residents.concat(this.config.guest);
                         this.setStateAsync(id, { val: state.val, ack: true });
 
-                        switch (a.join('.')) {
+                        switch (channel + '.' + subChannel) {
                             case 'state.disableAll':
                                 residents.forEach(async (resident) => {
                                     const name = resident['name'];
@@ -1356,7 +1397,7 @@ class Residents extends utils.Adapter {
                                 break;
 
                             default:
-                                this.log.error('Received unknown command ' + id);
+                                this.log.error('Received unknown command ' + channel + '.' + subChannel);
                                 break;
                         }
                     }
@@ -1390,7 +1431,7 @@ class Residents extends utils.Adapter {
                                 break;
 
                             default:
-                                this.log.error(device + ': Controlling unknown channel ' + id);
+                                this.log.error(device + ': Controlling unknown channel ' + channel);
                                 break;
                         }
                     }
@@ -1445,8 +1486,8 @@ class Residents extends utils.Adapter {
             }
         }
 
-        // Foreign events
-        else {
+        // Foreign residents instance events
+        else if (adapterName === 'residents') {
             if (state) {
                 // The state was controlled (ack=false)
                 if (!state.ack) {
@@ -1464,9 +1505,39 @@ class Residents extends utils.Adapter {
 
             // The state was deleted
             else {
-                this.log.debug('Unsubscribing from foreign notifications for parent state ' + id);
+                this.log.debug('Unsubscribing from parent state notifications for ' + id);
                 this.unsubscribeForeignStatesAsync(id);
                 this.setResidentsSummary();
+            }
+        }
+
+        // Foreign geofency instance events
+        else if (adapterName === 'geofency') {
+            if (state) {
+                // The state was controlled (ack=false)
+                if (!state.ack) {
+                    //
+                }
+                // The state was updated (ack=true)
+                else {
+                    if (subChannel === 'json') {
+                        switch (channel?.toLowerCase) {
+                            // @ts-ignore
+                            case 'home':
+                                break;
+
+                            // @ts-ignore
+                            case 'wayhome':
+                                break;
+                        }
+                    }
+                }
+            }
+
+            // The state was deleted
+            else {
+                this.log.debug('Unsubscribing from foreign notifications for ' + id);
+                this.unsubscribeForeignStatesAsync(id);
             }
         }
     }
@@ -1911,6 +1982,54 @@ class Residents extends utils.Adapter {
         }
     }
 
+    /**
+     * @param {string} timeOfDay
+     */
+    getMillisecondsUntilTime(timeOfDay) {
+        const timeOfDayArray = timeOfDay.split(':').map(Number);
+        if (timeOfDayArray.length === 2) {
+            timeOfDayArray.push(0);
+        }
+        if (
+            timeOfDayArray[0] >= 0 &&
+            timeOfDayArray[0] < 24 &&
+            timeOfDayArray[1] >= 0 &&
+            timeOfDayArray[1] < 60 &&
+            timeOfDayArray[2] >= 0 &&
+            timeOfDayArray[2] < 60
+        ) {
+            const now = new Date();
+            const next = new Date();
+            next.setDate(now.getDate());
+            next.setHours(timeOfDayArray[0], timeOfDayArray[1], timeOfDayArray[2]);
+            // Add a day if time is in the past.
+            // Use Date() to let it handle changes between
+            // standard and daylight savings time.
+            if (next < now) {
+                next.setDate(now.getDate() + 1);
+            }
+            return next.valueOf() - now.valueOf();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param {number} duration
+     */
+    convertMillisecondsToDuration(duration) {
+        const seconds = Math.floor((duration / 1000) % 60);
+        const minutes = Math.floor((duration / (1000 * 60)) % 60);
+        const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${
+            seconds < 10 ? '0' + seconds : seconds
+        }`;
+    }
+
+    /**
+     * @param {string} id
+     */
     cleanNamespace(id) {
         return id
             .trim()

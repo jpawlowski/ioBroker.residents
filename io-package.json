@@ -44,20 +44,8 @@
             "uk": "Адаптер допомагає визначити присутність і статус активності окремих мешканців. Це використовується для створення логічного загального статусу всіх мешканців та їхньої присутності або поточної діяльності вдома. Кілька екземплярів мешканців можна поєднувати один з одним, щоб, наприклад, дорослі та діти реєструвалися в окремому екземплярі, а обидва екземпляри формували загальний статус для всіх мешканців у третьому екземплярі.",
             "zh-cn": "该适配器有助于映射各个居民的存在和活动状态。这用于创建所有居民的逻辑整体状态以及他们在家中的存在或当前活动。多个居民实例可以相互组合，例如，成人和儿童在他们自己的实例中注册，这两个实例构成第三个实例中所有居民的总体状态。"
         },
-        "authors": [
-            "Julian Pawlowski <julian.pawlowski@gmail.com>"
-        ],
-        "keywords": [
-            "residents",
-            "roommate",
-            "roomie",
-            "guest",
-            "pet",
-            "Bewohner",
-            "Mitbewohner",
-            "Gast",
-            "Haustier"
-        ],
+        "authors": ["Julian Pawlowski <julian.pawlowski@gmail.com>"],
+        "keywords": ["residents", "roommate", "roomie", "guest", "pet", "Bewohner", "Mitbewohner", "Gast", "Haustier"],
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
@@ -123,6 +111,7 @@
                     "zh-cn": "总体存在"
                 },
                 "states": {
+                    "-1": "Disabled",
                     "0": "Away",
                     "1": "Pet Home",
                     "2": "Way Home",
@@ -130,8 +119,7 @@
                     "4": "Bedtime",
                     "5": "Awake",
                     "6": "Wake Up",
-                    "7": "Night",
-                    "-1": "Disabled"
+                    "7": "Night"
                 }
             },
             "native": {}
@@ -151,20 +139,20 @@
                 "def": 0,
                 "desc": {
                     "en": "Mood of the residents with negative or positive tendency",
-                    "de": "Laune des Bewohners mit negativer oder positiver Tendenz"
+                    "de": "Laune der Bewohner mit negativer oder positiver Tendenz"
                 },
                 "states": {
+                    "-5": "-5: Couldn't Get Worse",
+                    "-4": "-4: Extraordinary Bad",
+                    "-3": "-3: Extremely Bad",
+                    "-2": "-2: Pretty Bad",
+                    "-1": "-1: Somewhat Bad",
                     "0": "0: Neutral",
                     "1": "+1: Somewhat Good",
                     "2": "+2: Pretty Good",
                     "3": "+3: Extremely Good",
                     "4": "+4: Extraordinary Good",
-                    "5": "+5: Couldn't Be Better",
-                    "-5": "-5: Couldn't Get Worse",
-                    "-4": "-4: Extraordinary Bad",
-                    "-3": "-3: Extremely Bad",
-                    "-2": "-2: Pretty Bad",
-                    "-1": "-1: Somewhat Bad"
+                    "5": "+5: Couldn't Be Better"
                 }
             },
             "native": {}
