@@ -285,10 +285,11 @@ class Residents extends utils.Adapter {
 
                     for (const key in activityStates) {
                         if (Number(key) >= 10000) break;
+                        if (Number(key) < 1000) continue;
                         const newKey = Number(key) + 10000;
                         let newVal = activityStates[key];
                         if (newVal.includes(':')) {
-                            newVal = 'Do Not Disturb (' + newVal.replace(/^.+:\s+/g, '') + ')';
+                            newVal = newVal.replace(/:\s+/g, ': Do Not Disturb (') + ')';
                         } else {
                             newVal = 'Do Not Disturb';
                         }
@@ -307,7 +308,7 @@ class Residents extends utils.Adapter {
                                 type: 'number',
                                 role: 'level.mode.resident.activity',
                                 min: 0,
-                                max: 1299,
+                                max: 12999,
                                 read: true,
                                 write: false,
                                 def: 0,
@@ -1916,7 +1917,7 @@ class Residents extends utils.Adapter {
                 break;
 
             case 'dnd':
-                if (state.val === true && currPresenceState != 1) {
+                if (state.val === true && currPresenceState === 0) {
                     state.val = false;
                     state.q = 0x40;
                 }
