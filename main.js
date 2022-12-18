@@ -12,7 +12,17 @@ class Residents extends utils.Adapter {
             name: 'residents',
         });
 
+        this.residents = [];
+        this.roomies = [];
+        this.pets = [];
+        this.guests = [];
+
+        this.subscriptions = [];
+        this.foreignSubscriptions = [];
+        this.states = [];
+
         this.absentTimeout = null;
+        this.calculationTimeout = null;
 
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -20,6 +30,13 @@ class Residents extends utils.Adapter {
     }
 
     async onReady() {
+        this.roomies = this.config.roomie;
+        this.pets = this.config.pet;
+        this.guests = this.config.guest;
+        this.residents = this.roomies;
+        this.residents = this.residents.concat(this.config.pet);
+        this.residents = this.residents.concat(this.config.guest);
+
         // Group mode
         if (
             Array.isArray(this.config.residentsParentInstanceIDs) &&
@@ -33,9 +50,8 @@ class Residents extends utils.Adapter {
                     instance.split('.').length === 2 &&
                     instance != this.namespace
                 ) {
-                    this.log.debug('Subscribing to foreign instance events of ' + instance);
-                    this.subscribeForeignStates(instance + '.mood');
-                    this.subscribeForeignStates(instance + '.state');
+                    this.subscriptions.push(instance + '.mood');
+                    this.subscriptions.push(instance + '.state');
                     subscribedToParentEvents = true;
                 }
             }
@@ -80,10 +96,13 @@ class Residents extends utils.Adapter {
 
                 await this.setObjectNotExistsAsync('group.state', objectTemplates.filter((e) => e._id == 'state')[0]);
                 await this.setObjectNotExistsAsync('group.mood', objectTemplates.filter((e) => e._id == 'mood')[0]);
+
+                this.subscriptions.push('group.state');
+                this.subscriptions.push('group.mood');
             }
         }
 
-        await this.setStateAsync('info.state.parentInstanceIDs', {
+        await this.setStateChangedAsync('info.state.parentInstanceIDs', {
             val: JSON.stringify(this.config.residentsParentInstanceIDs),
             ack: true,
         });
@@ -98,15 +117,15 @@ class Residents extends utils.Adapter {
                 const resident = this.config[residentType][i2];
                 const name = resident['name'].trim();
                 const id = this.cleanNamespace(resident['id'] ? resident['id'] : name);
+                this.config[residentType][i2]['id'] = id;
+                this.config[residentType][i2]['type'] = residentType;
 
                 // TODO: see other to-do below
                 // TODO: also add roomies from other instances
                 const foreignResidents = {};
-                this.config.roomie.forEach((e) => {
-                    // @ts-ignore
+                this.roomies.forEach((e) => {
                     const key = e.id;
                     if (key != id) {
-                        // @ts-ignore
                         const value = e.name;
                         foreignResidents[key] = value;
                     }
@@ -176,7 +195,7 @@ class Residents extends utils.Adapter {
                     },
                     native: {},
                 });
-                await this.setStateAsync(id + '.info.name', { val: name, ack: true });
+                await this.setStateChangedAsync(id + '.info.name', { val: name, ack: true });
 
                 // Activity support not for pets
                 if (residentType != 'pet') {
@@ -190,6 +209,91 @@ class Residents extends utils.Adapter {
                         },
                         native: {},
                     });
+
+                    const activityStates = {
+                        // 000-0999: Not present at home / Away
+                        0: 'Away: Extended Absence',
+                        1: 'Away: On the Road for Today',
+                        2: 'Away: Way Home',
+
+                        // 1000-1999: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+                        1000: 'Home',
+                        // 1001: 'Home: Boring',
+
+                        // // 1100-1199: WAKING TIME at home: Food
+                        // 1100: 'Food: Cooking',
+                        // 1110: 'Food: Eating',
+                        // 1120: 'Food: Feeding',
+
+                        // // 1200-1299: WAKING TIME at home: Housework
+                        // 1200: 'Housework: General',
+                        // 1210: 'Housework: Laundry',
+                        // 1220: 'Housework: Cleaning',
+                        // 1230: 'Housework: Repairing',
+
+                        // // 1300-1399: WAKING TIME at home: Working / Educating / Earning Money
+                        // 1300: 'Job: Working',
+                        // 1310: 'Job: Break from Working',
+                        // 1350: 'Job: Learning',
+                        // 1360: 'Job: Break from Learning',
+
+                        // // 1400-1499: WAKING TIME at home: Free Time / Being Mentally Active
+                        // 1400: 'Mental: General Relaxing',
+                        // 1410: 'Mental: Reading',
+
+                        // // 1500-1599: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
+                        // 1500: 'Fun: Gaming',
+                        // 1510: 'Fun: Making Music',
+
+                        // // 1600-1699: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
+                        // 1600: 'Fun: Listening to Music',
+                        // 1610: 'Fun: Watching Video',
+
+                        // // 1700-1799: WAKING TIME at home: Body care
+                        // 1700: 'Body: Sporting',
+                        // 1750: 'Body: Bathing',
+                        // 1760: 'Body: Showering',
+
+                        // // 1800-1899: WAKING TIME at home: Self care
+                        // 1800: 'Self: Meditating',
+                        // 1810: 'Self: Thinking',
+
+                        // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+                        1900: 'Wind Down: Preparing Bedtime',
+                        1901: 'Bedtime: Getting to Bed',
+                        1902: 'Night: In Bed',
+
+                        // 2000-2999: SLEEPING TIME at home /////////////////////////////////////////////////////////////////////
+                        2000: 'Night: Sleeping',
+
+                        // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+                        2010: 'Night: Awake during Night Time',
+                        2020: 'Night: Back to Sleep',
+
+                        // 2100-2199: SLEEPING TIME at home: While I should get up
+                        2100: 'Night: Awakening by Wake-up Call',
+                        2101: 'Wake Up: Snoozing',
+                        2102: 'Wake Up: Snoozing',
+                        2103: 'Wake Up: Extended Snoozing',
+                        2104: 'Wake Up: Extended Snoozing',
+                        2105: 'Wake Up: Extensive Snoozing',
+
+                        // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+                        2200: 'Wake Up: Awake after Wake-up Call',
+                        2210: 'Wake Up: Implicit awakening by presence',
+                    };
+
+                    for (const key in activityStates) {
+                        if (Number(key) >= 10000) break;
+                        const newKey = Number(key) + 10000;
+                        let newVal = activityStates[key];
+                        if (newVal.includes(':')) {
+                            newVal = 'Do Not Disturb (' + newVal.replace(/^.+:\s+/g, '') + ')';
+                        } else {
+                            newVal = 'Do Not Disturb';
+                        }
+                        activityStates[newKey] = newVal;
+                    }
 
                     await this.setObjectAsync(
                         id + '.activity.state',
@@ -211,125 +315,7 @@ class Residents extends utils.Adapter {
                                     en: 'Resident activity state',
                                     de: 'Bewohner Aktivitätsstatus',
                                 },
-                                states: {
-                                    // 000-099: Not present at home / Away
-                                    0: 'Away: Extended Absence',
-                                    1: 'Away: On the Road for Today',
-                                    2: 'Away: Way Home',
-
-                                    // 100-199: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-                                    100: 'Home: Nothing Special',
-                                    101: 'Home: Boring',
-
-                                    // 110-119: WAKING TIME at home: Food
-                                    110: 'Food: Cooking',
-                                    111: 'Food: Eating',
-                                    112: 'Food: Feeding',
-
-                                    // 120-129: WAKING TIME at home: Housework
-                                    120: 'Housework: General',
-                                    121: 'Housework: Laundry',
-                                    122: 'Housework: Cleaning',
-                                    123: 'Housework: Repairing',
-
-                                    // 130-139: WAKING TIME at home: Working / Educating / Earning Money
-                                    130: 'Job: Working',
-                                    131: 'Job: Break from Working',
-                                    135: 'Job: Learning',
-                                    136: 'Job: Break from Learning',
-
-                                    // 140-149: WAKING TIME at home: Free Time / Being Mentally Active
-                                    140: 'Mental: General Relaxing',
-                                    141: 'Mental: Reading',
-
-                                    // 150-159: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
-                                    150: 'Fun: Gaming',
-                                    151: 'Fun: Making Music',
-
-                                    // 160-169: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
-                                    160: 'Fun: Listening to Music',
-                                    161: 'Fun: Watching Video',
-
-                                    // 170-179: WAKING TIME at home: Body care
-                                    170: 'Body: Sporting',
-                                    175: 'Body: Bathing',
-                                    176: 'Body: Showering',
-
-                                    // 180-189: WAKING TIME at home: Self care
-                                    180: 'Self: Meditating',
-                                    181: 'Self: Thinking',
-
-                                    // 190-199: WAKING TIME at home: Transitioning to Sleeping Time
-                                    190: 'Home: Winding Down',
-                                    191: 'Home: Preparing Bedtime',
-                                    192: 'Home: Getting to Bed',
-                                    199: 'Home: In Bed',
-
-                                    // 1000-1199: WAKING TIME at home with DND ///////////////////////////////////////////////////////////////////////
-                                    1000: 'Home: Do Not Disturb',
-                                    1001: 'Home: Do Not Disturb (Boring)',
-
-                                    // 1110-1119: WAKING TIME at home: Food
-                                    1110: 'Food: Do Not Disturb (Cooking)',
-                                    1111: 'Food: Do Not Disturb (Eating)',
-                                    1112: 'Food: Do Not Disturb (Feeding)',
-
-                                    // 1120-1129: WAKING TIME at home: Housework
-                                    1120: 'Housework: Do Not Disturb (General)',
-                                    1121: 'Housework: Do Not Disturb (Laundry)',
-                                    1123: 'Housework: Do Not Disturb (Cleaning)',
-                                    1124: 'Housework: Do Not Disturb (Repairing)',
-
-                                    // 1130-1139: WAKING TIME at home: Working / Educating / Earning Money
-                                    1130: 'Job: Do Not Disturb (Working)',
-                                    1131: 'Job: Do Not Disturb (Break from Working)',
-                                    1135: 'Job: Do Not Disturb (Learning)',
-                                    1136: 'Job: Do Not Disturb (Break from Learning)',
-
-                                    // 1140-1149: WAKING TIME at home: Free Time / Being Mentally Active
-                                    1140: 'Mental: Do Not Disturb (General Relaxing)',
-                                    1141: 'Mental: Do Not Disturb (Reading)',
-
-                                    // 1150-1159: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
-                                    1150: 'Fun: Do Not Disturb (Gaming)',
-                                    1151: 'Fun: Do Not Disturb (Making Music)',
-
-                                    // 1160-1169: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
-                                    1160: 'Fun: Do Not Disturb (Listening to Music)',
-                                    1161: 'Fun: Do Not Disturb (Watching Video)',
-
-                                    // 1170-1179: WAKING TIME at home: Body care
-                                    1170: 'Body: Do Not Disturb (Sporting)',
-                                    1175: 'Body: Do Not Disturb (Bathing)',
-                                    1176: 'Body: Do Not Disturb (Showering)',
-
-                                    // 1180-1189: WAKING TIME at home: Self care
-                                    1180: 'Self: Do Not Disturb (Meditating)',
-                                    1181: 'Self: Do Not Disturb (Thinking)',
-
-                                    // 1190-1199: WAKING TIME at home: Transitioning to Sleeping Time
-                                    1190: 'Home: Do Not Disturb (Winding Down)',
-                                    1191: 'Home: Do Not Disturb (Preparing Bedtime)',
-                                    1192: 'Home: Do Not Disturb (Getting to Bed)',
-                                    1199: 'Home: Do Not Disturb (In Bed)',
-
-                                    // 200-299: SLEEPING TIME at home /////////////////////////////////////////////////////////////////////
-                                    200: 'Night: Sleeping',
-
-                                    // 200-209: SLEEPING TIME at home: While I should be sleeping
-                                    201: 'Night: Awake during Night Time',
-                                    202: 'Night: Back in Bed',
-
-                                    // 210-219: SLEEPING TIME at home: While I should get up
-                                    210: 'Night: Awakening by Wake-up Call',
-                                    211: 'Night: Snoozing',
-                                    212: 'Night: Extended Snoozing',
-                                    213: 'Night: Extensive Snoozing',
-
-                                    // 220-229: SLEEPING TIME at home: Transitioning to Waking Time
-                                    220: 'Night: Awake after Wake-up Call',
-                                    221: 'Night: Implicit awakening by presence',
-                                },
+                                states: activityStates,
                             },
                             native: {},
                         },
@@ -469,6 +455,34 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident currently being woken up?',
                                     de: 'Ist dieser Bewohner gerade auf dem Heimweg?',
+                                },
+                            },
+                            native: {},
+                        },
+                        {
+                            preserve: {
+                                common: ['name'],
+                            },
+                        },
+                    );
+
+                    await this.setObjectAsync(
+                        id + '.activity.wakeupSnooze',
+                        {
+                            type: 'state',
+                            common: {
+                                name: {
+                                    en: name + ' has snoozed the wake-up call?',
+                                    de: name + ' hat den Weckruf pausiert?',
+                                },
+                                type: 'boolean',
+                                role: 'button.residents.wakeupSnoozed',
+                                read: false,
+                                write: true,
+                                def: true,
+                                desc: {
+                                    en: 'Has this resident currently snoozed a wake-up call?',
+                                    de: 'Hat dieser Bewohner gerade einen Weckruf pausiert?',
                                 },
                             },
                             native: {},
@@ -930,11 +944,11 @@ class Residents extends utils.Adapter {
                     );
                 }
 
-                this.subscribeStates(id + '.enabled');
-                this.subscribeStates(id + '.activity.*');
-                this.subscribeStates(id + '.mood.state');
-                this.subscribeStates(id + '.presence.*');
-                this.subscribeStates(id + '.presenceFollowing.*');
+                this.subscriptions.push(id + '.enabled');
+                this.subscriptions.push(id + '.activity.*');
+                this.subscriptions.push(id + '.mood.state');
+                this.subscriptions.push(id + '.presence.*');
+                this.subscriptions.push(id + '.presenceFollowing.*');
 
                 // Yahka instance update
                 if (
@@ -1116,7 +1130,6 @@ class Residents extends utils.Adapter {
                                 ' instance',
                         );
                         currentYahkaConf?.native.bridge.devices.push(yahkaDeviceConfig);
-                        // @ts-ignore
                         await this.setForeignObjectAsync(
                             'system.adapter.' + resident['yahkaInstanceId'],
                             currentYahkaConf,
@@ -1126,16 +1139,36 @@ class Residents extends utils.Adapter {
             }
         }
 
-        this.setResidentsSummary();
-        this.subscribeStates('control.*');
+        this.subscriptions.push('control.*');
+        this.subscriptions.push('state');
+        this.subscriptions.push('mood');
 
-        this.disableAbsentResidents(true);
+        for (const pattern in this.subscriptions) {
+            const stateList = await this.getStatesAsync(this.subscriptions[pattern]);
+            for (const id in stateList) {
+                this.states[id] = stateList[id];
+                this.log.silly('Subscribing to events for ' + id);
+                this.subscribeStates(id);
+            }
+        }
+        for (const pattern in this.foreignSubscriptions) {
+            const stateList = await this.getStatesAsync(this.foreignSubscriptions[pattern]);
+            for (const id in stateList) {
+                this.states[id] = stateList[id];
+                this.log.silly('Subscribing to foreign events for ' + id);
+                this.subscribeStates(id);
+            }
+        }
+
+        this.setResidentsSummary();
+
+        this.timeoutDisableAbsentResidents(true);
     }
 
     /**
      * @param {boolean} [initialize]
      */
-    disableAbsentResidents(initialize) {
+    timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
             // Disable any resident that is currently away,
             // assuming to be away for the day as there was no overnight
@@ -1144,7 +1177,7 @@ class Residents extends utils.Adapter {
 
         // Create new timeout
         const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.DisableAbsentResidentsDailyTimer);
-        if (runtimeMilliseconds) {
+        if (runtimeMilliseconds != null) {
             this.log.debug(
                 `Creating absent timeout in ${runtimeMilliseconds}ms (in ${this.convertMillisecondsToDuration(
                     runtimeMilliseconds,
@@ -1153,7 +1186,7 @@ class Residents extends utils.Adapter {
             this.absentTimeout = this.setTimeout(() => {
                 this.log.debug('Started nightly absent timeout');
                 this.absentTimeout = null;
-                this.disableAbsentResidents();
+                this.timeoutDisableAbsentResidents();
             }, runtimeMilliseconds);
         }
     }
@@ -1162,6 +1195,10 @@ class Residents extends utils.Adapter {
         try {
             this.log.info('Clean up everything ...');
 
+            if (this.calculationTimeout) {
+                this.clearTimeout(this.calculationTimeout);
+                this.log.debug('Cleared calculation timeout');
+            }
             if (this.absentTimeout) {
                 this.clearTimeout(this.absentTimeout);
                 this.log.debug('Cleared absent timeout');
@@ -1181,10 +1218,19 @@ class Residents extends utils.Adapter {
     onStateChange(id, state) {
         const a = id.split('.');
         const adapterName = a.shift(); // adapter name
-        const eventNamespace = adapterName + '.' + a.shift(); // adapter instance
-        const device = a.shift(); // first level ID
-        const channel = a.shift(); // second level ID
-        const subChannel = a.shift(); // third level ID
+        const adapterInstance = a.shift(); // adapter instance
+        const eventNamespace = adapterName + '.' + adapterInstance; // adapter namespace
+        const level1 = a.shift(); // first level ID
+        const level2 = a.shift(); // second level ID
+        const level3 = a.shift(); // third level ID
+        const allLevels = [level1, level2, level3].join('.');
+        // const levels1_2 = [level1, level2].join('.');
+        const levels2_3 = [level2, level3].join('.');
+
+        if (typeof level1 != 'string') return;
+
+        const oldState = this.states[id];
+        this.states[id] = state;
 
         // Own events
         if (eventNamespace === this.namespace) {
@@ -1192,60 +1238,30 @@ class Residents extends utils.Adapter {
                 // The state was controlled (ack=false)
                 if (!state.ack) {
                     // Global residents commands
-                    if (device === 'control') {
-                        let residents = this.config.roomie;
-                        residents = residents.concat(this.config.pet);
-                        residents = residents.concat(this.config.guest);
-                        this.setStateAsync(id, { val: state.val, ack: true });
-
-                        switch (channel + '.' + subChannel) {
+                    if (level1 === 'control') {
+                        switch (levels2_3) {
                             case 'state.disableAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const away = (await this.getStateAsync(deviceId + '.presence.away'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
 
-                                    if (away) {
-                                        this.setStateAsync(deviceId + '.enabled', { val: false, ack: false });
-                                    }
-                                });
-                                break;
-
-                            case 'state.enableAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const away = (await this.getStateAsync(deviceId + '.presence.away'))?.val;
-
-                                    if (away) {
-                                        await this.setStateAsync(deviceId + '.enabled', { val: true, ack: false });
-                                    }
-                                });
-                                break;
-
-                            case 'presence.setHomeAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
-
-                                    if (enabled) {
-                                        await this.setStateAsync(deviceId + '.presence.home', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'presence.unsetHomeAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
-
-                                    if (enabled) {
-                                        await this.setStateAsync(deviceId + '.presence.home', {
+                                    if (enabled === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already 'disabled', therefore it is not changed.",
+                                        );
+                                    } else if (away === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is not 'away', therefore it is not disabled.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Disabling absent device ' + resident['id'] + '.');
+                                        await this.setStateAsync(resident['id'] + '.enabled', {
                                             val: false,
                                             ack: false,
                                         });
@@ -1253,15 +1269,114 @@ class Residents extends utils.Adapter {
                                 });
                                 break;
 
-                            case 'presence.setNightAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const home = (await this.getStateAsync(deviceId + '.presence.home'))?.val;
+                            case 'state.enableAll':
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
 
-                                    if (residentType != 'pet' && home) {
-                                        await this.setStateAsync(deviceId + '.presence.night', {
+                                    if (enabled === true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already 'enabled', therefore it is not changed.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Enabling device ' + resident['id'] + '.');
+                                        await this.setStateAsync(resident['id'] + '.enabled', {
+                                            val: true,
+                                            ack: false,
+                                        });
+                                    }
+                                });
+                                break;
+
+                            case 'presence.setHomeAll':
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+
+                                    if (home == true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already 'home', therefore it is not changed.",
+                                        );
+                                    } else if (enabled === true) {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'home'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.home', {
+                                            val: true,
+                                            ack: false,
+                                        });
+                                    } else {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is 'disabled', therefore is is excluded from group control.",
+                                        );
+                                    }
+                                });
+                                break;
+
+                            case 'presence.unsetHomeAll':
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+
+                                    if (home == false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already 'away', therefore it is not changed.",
+                                        );
+                                    } else if (enabled === true) {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.home', {
+                                            val: false,
+                                            ack: false,
+                                        });
+                                    } else {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is 'disabled', therefore is is excluded from group control.",
+                                        );
+                                    }
+                                });
+                                break;
+
+                            case 'presence.setNightAll':
+                                this.residents.forEach(async (resident) => {
+                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+                                    const night = (await this.getStateAsync(resident['id'] + '.presence.night'))?.val;
+
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without night state - ignoring.',
+                                        );
+                                    } else if (night === true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already at 'night', therefore it is not changed.",
+                                        );
+                                    } else if (home === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is not 'home', therefore is is excluded from group control.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'night'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.night', {
                                             val: true,
                                             ack: false,
                                         });
@@ -1270,14 +1385,34 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'presence.unsetNightAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const home = (await this.getStateAsync(deviceId + '.presence.home'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+                                    const night = (await this.getStateAsync(resident['id'] + '.presence.night'))?.val;
 
-                                    if (residentType != 'pet' && home) {
-                                        await this.setStateAsync(deviceId + '.presence.night', {
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without night state - ignoring.',
+                                        );
+                                    } else if (night === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already not 'night', therefore it is not changed.",
+                                        );
+                                    } else if (home === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is not 'home', therefore is is excluded from group control.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'night'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.night', {
                                             val: false,
                                             ack: false,
                                         });
@@ -1286,13 +1421,19 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'presence.setAwayAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
 
-                                    if (enabled) {
-                                        await this.setStateAsync(deviceId + '.presence.away', {
+                                    if (away === true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already at 'away', therefore it is not changed.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.away', {
                                             val: true,
                                             ack: false,
                                         });
@@ -1301,13 +1442,19 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'presence.unsetAwayAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
 
-                                    if (enabled) {
-                                        await this.setStateAsync(deviceId + '.presence.away', {
+                                    if (away === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is already at not 'away', therefore it is not changed.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'away'.");
+                                        await this.setStateAsync(resident['id'] + '.presence.away', {
                                             val: false,
                                             ack: false,
                                         });
@@ -1316,14 +1463,35 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'activity.setOvernightAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
+                                        ?.val;
 
-                                    if (residentType != 'pet' && enabled) {
-                                        await this.setStateAsync(deviceId + '.activity.overnight', {
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without night state - ignoring.',
+                                        );
+                                    } else if (overnight === true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " activity 'overnight' is already active, therefore it is not changed.",
+                                        );
+                                    } else if (enabled === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is 'disabled', therefore is is excluded from group control.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'overnight'.");
+                                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
                                             val: true,
                                             ack: false,
                                         });
@@ -1332,14 +1500,35 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'activity.unsetOvernightAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
+                                        ?.val;
 
-                                    if (residentType != 'pet' && enabled) {
-                                        await this.setStateAsync(deviceId + '.activity.overnight', {
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without night state - ignoring.',
+                                        );
+                                    } else if (overnight === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " activity 'overnight' is already disabled, therefore it is not changed.",
+                                        );
+                                    } else if (enabled === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is 'disabled', therefore is is excluded from group control.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'overnight'.");
+                                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
                                             val: false,
                                             ack: false,
                                         });
@@ -1348,16 +1537,46 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'activity.resetOvernightAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
+                                        ?.val;
+                                    const overnightDef = (await this.getObjectAsync(resident['id']))?.common.def;
 
-                                    if (residentType != 'pet' && enabled) {
-                                        const def = (await this.getObjectAsync(deviceId))?.common.def;
-                                        await this.setStateAsync(deviceId + '.activity.overnight', {
-                                            val: def,
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without night state - ignoring.',
+                                        );
+                                    } else if (overnight === overnightDef) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " activity 'overnight' is already " +
+                                                overnightDef +
+                                                ', therefore it is not changed.',
+                                        );
+                                    } else if (enabled === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " is 'disabled', therefore is is excluded from group control.",
+                                        );
+                                    } else {
+                                        this.log.info(
+                                            allLevels +
+                                                ": Resetting 'overnight' for" +
+                                                resident['id'] +
+                                                "'overnight' to " +
+                                                overnightDef +
+                                                '.',
+                                        );
+                                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                                            val: overnightDef,
                                             ack: false,
                                         });
                                     }
@@ -1365,14 +1584,27 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'activity.setWayhomeAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const wayhome = (await this.getStateAsync(resident['id'] + '.activity.wayhome'))
+                                        ?.val;
 
-                                    if (residentType != 'pet' && enabled) {
-                                        await this.setStateAsync(deviceId + '.activity.wayhome', {
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without wayhome state - ignoring.',
+                                        );
+                                    } else if (wayhome === true) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " activity 'wayhome' is already active, therefore it is not changed.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'wayhome'.");
+                                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
                                             val: true,
                                             ack: false,
                                         });
@@ -1381,14 +1613,27 @@ class Residents extends utils.Adapter {
                                 break;
 
                             case 'activity.unsetWayhomeAll':
-                                residents.forEach(async (resident) => {
-                                    const name = resident['name'];
-                                    const deviceId = resident['id'] ? resident['id'] : name;
-                                    const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-                                    const enabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
+                                this.residents.forEach(async (resident) => {
+                                    const wayhome = (await this.getStateAsync(resident['id'] + '.activity.wayhome'))
+                                        ?.val;
 
-                                    if (residentType != 'pet' && enabled) {
-                                        await this.setStateAsync(deviceId + '.activity.wayhome', {
+                                    if (resident['type'] === 'pet') {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                ' is a pet without wayhome state - ignoring.',
+                                        );
+                                    } else if (wayhome === false) {
+                                        this.log.debug(
+                                            allLevels +
+                                                ': ' +
+                                                resident['id'] +
+                                                " activity 'wayhome' is already disabled, therefore it is not changed.",
+                                        );
+                                    } else {
+                                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'wayhome'.");
+                                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
                                             val: false,
                                             ack: false,
                                         });
@@ -1397,41 +1642,50 @@ class Residents extends utils.Adapter {
                                 break;
 
                             default:
-                                this.log.error('Received unknown command ' + channel + '.' + subChannel);
+                                this.log.warn('Received unknown command ' + level2 + '.' + level3);
                                 break;
                         }
+
+                        this.setStateAsync(id, {
+                            val: state.val,
+                            ack: true,
+                            from: state.from,
+                        });
                     }
 
                     // An individual residents device was controlled
                     else {
-                        switch (channel) {
+                        switch (level2) {
                             case 'enabled':
-                                this.log.debug(device + ': Controlling ' + id);
-                                this.enableResidentDevice(device, state.val);
+                                this.log.debug(level1 + ': Controlling ' + id);
+                                this.enableResidentDevice(level1, state, oldState);
                                 break;
 
                             case 'activity':
-                                this.log.debug(device + ': Controlling ' + id);
-                                this.setResidentDeviceActivity(device, subChannel, state.val);
+                                if (typeof level3 != 'string') return;
+                                this.log.debug(level1 + ': Controlling ' + id);
+                                this.setResidentDeviceActivity(level1, level3, state, oldState);
                                 break;
 
                             case 'mood':
-                                this.log.debug(device + ': Controlling ' + id);
-                                this.setResidentDeviceMood(device, state.val);
+                                this.log.debug(level1 + ': Controlling ' + id);
+                                this.setResidentDeviceMood(level1, state);
                                 break;
 
                             case 'presence':
-                                this.log.debug(device + ': Controlling ' + id);
-                                this.setResidentDevicePresence(device, subChannel, state.val);
+                                if (typeof level3 != 'string') return;
+                                this.log.debug(level1 + ': Controlling ' + id);
+                                this.setResidentDevicePresence(level1, level3, state, oldState);
                                 break;
 
                             case 'presenceFollowing':
-                                this.log.debug(device + ': Controlling ' + id);
-                                this.setResidentDevicePresenceFollowing(device, subChannel, state.val);
+                                if (typeof level3 != 'string') return;
+                                this.log.debug(level1 + ': Controlling ' + id);
+                                this.setResidentDevicePresenceFollowing(level1, level3, state, oldState);
                                 break;
 
                             default:
-                                this.log.error(device + ': Controlling unknown channel ' + channel);
+                                this.log.warn(level1 + ': Controlling unknown channel ' + level2);
                                 break;
                         }
                     }
@@ -1439,49 +1693,55 @@ class Residents extends utils.Adapter {
 
                 // The state was updated (ack=true)
                 else {
-                    // An individual residents device was updated
-                    if (device != 'control' && device != 'group') {
-                        switch (channel) {
-                            case 'activity':
-                                if (subChannel === 'state') {
-                                    this.log.debug("Received ack'ed update of " + id);
-                                    this.setResidentsSummary();
-                                }
-                                break;
+                    // ignore some of our own ack events
+                    if (
+                        level1 === 'control' ||
+                        level1 === 'group' ||
+                        level1 === 'info' ||
+                        level1 === 'mood' ||
+                        level1 === 'state'
+                    ) {
+                        return;
+                    }
 
-                            case 'enabled':
-                                if (state.val === true) {
-                                    this.log.debug("Received ack'ed enablement of " + device);
-                                    this.setResidentsSummary();
-                                }
-                                break;
+                    switch (level2) {
+                        case 'activity':
+                            if (level3 === 'state') {
+                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                                this.setResidentsSummary();
+                            }
+                            break;
 
-                            case 'mood':
-                                if (subChannel === 'state') {
-                                    this.log.debug("Received ack'ed update of " + id);
-                                    this.setResidentsSummary();
-                                }
-                                break;
+                        case 'enabled':
+                            if (state.val === true) {
+                                this.log.debug(this.namespace + ": Received ack'ed enablement of " + level1);
+                                this.setResidentsSummary();
+                            }
+                            break;
 
-                            case 'presence':
-                                if (subChannel === 'state') {
-                                    this.log.debug("Received ack'ed update of " + id);
-                                    this.setResidentsSummary();
-                                }
-                                break;
+                        case 'mood':
+                            if (level3 === 'state') {
+                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                                this.setResidentsSummary();
+                            }
+                            break;
 
-                            default:
-                                this.log.error("Received unknown ack'ed update of " + id);
-                                break;
-                        }
+                        case 'presence':
+                            if (level3 === 'state') {
+                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                                this.setResidentsSummary();
+                            }
+                            break;
+
+                        default:
+                            this.log.warn(this.namespace + ": Received unknown ack'ed update of " + id);
+                            break;
                     }
                 }
             }
 
             // The state was deleted
             else {
-                this.log.debug('Unsubscribing from notifications for state ' + id);
-                this.unsubscribeForeignStatesAsync(id);
                 this.setResidentsSummary();
             }
         }
@@ -1496,7 +1756,7 @@ class Residents extends utils.Adapter {
                 // The state was updated (ack=true)
                 else {
                     // parent instance state was updated
-                    if (device === 'state') {
+                    if (level1 === 'state') {
                         this.log.debug('Received parent state update from ' + eventNamespace);
                         this.setResidentsSummary();
                     }
@@ -1505,14 +1765,15 @@ class Residents extends utils.Adapter {
 
             // The state was deleted
             else {
-                this.log.debug('Unsubscribing from parent state notifications for ' + id);
-                this.unsubscribeForeignStatesAsync(id);
                 this.setResidentsSummary();
             }
         }
 
         // Foreign geofency instance events
         else if (adapterName === 'geofency') {
+            if (typeof level2 != 'string') return;
+            if (typeof level3 != 'string') return;
+
             if (state) {
                 // The state was controlled (ack=false)
                 if (!state.ack) {
@@ -1520,13 +1781,11 @@ class Residents extends utils.Adapter {
                 }
                 // The state was updated (ack=true)
                 else {
-                    if (subChannel === 'json') {
-                        switch (channel?.toLowerCase) {
-                            // @ts-ignore
+                    if (level3 === 'json') {
+                        switch (level2.toLowerCase()) {
                             case 'home':
                                 break;
 
-                            // @ts-ignore
                             case 'wayhome':
                                 break;
                         }
@@ -1536,9 +1795,10 @@ class Residents extends utils.Adapter {
 
             // The state was deleted
             else {
-                this.log.debug('Unsubscribing from foreign notifications for ' + id);
-                this.unsubscribeForeignStatesAsync(id);
+                //
             }
+        } else {
+            this.log.error('Received event from unsupported adapter type ' + adapterName);
         }
     }
 
@@ -1546,39 +1806,192 @@ class Residents extends utils.Adapter {
      * Is called from onStateChange()
      * @param {string} device
      * @param {string} activity
-     * @param {number | boolean} state
+     * @param {ioBroker.State} state
+     * @param {ioBroker.State} oldState
      */
-    async setResidentDeviceActivity(device, activity, state) {
+    async setResidentDeviceActivity(device, activity, state, oldState) {
+        const currPresenceState = (await this.getStateAsync(device + '.presence.state'))?.val;
+        if (typeof currPresenceState != 'number') return;
+        let currActivityState = (await this.getStateAsync(device + '.activity.state'))?.val;
+        if (typeof currActivityState != 'number') return;
+        currActivityState = currActivityState >= 10000 ? currActivityState - 10000 : currActivityState;
+        let nextActivityState = currActivityState;
+        let currDndState = (await this.getStateAsync(device + '.activity.dnd'))?.val;
+        if (activity === 'dnd') currDndState = oldState.val;
+        if (typeof currDndState != 'boolean') return;
+
+        const enabled = (await this.getStateAsync(device + '.enabled'))?.val;
+
+        let stateAwake = false;
+        let stateBedtime = false;
+        let stateWakeup = false;
+        let stateWayhome = false;
+
         switch (activity) {
+            case 'state':
+                if (typeof state.val != 'number') return;
+                nextActivityState = state.val;
+
+                // 000-0999: Not present at home / Away
+                if (nextActivityState === 2) {
+                    stateWayhome = true;
+                }
+
+                // 1000-1999: WAKING TIME at home
+                else if (nextActivityState >= 1000 && nextActivityState < 2000) {
+                    // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+                    if (nextActivityState >= 1900) {
+                        stateBedtime = true;
+                    }
+                }
+
+                // 2000-2999: SLEEPING TIME at home
+                else if (nextActivityState >= 2000 && nextActivityState < 3000) {
+                    // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+                    if (nextActivityState >= 2010 && nextActivityState < 2020) {
+                        stateAwake = true;
+                    }
+
+                    // 2100-2199: SLEEPING TIME at home: While I should get up
+                    else if (nextActivityState >= 2100 && nextActivityState < 2200) {
+                        stateWakeup = true;
+
+                        if (currActivityState >= 2100) {
+                            nextActivityState = currActivityState;
+                            if (currActivityState < 2105) currActivityState++;
+                        }
+                    }
+
+                    // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+                    else if (nextActivityState >= 2200) {
+                        stateAwake = true;
+                    }
+                }
+
+                // Reflect DND in state value
+                if (currDndState === true && nextActivityState < 10000) {
+                    nextActivityState += 10000;
+                } else if (currDndState === false && nextActivityState >= 10000) {
+                    nextActivityState -= 10000;
+                }
+
+                await this.setStateChangedAsync(device + '.activity.awake', { val: stateAwake, ack: true });
+                await this.setStateChangedAsync(device + '.activity.bedtime', { val: stateBedtime, ack: true });
+                await this.setStateChangedAsync(device + '.activity.wakeup', { val: stateWakeup, ack: true });
+                await this.setStateChangedAsync(device + '.activity.wayhome', { val: stateWayhome, ack: true });
+
+                state.val = nextActivityState;
+                state.ack = true;
+                this.setStateChangedAsync(device + '.activity.state', state);
+                break;
+
             case 'awake':
-                await this.setStateAsync(device + '.activity.awake', { val: state, ack: true });
-                await this.setResidentsSummary();
+                if (state.val === true) {
+                    // Awake during night >> irregular occurance
+                    if (currActivityState === 2000 || currActivityState === 2010 || currActivityState === 2020) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 2010, ack: false });
+                    }
+
+                    // Awake during wakeup >> got up from sleep
+                    else if (currActivityState >= 2100) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 2200, ack: false });
+                    } else {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 2210, ack: false });
+                    }
+                } else {
+                    if (currActivityState >= 2010 && currActivityState < 2020) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 2020, ack: false });
+                    } else {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 1000, ack: false });
+                    }
+                }
+                break;
+
+            case 'bedtime':
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.activity.state', { val: 1900, ack: false });
+                } else {
+                    await this.setStateChangedAsync(device + '.activity.state', { val: 1000, ack: false });
+                }
+                break;
+
+            case 'dnd':
+                if (state.val === true && currPresenceState != 1) {
+                    state.val = false;
+                    state.q = 0x40;
+                }
+                state.ack = true;
+                await this.setStateAsync(device + '.activity.dnd', state);
+                await this.setStateChangedAsync(device + '.activity.state', { val: currActivityState, ack: false });
                 break;
 
             case 'overnight':
-                if (state) {
-                    await this.setStateAsync(device + '.enabled', { val: state, ack: true });
-                    await this.setStateAsync(device + '.activity.overnight', { val: state, ack: true });
-                    await this.setResidentsSummary();
-                } else {
-                    [device].forEach(async (device2) => {
-                        const currState = (await this.getStateAsync(device2 + '.presence.home'))?.val;
-                        if (!currState) {
-                            await this.setStateAsync(device + '.enabled', { val: state, ack: true });
-                        }
-                        await this.setStateAsync(device + '.activity.wayhome', { val: state, ack: true });
-                        await this.setStateAsync(device + '.activity.overnight', { val: state, ack: true });
-                        await this.setResidentsSummary();
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.enabled', { val: state.val, ack: true });
+                    await this.setStateAsync(device + '.activity.overnight', {
+                        val: state.val,
+                        ack: true,
+                        from: state.from,
                     });
+                } else {
+                    if (currPresenceState === 0) {
+                        await this.setStateChangedAsync(device + '.enabled', { val: state.val, ack: true });
+                    }
+                    await this.setStateChangedAsync(device + '.activity.wayhome', { val: state.val, ack: false });
+                    await this.setStateAsync(device + '.activity.overnight', {
+                        val: state.val,
+                        ack: true,
+                        from: state.from,
+                    });
+                }
+                await this.setResidentsSummary();
+                break;
+
+            case 'wakeup':
+                state.ack = true;
+                if (currPresenceState === 2) {
+                    await this.setStateAsync(device + '.activity.wakeup', state);
+                    let newActivityVal;
+                    if (state.val === true) {
+                        newActivityVal = currActivityState >= 2100 ? currActivityState : 2100;
+                    } else {
+                        newActivityVal = currActivityState >= 2100 ? 2200 : 1000;
+                    }
+                    await this.setStateChangedAsync(device + '.activity.state', { val: newActivityVal, ack: false });
+                } else {
+                    if (state.val === true) {
+                        this.log.warn(device + ' requires night state to start a wake-up call');
+                        state.val = false;
+                        state.q = 0x40;
+                    }
+                    await this.setStateAsync(device + '.activity.wakeup', state);
                 }
                 break;
 
-            case 'wayhome':
-                if (state) {
-                    await this.setStateAsync(device + '.enabled', { val: true, ack: true });
+            case 'wakeupSnooze':
+                if (state.val != true) return;
+                state.ack = true;
+                if (currActivityState >= 2100) {
+                    if (currActivityState < 2105) currActivityState++;
+                    await this.setStateChangedAsync(device + '.activity.state', { val: currActivityState, ack: false });
+                } else {
+                    this.log.debug(device + ' has no wake-up call running that could be snoozed');
+                    state.val = true;
+                    state.q = 0x41;
                 }
-                await this.setStateAsync(device + '.activity.wayhome', { val: state, ack: true });
-                await this.setStateAsync(device + '.presence.state', { val: 0, ack: false });
+                await this.setStateAsync(device + '.activity.wakeupSnooze', state);
+                break;
+
+            case 'wayhome':
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.enabled', { val: true, ack: true });
+                    await this.setStateChangedAsync(device + '.activity.state', { val: 2, ack: false });
+                } else if (enabled === true) {
+                    await this.setStateChangedAsync(device + '.activity.state', { val: 1, ack: false });
+                } else {
+                    await this.setStateChangedAsync(device + '.activity.state', { val: 0, ack: false });
+                }
+                await this.setStateChangedAsync(device + '.presence.state', { val: 0, ack: false });
                 break;
         }
     }
@@ -1586,86 +1999,179 @@ class Residents extends utils.Adapter {
     /**
      * Is called from onStateChange()
      * @param {string} device
-     * @param {number} mood
+     * @param {ioBroker.State} state
      */
-    async setResidentDeviceMood(device, mood) {
-        await this.setStateAsync(device + '.mood.state', { val: mood, ack: true });
+    async setResidentDeviceMood(device, state) {
+        await this.setStateAsync(device + '.mood.state', { val: state.val, ack: true, from: state.from });
     }
 
     /**
      * Is called from onStateChange()
      * @param {string} device
      * @param {string} presence
-     * @param {number | boolean} state
+     * @param {ioBroker.State} state
+     * @param {ioBroker.State} oldState
      */
-    async setResidentDevicePresence(device, presence, state) {
-        // @ts-ignore
+    async setResidentDevicePresence(device, presence, state, oldState) {
+        let currActivityState = await this.getStateAsync(device + '.activity.state');
         const residentType = (await this.getObjectAsync(device))?.native.type;
+        let currActivityVal = null;
+        if (residentType != 'pet') {
+            if (typeof currActivityState?.val != 'number') return;
+            currActivityVal = currActivityState.val >= 10000 ? currActivityState.val - 10000 : currActivityState.val;
+        } else {
+            // Dummy values for pet just to please eslint
+            currActivityVal = 0;
+            currActivityState = state;
+        }
+
+        const enabled = (await this.getStateAsync(device + '.enabled'))?.val;
         let stateNight = false;
         let stateHome = false;
-
-        if (residentType != 'pet') {
-            await this.setStateAsync(device + '.mood.state', { val: 0, ack: true });
-        }
+        let stateActivity = 0;
 
         switch (presence) {
             case 'state':
+                if (typeof state.val != 'number') return;
+
+                if (enabled === true) {
+                    stateActivity = 1;
+                }
+                // Always reset mood if presence state was changed
+                if (residentType != 'pet' && state.val != oldState.val) {
+                    await this.setStateChangedAsync(device + '.mood.state', { val: 0, ack: false });
+                }
+
                 // When present at home
-                // @ts-ignore
-                if (state > 0) {
+                if (state.val > 0) {
                     stateHome = true;
 
                     // When at sleep
-                    if (state == 2) {
+                    if (state.val === 2) {
                         stateNight = true;
+
+                        // change activity state to the correct range
+                        if (currActivityVal < 2000) {
+                            stateActivity = 2000;
+                        } else if (currActivityVal < 2100) {
+                            stateActivity = 2020;
+                        } else if (currActivityVal < 2110) {
+                            stateActivity = 2110;
+                        } else if (currActivityVal < 2120) {
+                            stateActivity = 2120;
+                        } else if (currActivityVal < 2130) {
+                            stateActivity = 2130;
+                        } else {
+                            stateActivity = currActivityVal;
+                        }
+                    } else {
+                        // Activity change from away to home or when transitioning from night to home
+                        if (currActivityVal < 1000 || currActivityVal >= 2200) {
+                            stateActivity = 1000;
+                        }
+
+                        // Activity change any running wake-up program
+                        else if (currActivityVal > 2000) {
+                            stateActivity = 2200;
+                        }
+
+                        // Activity change from night to home = Implicit awakening state
+                        else if (currActivityVal === 2000) {
+                            stateActivity = 2210;
+                        }
+
+                        // Don't change any other activity during waking time at home
+                        else {
+                            stateActivity = currActivityVal;
+                        }
                     }
 
-                    await this.setStateAsync(device + '.enabled', { val: true, ack: true });
-                    if (residentType != 'pet') {
-                        await this.setStateAsync(device + '.activity.wayhome', { val: false, ack: true });
+                    await this.setStateChangedAsync(device + '.enabled', { val: true, ack: true });
+                } else {
+                    // Keep any absence activity
+                    if (enabled === true && currActivityVal < 1000) {
+                        stateActivity = currActivityVal;
                     }
                 }
 
+                await this.setStateChangedAsync(device + '.presence.home', { val: stateHome, ack: true });
+                await this.setStateChangedAsync(device + '.presence.away', { val: !stateHome, ack: true });
                 if (residentType != 'pet') {
-                    await this.setStateAsync(device + '.activity.awake', { val: false, ack: true });
+                    await this.setStateChangedAsync(device + '.presence.night', { val: stateNight, ack: true });
                 }
-
-                await this.setStateAsync(device + '.presence.home', { val: stateHome, ack: true });
-                await this.setStateAsync(device + '.presence.away', { val: !stateHome, ack: true });
+                await this.setStateAsync(device + '.presence.state', { val: state.val, ack: true, from: state.from });
                 if (residentType != 'pet') {
-                    await this.setStateAsync(device + '.presence.night', { val: stateNight, ack: true });
+                    this.setResidentDeviceActivity(
+                        device,
+                        'state',
+                        {
+                            val: stateActivity,
+                            ack: false,
+                            from: 'system.adapter.' + this.namespace,
+                            ts: state.ts,
+                            lc: state.lc,
+                        },
+                        currActivityState,
+                    );
                 }
-                this.setStateAsync(device + '.presence.state', { val: state, ack: true });
                 break;
 
             case 'home':
-                if (state) {
-                    await this.setStateAsync(device + '.presence.state', { val: 1, ack: false });
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.presence.state', {
+                        val: 1,
+                        ack: false,
+                        from: state.from,
+                    });
                 } else {
-                    await this.setStateAsync(device + '.presence.state', { val: 0, ack: false });
+                    await this.setStateChangedAsync(device + '.presence.state', {
+                        val: 0,
+                        ack: false,
+                        from: state.from,
+                    });
                 }
                 break;
 
             case 'night':
-                if (state) {
-                    await this.setStateAsync(device + '.presence.state', { val: 2, ack: false });
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.presence.state', {
+                        val: 2,
+                        ack: false,
+                        from: state.from,
+                    });
                 } else {
                     [device].forEach(async (device2) => {
                         const currState = (await this.getStateAsync(device2 + '.presence.home'))?.val;
                         if (currState) {
-                            await this.setStateAsync(device2 + '.presence.state', { val: 1, ack: false });
+                            await this.setStateChangedAsync(device2 + '.presence.state', {
+                                val: 1,
+                                ack: false,
+                                from: state.from,
+                            });
                         } else {
-                            await this.setStateAsync(device2 + '.presence.state', { val: 0, ack: false });
+                            await this.setStateChangedAsync(device2 + '.presence.state', {
+                                val: 0,
+                                ack: false,
+                                from: state.from,
+                            });
                         }
                     });
                 }
                 break;
 
             case 'away':
-                if (state) {
-                    await this.setStateAsync(device + '.presence.state', { val: 0, ack: false });
+                if (state.val === true) {
+                    await this.setStateChangedAsync(device + '.presence.state', {
+                        val: 0,
+                        ack: false,
+                        from: state.from,
+                    });
                 } else {
-                    await this.setStateAsync(device + '.presence.state', { val: 1, ack: false });
+                    await this.setStateChangedAsync(device + '.presence.state', {
+                        val: 1,
+                        ack: false,
+                        from: state.from,
+                    });
                 }
                 break;
         }
@@ -1675,31 +2181,58 @@ class Residents extends utils.Adapter {
      * Is called from onStateChange()
      * @param {string} device
      * @param {string} presence
-     * @param {string | number | boolean} state
+     * @param {ioBroker.State} state
+     * @param {ioBroker.State} oldState
      */
-    async setResidentDevicePresenceFollowing(device, presence, state) {
-        await this.setStateAsync(device + '.presenceFollowing.' + presence, { val: state, ack: true });
+    async setResidentDevicePresenceFollowing(device, presence, state, oldState) {
+        await this.setStateChangedAsync(device + '.presenceFollowing.' + presence, {
+            val: state.val,
+            ack: true,
+            from: state.from,
+        });
     }
 
     /**
-     * Is called from onStateChange()
      * @param {string} device
-     * @param {boolean} val
+     * @param {ioBroker.State} state
+     * @param {ioBroker.State} oldState
      */
-    async enableResidentDevice(device, val) {
-        await this.setStateAsync(device + '.enabled', { val: val, ack: true });
-        if (!val) {
-            await this.setResidentDevicePresence(device, 'state', 0);
+    async enableResidentDevice(device, state, oldState) {
+        await this.setStateAsync(device + '.enabled', { val: state.val, ack: true, from: state.from });
+        const residentType = (await this.getObjectAsync(device))?.native.type;
+        if (oldState.val != state.val) {
+            if (state.val === true) {
+                if (residentType != 'pet') {
+                    oldState.val = this.states[device + '.activity.state'];
+                    state.val = 1;
+                    this.states[device + '.activity.state'] = state.val;
+                    await this.setResidentDeviceActivity(device, 'state', state, oldState);
+                }
+            } else {
+                oldState.val = this.states[device + '.presence.state'];
+                state.val = 0;
+                this.states[device + '.presence.state'] = state.val;
+                await this.setResidentDevicePresence(device, 'state', state, oldState);
+            }
         }
     }
 
-    async setResidentsSummary() {
-        /**
-         * @type {Array}
-         */
-        let residents = this.config.roomie;
-        residents = residents.concat(this.config.pet);
-        residents = residents.concat(this.config.guest);
+    /**
+     * @param {boolean} [_run]
+     */
+    async setResidentsSummary(_run) {
+        // Debounce re-calculation when multiple changes occure in a short time
+        this.clearTimeout(this.calculationTimeout);
+        if (!_run) {
+            const runtimeMilliseconds = 1000;
+            this.log.silly(`Creating residents summary re-calcuation timeout in ${runtimeMilliseconds}ms`);
+            this.calculationTimeout = this.setTimeout(() => {
+                this.log.debug('Started residents summary re-calcuation');
+                this.calculationTimeout = null;
+                this.setResidentsSummary(true);
+            }, runtimeMilliseconds);
+            return;
+        }
 
         const homeList = [];
         const petHomeList = [];
@@ -1731,31 +2264,33 @@ class Residents extends utils.Adapter {
         let overnightBool = false;
         let awakeBool = false;
 
-        for (const resident of residents) {
+        for (const resident of this.residents) {
             const name = resident['name'];
-            const deviceId = resident['id'] ? resident['id'] : name;
-            const residentType = (await this.getObjectAsync(deviceId))?.native.type;
-            const currEnabled = (await this.getStateAsync(deviceId + '.enabled'))?.val;
-            const currState = (await this.getStateAsync(deviceId + '.presence.state'))?.val;
-            const currWayhome = (await this.getStateAsync(deviceId + '.activity.wayhome'))?.val;
-            const currOvernight = (await this.getStateAsync(deviceId + '.activity.overnight'))?.val;
-            const currAwake = (await this.getStateAsync(deviceId + '.activity.awake'))?.val;
-            const currMood = (await this.getStateAsync(deviceId + '.mood.state'))?.val;
+            const residentType = (await this.getObjectAsync(resident['id']))?.native.type;
+
+            const currEnabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+            // const currActivity = (await this.getStateAsync(resident['id'] + '.activity.state'))?.val;
+            const currAwake = (await this.getStateAsync(resident['id'] + '.activity.awake'))?.val;
+            const currOvernight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))?.val;
+            const currWayhome = (await this.getStateAsync(resident['id'] + '.activity.wayhome'))?.val;
+            const currState = (await this.getStateAsync(resident['id'] + '.presence.state'))?.val;
+            const currMood = (await this.getStateAsync(resident['id'] + '.mood.state'))?.val;
+
+            if (typeof currState != 'number' || typeof currMood != 'number') return;
 
             if (currOvernight) {
                 overnightBool = true;
                 overnightCount++;
-                overnightList.push({ name: name, id: this.namespace + '.' + deviceId });
+                overnightList.push({ name: name, id: this.namespace + '.' + resident['id'] });
             }
 
             if (currAwake) {
                 awakeBool = true;
                 awakeCount++;
-                awakeList.push({ name: name, id: this.namespace + '.' + deviceId });
+                awakeList.push({ name: name, id: this.namespace + '.' + resident['id'] });
             }
 
             // When present at home
-            // @ts-ignore
             if (currState >= 1) {
                 if (residentType == 'pet') {
                     totalPetCount++;
@@ -1767,26 +2302,21 @@ class Residents extends utils.Adapter {
                 if (residentType == 'pet') {
                     petHomeBool = true;
                     petHomeCount++;
-                    petHomeList.push({ name: name, id: this.namespace + '.' + deviceId });
+                    petHomeList.push({ name: name, id: this.namespace + '.' + resident['id'] });
                 } else {
                     homeBool = true;
                     homeCount++;
-                    homeList.push({ name: name, id: this.namespace + '.' + deviceId });
+                    homeList.push({ name: name, id: this.namespace + '.' + resident['id'] });
                 }
 
                 // When at sleep
-                // @ts-ignore
                 if (currState == 2) {
                     nightBool = true;
                     nightCount++;
-                    nightList.push({ name: name, id: this.namespace + '.' + deviceId });
+                    nightList.push({ name: name, id: this.namespace + '.' + resident['id'] });
                 }
-            }
-
-            // @ts-ignore
-            else if (currState == 0) {
+            } else if (currState == 0) {
                 // When away from home
-                // @ts-ignore
                 if (currEnabled) {
                     if (residentType == 'pet') {
                         totalPetCount++;
@@ -1795,14 +2325,13 @@ class Residents extends utils.Adapter {
                     }
                     awayBool = true;
                     awayCount++;
-                    awayList.push({ name: name, id: this.namespace + '.' + deviceId });
+                    awayList.push({ name: name, id: this.namespace + '.' + resident['id'] });
 
                     // When on way home
-                    // @ts-ignore
                     if (currWayhome) {
                         wayhomeBool = true;
                         wayhomeCount++;
-                        wayhomeList.push({ name: name, id: this.namespace + '.' + deviceId });
+                        wayhomeList.push({ name: name, id: this.namespace + '.' + resident['id'] });
                     }
                 }
 
@@ -1810,89 +2339,95 @@ class Residents extends utils.Adapter {
                 else {
                     disabledBool = true;
                     disabledCount++;
-                    disabledList.push({ name: name, id: this.namespace + '.' + deviceId });
+                    disabledList.push({ name: name, id: this.namespace + '.' + resident['id'] });
                 }
             }
         }
 
         // Write Lists
-        await this.setStateAsync('info.state.disabledList', { val: JSON.stringify(disabledList), ack: true });
-        await this.setStateAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeList), ack: true });
-        await this.setStateAsync('info.activity.overnightList', { val: JSON.stringify(overnightList), ack: true });
-        await this.setStateAsync('info.activity.awakeList', { val: JSON.stringify(awakeList), ack: true });
-        await this.setStateAsync('info.presence.awayList', { val: JSON.stringify(awayList), ack: true });
-        await this.setStateAsync('info.presence.nightList', { val: JSON.stringify(nightList), ack: true });
-        await this.setStateAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeList), ack: true });
-        await this.setStateAsync('info.presence.homeList', { val: JSON.stringify(homeList), ack: true });
+        await this.setStateChangedAsync('info.state.disabledList', { val: JSON.stringify(disabledList), ack: true });
+        await this.setStateChangedAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeList), ack: true });
+        await this.setStateChangedAsync('info.activity.overnightList', {
+            val: JSON.stringify(overnightList),
+            ack: true,
+        });
+        await this.setStateChangedAsync('info.activity.awakeList', { val: JSON.stringify(awakeList), ack: true });
+        await this.setStateChangedAsync('info.presence.awayList', { val: JSON.stringify(awayList), ack: true });
+        await this.setStateChangedAsync('info.presence.nightList', { val: JSON.stringify(nightList), ack: true });
+        await this.setStateChangedAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeList), ack: true });
+        await this.setStateChangedAsync('info.presence.homeList', { val: JSON.stringify(homeList), ack: true });
 
         // Write Counter
-        await this.setStateAsync('info.state.disabledCount', { val: disabledCount, ack: true });
-        await this.setStateAsync('info.state.totalPetsCount', { val: totalPetCount, ack: true });
-        await this.setStateAsync('info.state.totalResidentsCount', { val: totalResidentsCount, ack: true });
-        await this.setStateAsync('info.state.totalCount', { val: totalResidentsCount + totalPetCount, ack: true });
-        await this.setStateAsync('info.activity.wayhomeCount', { val: wayhomeCount, ack: true });
-        await this.setStateAsync('info.activity.overnightCount', { val: overnightCount, ack: true });
-        await this.setStateAsync('info.activity.awakeCount', { val: awakeCount, ack: true });
-        await this.setStateAsync('info.presence.awayCount', { val: awayCount, ack: true });
-        await this.setStateAsync('info.presence.nightCount', { val: nightCount, ack: true });
-        await this.setStateAsync('info.presence.petsHomeCount', { val: petHomeCount, ack: true });
-        await this.setStateAsync('info.presence.homeCount', { val: homeCount, ack: true });
+        await this.setStateChangedAsync('info.state.disabledCount', { val: disabledCount, ack: true });
+        await this.setStateChangedAsync('info.state.totalPetsCount', { val: totalPetCount, ack: true });
+        await this.setStateChangedAsync('info.state.totalResidentsCount', { val: totalResidentsCount, ack: true });
+        await this.setStateChangedAsync('info.state.totalCount', {
+            val: totalResidentsCount + totalPetCount,
+            ack: true,
+        });
+        await this.setStateChangedAsync('info.activity.wayhomeCount', { val: wayhomeCount, ack: true });
+        await this.setStateChangedAsync('info.activity.overnightCount', { val: overnightCount, ack: true });
+        await this.setStateChangedAsync('info.activity.awakeCount', { val: awakeCount, ack: true });
+        await this.setStateChangedAsync('info.presence.awayCount', { val: awayCount, ack: true });
+        await this.setStateChangedAsync('info.presence.nightCount', { val: nightCount, ack: true });
+        await this.setStateChangedAsync('info.presence.petsHomeCount', { val: petHomeCount, ack: true });
+        await this.setStateChangedAsync('info.presence.homeCount', { val: homeCount, ack: true });
 
         // Write Indicators
-        await this.setStateAsync('info.state.disabled', { val: disabledBool, ack: true });
+        await this.setStateChangedAsync('info.state.disabled', { val: disabledBool, ack: true });
 
         if (totalResidentsCount > 0) {
-            await this.setStateAsync('info.reachable', { val: true, ack: true });
-            await this.setStateAsync('info.state.disabledAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.reachable', { val: true, ack: true });
+            await this.setStateChangedAsync('info.state.disabledAll', { val: false, ack: true });
         } else {
-            await this.setStateAsync('info.reachable', { val: false, ack: true });
-            await this.setStateAsync('info.state.disabledAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.reachable', { val: false, ack: true });
+            await this.setStateChangedAsync('info.state.disabledAll', { val: true, ack: true });
         }
 
-        await this.setStateAsync('info.activity.wayhome', { val: wayhomeBool, ack: true });
-        await this.setStateAsync('info.activity.overnight', { val: overnightBool, ack: true });
-        await this.setStateAsync('info.activity.awake', { val: awakeBool, ack: true });
+        await this.setStateChangedAsync('info.activity.wayhome', { val: wayhomeBool, ack: true });
+        await this.setStateChangedAsync('info.activity.overnight', { val: overnightBool, ack: true });
+        await this.setStateChangedAsync('info.activity.awake', { val: awakeBool, ack: true });
 
         if (wayhomeCount > 0 && wayhomeCount == awayCount) {
-            await this.setStateAsync('info.activity.wayhomeAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.activity.wayhomeAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.activity.wayhomeAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.activity.wayhomeAll', { val: false, ack: true });
         }
         if (overnightCount > 0 && overnightCount == totalResidentsCount) {
-            await this.setStateAsync('info.activity.overnightAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.activity.overnightAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.activity.overnightAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.activity.overnightAll', { val: false, ack: true });
         }
         if (awakeCount > 0 && awakeCount == homeCount) {
-            await this.setStateAsync('info.activity.awakeAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.activity.awakeAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.activity.awakeAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.activity.awakeAll', { val: false, ack: true });
         }
 
-        await this.setStateAsync('info.presence.away', { val: awayBool, ack: true });
-        await this.setStateAsync('info.presence.night', { val: nightBool, ack: true });
-        await this.setStateAsync('info.presence.petsHome', { val: petHomeBool, ack: true });
-        await this.setStateAsync('info.presence.home', { val: homeBool, ack: true });
+        await this.setStateChangedAsync('info.presence.away', { val: awayBool, ack: true });
+        await this.setStateChangedAsync('info.presence.night', { val: nightBool, ack: true });
+        await this.setStateChangedAsync('info.presence.petsHome', { val: petHomeBool, ack: true });
+        await this.setStateChangedAsync('info.presence.home', { val: homeBool, ack: true });
 
         if (petHomeBool && !homeBool) {
-            await this.setStateAsync('info.presence.petsHomeAlone', { val: true, ack: true });
+            await this.setStateChangedAsync('info.presence.petsHomeAlone', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.presence.petsHomeAlone', { val: false, ack: true });
+            await this.setStateChangedAsync('info.presence.petsHomeAlone', { val: false, ack: true });
         }
         if (homeCount > 0 && homeCount == totalResidentsCount) {
-            await this.setStateAsync('info.presence.homeAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.presence.homeAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.presence.homeAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.presence.homeAll', { val: false, ack: true });
         }
         if (nightCount > 0 && nightCount == homeCount) {
-            await this.setStateAsync('info.presence.nightAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.presence.nightAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.presence.nightAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.presence.nightAll', { val: false, ack: true });
         }
         if (totalResidentsCount == 0 || (awayCount > 0 && awayCount >= totalResidentsCount)) {
-            await this.setStateAsync('info.presence.awayAll', { val: true, ack: true });
+            await this.setStateChangedAsync('info.presence.awayAll', { val: true, ack: true });
         } else {
-            await this.setStateAsync('info.presence.awayAll', { val: false, ack: true });
+            await this.setStateChangedAsync('info.presence.awayAll', { val: false, ack: true });
         }
 
         let residentsState = -1;
@@ -1918,11 +2453,11 @@ class Residents extends utils.Adapter {
             }
         }
 
-        this.log.debug('Calculated overall state: ' + residentsState);
-        await this.setStateAsync('state', { val: residentsState, ack: true });
+        this.log.debug('  Calculated residents state: ' + residentsState);
+        await this.setStateChangedAsync('state', { val: residentsState, ack: true });
 
         const moodAverage = homeCount > 0 ? moodCount / homeCount : 0;
-        await this.setStateAsync('mood', {
+        await this.setStateChangedAsync('mood', {
             // Strive for the golden middle
             val: moodAverage > 0 ? Math.floor(moodAverage) : Math.ceil(moodAverage),
             ack: true,
@@ -1939,20 +2474,22 @@ class Residents extends utils.Adapter {
                 const parentInstance = this.config.residentsParentInstanceIDs[index];
 
                 const parentState = (await this.getForeignStateAsync(parentInstance + '.state'))?.val;
-                if (parentState != null && typeof parentState !== 'undefined') {
+                if (typeof parentState === 'number') {
                     // For presence at home, aim for the lower (= more awake) number
                     if (groupState >= 3 && parentState >= 3) {
                         if (parentState < groupState) {
                             leadingInstance = parentInstance;
                             this.log.debug(
-                                'Group state: Leading lower parent value from ' + parentInstance + ': ' + parentState,
+                                '  Group state: Leading lower parent value from ' + parentInstance + ': ' + parentState,
                             );
                             groupState = parentState;
                         }
 
                         const moodState = (await this.getForeignStateAsync(parentInstance + '.mood'))?.val;
-                        moodFoundCounter++;
-                        groupMood = groupMood + moodState;
+                        if (typeof moodState === 'number') {
+                            moodFoundCounter++;
+                            groupMood = groupMood + moodState;
+                        }
                     }
 
                     // Otherwise, aim for the higher value
@@ -1960,7 +2497,10 @@ class Residents extends utils.Adapter {
                         if (parentState > groupState) {
                             leadingInstance = parentInstance;
                             this.log.debug(
-                                'Group state: Leading higher parent value from ' + parentInstance + ': ' + parentState,
+                                '  Group state: Leading higher parent value from ' +
+                                    parentInstance +
+                                    ': ' +
+                                    parentState,
                             );
                             groupState = parentState;
                         }
@@ -1968,17 +2508,17 @@ class Residents extends utils.Adapter {
                 }
             }
 
-            await this.setStateAsync('group.info.state.originID', { val: leadingInstance, ack: true });
+            await this.setStateChangedAsync('group.info.state.originID', { val: leadingInstance, ack: true });
 
             const groupMoodAverage = moodFoundCounter > 0 ? groupMood / (moodFoundCounter + 1) : groupMood;
-            await this.setStateAsync('group.mood', {
+            await this.setStateChangedAsync('group.mood', {
                 // Strive for the golden middle
                 val: groupMoodAverage > 0 ? Math.floor(groupMoodAverage) : Math.ceil(groupMoodAverage),
                 ack: true,
             });
 
-            this.log.debug('Group state: Final value is ' + groupState + ' from ' + leadingInstance);
-            await this.setStateAsync('group.state', { val: groupState, ack: true });
+            this.log.debug('  Group state: Final value is ' + groupState + ' from ' + leadingInstance);
+            await this.setStateChangedAsync('group.state', { val: groupState, ack: true });
         }
     }
 
@@ -2033,6 +2573,7 @@ class Residents extends utils.Adapter {
     cleanNamespace(id) {
         return id
             .trim()
+            .replace(/\0./g, '_') // Replace dots with underscores
             .replace(/\s/g, '_') // Replace whitespaces with underscores
             .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
             .replace(/[_]+$/g, '') // Remove underscores end
