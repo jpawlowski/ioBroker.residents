@@ -88,7 +88,16 @@
             "common": {
                 "name": {
                     "en": "Overall residential state",
-                    "de": "Allgemeiner Wohnstatus"
+                    "de": "Allgemeiner Wohnstatus",
+                    "ru": "Общее жилое государство",
+                    "pt": "Estado residencial geral",
+                    "nl": "Overal inwoningsstaat",
+                    "fr": "État résidentiel",
+                    "it": "Stato residenziale generale",
+                    "es": "Estado residencial general",
+                    "pl": "Okręg mieszkalny",
+                    "uk": "Загальний житловий стан",
+                    "zh-cn": "总的居住国"
                 },
                 "type": "number",
                 "role": "value.resident.mode",
@@ -130,7 +139,16 @@
             "common": {
                 "name": {
                     "en": "Average mood of residents at home",
-                    "de": "Durchschnittliche Laune der anwesenden Bewohner"
+                    "de": "Durchschnittliche Laune der anwesenden Bewohner",
+                    "ru": "Среднее настроение жителей дома",
+                    "pt": "Humor médio de moradores em casa",
+                    "nl": "Gemiddelde stemming van bewoners thuis",
+                    "fr": "Humeur moyenne des résidents à la maison",
+                    "it": "Umore medio di residenti a casa",
+                    "es": "Medio ambiente de los residentes en casa",
+                    "pl": "Nastroje mieszkańców w domu",
+                    "uk": "Середній настрій мешканців будинку",
+                    "zh-cn": "家庭中居民平均生活费"
                 },
                 "type": "number",
                 "role": "value.residents.mood",
@@ -341,8 +359,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "First resident reaching disabled state",
-                    "de": "Bewohner, welcher zuerst den Inaktiv-Status erreicht hat"
+                    "en": "First resident reaching inactive state",
+                    "de": "Bewohner, welcher zuerst den Inaktiv-Status erreicht hat",
+                    "ru": "Первый резидент, достигающий неактивного государства",
+                    "pt": "Primeiro residente atingindo estado inativo",
+                    "nl": "Eerste inwoner bereikt inactieve staat",
+                    "fr": "Premier résident atteint l ' état inactif",
+                    "it": "Primo residente che raggiunge lo stato inattivo",
+                    "es": "Primer residente que llega al estado inactivo",
+                    "pl": "Pierwszy mieszkaniec dociera do nieaktywnego państwa",
+                    "uk": "Перший резидент, який досягається неактивним станом",
+                    "zh-cn": "第一居民在入侵状态下"
                 },
                 "type": "string",
                 "role": "json.residents.disabledFirst",
@@ -357,8 +384,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Last resident reaching disabled state",
-                    "de": "Bewohner, welcher zuletzt den Inaktiv-Status erreicht hat"
+                    "en": "Last resident reaching inactive state",
+                    "de": "Bewohner, welcher zuletzt den Inaktiv-Status erreicht hat",
+                    "ru": "Последний резидент, достигающий неактивного государства",
+                    "pt": "Último residente atingindo estado inativo",
+                    "nl": "Laatste inwoner bereikte inactieve staat",
+                    "fr": "Dernier résident atteint l'état inactif",
+                    "it": "Ultimo residente che raggiunge lo stato inattivo",
+                    "es": "Último residente alcanzando estado inactivo",
+                    "pl": "Ostatni mieszkaniec dociera do nieaktywnego państwa",
+                    "uk": "Останній резидент досягне неактивного стану",
+                    "zh-cn": "入侵国家的最后居民"
                 },
                 "type": "string",
                 "role": "json.residents.disabledLast",
@@ -373,17 +409,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents absent for longer period",
-                    "de": "Namen der länger abwesenden Bewohner",
-                    "ru": "Имена отсутствующих жителей на более длительный период",
-                    "pt": "Nomes de residentes ausentes por período mais longo",
-                    "nl": "Namen van afwezige bewoners voor langere tijd",
-                    "fr": "Noms des résidents absents pour une période plus longue",
-                    "it": "Nomi di residenti assenti per un periodo più lungo",
-                    "es": "Nombres de los residentes ausentes durante más tiempo",
-                    "pl": "Nazwy nieobecnych mieszkańców przez dłuższy czas",
-                    "uk": "Назви відсутніх резидентів на більш тривалий період",
-                    "zh-cn": "长期居民姓名"
+                    "en": "List of residents absent for longer period",
+                    "de": "Liste der länger abwesenden Bewohner",
+                    "ru": "Список резидентов, отсутствующих на более длительный период",
+                    "pt": "Lista de residentes ausente por período mais longo",
+                    "nl": "List van bewoners afwezig voor langere periode",
+                    "fr": "Liste des résidents absents pour une période plus longue",
+                    "it": "Elenco dei residenti assenti per periodo più lungo",
+                    "es": "List of residents absent for longer period",
+                    "pl": "Lista mieszkańców nieobecnych przez dłuższy okres",
+                    "uk": "Список жителів, які проживають на більш тривалий період",
+                    "zh-cn": "长期不在居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.disabledList",
@@ -620,7 +656,16 @@
             "common": {
                 "name": {
                     "en": "First resident reaching home state",
-                    "de": "Bewohner, welcher zuerst nach Hause gekommen ist"
+                    "de": "Bewohner, welcher zuerst nach Hause gekommen ist",
+                    "ru": "Первый резидент, достигающий домашнего состояния",
+                    "pt": "Primeiro residente a chegar ao estado de casa",
+                    "nl": "Eerste bewoner die de staat van thuis bereikt",
+                    "fr": "First resident reaching home state",
+                    "it": "Primo residente che raggiunge lo stato di casa",
+                    "es": "First resident reaching home state",
+                    "pl": "First rezydent dotarł do kraju",
+                    "uk": "Перший житель досягне батьківського стану",
+                    "zh-cn": "第一个居民点"
                 },
                 "type": "string",
                 "role": "json.residents.homeFirst",
@@ -636,7 +681,16 @@
             "common": {
                 "name": {
                     "en": "Last resident reaching home state",
-                    "de": "Bewohner, welcher zuletzt nach Hause gekommen ist"
+                    "de": "Bewohner, welcher zuletzt nach Hause gekommen ist",
+                    "ru": "Последний резидент, достигающий домашнего состояния",
+                    "pt": "Último residente a chegar ao estado home",
+                    "nl": "Laatste bewoner bereikt de staat",
+                    "fr": "Dernier résident à la maison",
+                    "it": "Ultimo residente raggiungere lo stato di casa",
+                    "es": "Último residente llegando al estado de residencia",
+                    "pl": "Ojczyzna dociera do kraju",
+                    "uk": "Останній мешканець досягне батьківського стану",
+                    "zh-cn": "最后居民点"
                 },
                 "type": "string",
                 "role": "json.residents.homeLast",
@@ -651,17 +705,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents at home",
-                    "de": "Namen der Bewohner zu Hause",
-                    "ru": "Имена жителей дома",
-                    "pt": "Nomes de residentes em casa",
-                    "nl": "Namen van bewoners thuis",
-                    "fr": "Nom des résidents à la maison",
-                    "it": "Nomi di residenti a casa",
-                    "es": "Nombres de los residentes en casa",
-                    "pl": "Nazwy mieszkańców w domu",
-                    "uk": "Назва жителів будинку",
-                    "zh-cn": "住宅居民姓名"
+                    "en": "List of residents at home",
+                    "de": "Liste der Bewohner zu Hause",
+                    "ru": "Список жителей дома",
+                    "pt": "Lista de residentes em casa",
+                    "nl": "Leugenaars thuis",
+                    "fr": "Liste des résidents à la maison",
+                    "it": "Elenco dei residenti a casa",
+                    "es": "Lista de residentes en casa",
+                    "pl": "Lista mieszkańców w domu",
+                    "uk": "Список жителів будинку",
+                    "zh-cn": "家庭居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.homeList",
@@ -778,7 +832,16 @@
             "common": {
                 "name": {
                     "en": "First pet reaching home state",
-                    "de": "Haustier, welches zuerst nach Hause gekommen ist"
+                    "de": "Haustier, welches zuerst nach Hause gekommen ist",
+                    "ru": "Первый питомец, достигающий домашнего состояния",
+                    "pt": "Primeiro animal a chegar ao estado home",
+                    "nl": "Eerste huisdier bereikt de staat",
+                    "fr": "Premier animal à la maison",
+                    "it": "Primo animale che raggiunge lo stato di casa",
+                    "es": "Primera mascota que llega al estado de casa",
+                    "pl": "First pet reach home state (ang.)",
+                    "uk": "Перший домашній стан",
+                    "zh-cn": "先逃回家国"
                 },
                 "type": "string",
                 "role": "json.residents.petsHomeFirst",
@@ -794,7 +857,16 @@
             "common": {
                 "name": {
                     "en": "Last pet reaching home state",
-                    "de": "Haustier, welches zuletzt nach Hause gekommen ist"
+                    "de": "Haustier, welches zuletzt nach Hause gekommen ist",
+                    "ru": "Последний питомец, достигающий домашнего состояния",
+                    "pt": "Último animal de estimação chegando ao estado home",
+                    "nl": "Laatste huisdier bereikt de staat",
+                    "fr": "Dernier animal à la maison",
+                    "it": "Ultimo animale che raggiunge lo stato di casa",
+                    "es": "Última mascota llegando al estado de casa",
+                    "pl": "Ojczystej petu dochodzi do kraju",
+                    "uk": "Остання домашня тварина",
+                    "zh-cn": "到达家国的最后时间"
                 },
                 "type": "string",
                 "role": "json.residents.petsHomeLast",
@@ -809,17 +881,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of pets at home",
-                    "de": "Namen der Haustiere zu Hause",
-                    "ru": "Имена домашних животных дома",
-                    "pt": "Nomes de animais de estimação em casa",
-                    "nl": "Namen van huisdieren",
-                    "fr": "Noms des animaux à la maison",
-                    "it": "Nomi di animali domestici a casa",
-                    "es": "Nombres de mascotas en casa",
-                    "pl": "Nazwy zwierząt w domu",
-                    "uk": "Назви домашніх тварин в домашніх умовах",
-                    "zh-cn": "B. 家里的著作名称"
+                    "en": "List of pets at home",
+                    "de": "Liste der Haustiere zu Hause",
+                    "ru": "Список домашних животных дома",
+                    "pt": "Lista de animais de estimação em casa",
+                    "nl": "Huiselijk huisdier",
+                    "fr": "Liste des animaux à la maison",
+                    "it": "Elenco degli animali domestici a casa",
+                    "es": "Lista de mascotas en casa",
+                    "pl": "Lista zwierząt w domu",
+                    "uk": "Список домашніх тварин в домашніх умовах",
+                    "zh-cn": "家里的书目一览表"
                 },
                 "type": "array",
                 "role": "list.residents.petHomeList",
@@ -936,7 +1008,16 @@
             "common": {
                 "name": {
                     "en": "First resident falling asleep",
-                    "de": "Bewohner, welcher zuerst eingeschlafen ist"
+                    "de": "Bewohner, welcher zuerst eingeschlafen ist",
+                    "ru": "Первый резидент засыпает",
+                    "pt": "Primeiro residente adormecido",
+                    "nl": "Eerste bewoner die in slaap valt",
+                    "fr": "Premier résident endormi",
+                    "it": "Primo residente addormentato",
+                    "es": "Primer residente durmiendo",
+                    "pl": "Pierwsi mieszkańcy padają na sen",
+                    "uk": "Перший житель падає",
+                    "zh-cn": "第一批居民"
                 },
                 "type": "string",
                 "role": "json.residents.nightFirst",
@@ -952,7 +1033,16 @@
             "common": {
                 "name": {
                     "en": "Last resident falling asleep",
-                    "de": "Bewohner, welcher zuletzt eingeschlafen ist"
+                    "de": "Bewohner, welcher zuletzt eingeschlafen ist",
+                    "ru": "Последний резидент засыпает",
+                    "pt": "Último residente adormecido",
+                    "nl": "Laatste bewoner viel in slaap",
+                    "fr": "Dernier résident endormi",
+                    "it": "Ultimo residente addormentato",
+                    "es": "El último residente se quedó dormido",
+                    "pl": "Ostatni mieszkaniec pada na sen",
+                    "uk": "Останній резидент падає дупа",
+                    "zh-cn": "被掠夺的最后居民"
                 },
                 "type": "string",
                 "role": "json.residents.nightLast",
@@ -967,17 +1057,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents asleep",
-                    "de": "Namen der schlafenden Bewohner",
-                    "ru": "Имена спальных жителей",
-                    "pt": "Nomes de residentes adormecidos",
-                    "nl": "Namen van slapende bewoners",
-                    "fr": "Noms des résidents endormis",
-                    "it": "Nomi dei residenti addormentati",
-                    "es": "Nombres de los residentes dormidos",
-                    "pl": "Nazwa mieszkańców snu",
-                    "uk": "Назви спальних мешканців",
-                    "zh-cn": "睡觉居民姓名"
+                    "en": "List of residents asleep",
+                    "de": "Liste der schlafenden Bewohner",
+                    "ru": "Список жителей спят",
+                    "pt": "Lista de residentes adormecidos",
+                    "nl": "List van bewoners die slapen",
+                    "fr": "Liste des résidents endormis",
+                    "it": "Elenco dei residenti addormentati",
+                    "es": "Lista de residentes dormidos",
+                    "pl": "Lista mieszkańców snu",
+                    "uk": "Список мешканців",
+                    "zh-cn": "居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.nightList",
@@ -1094,7 +1184,16 @@
             "common": {
                 "name": {
                     "en": "First resident leaving home",
-                    "de": "Bewohner, welcher zuerst das Haus verlassen hat"
+                    "de": "Bewohner, welcher zuerst das Haus verlassen hat",
+                    "ru": "Первый резидент, выходящий из дома",
+                    "pt": "Primeiro residente saindo de casa",
+                    "nl": "Eerste bewoner vertrekt",
+                    "fr": "First resident leaving home",
+                    "it": "Primo residente che lascia casa",
+                    "es": "Primer residente saliendo de casa",
+                    "pl": "Pochodzi z domu",
+                    "uk": "Перший резидент, який виїжджає додому",
+                    "zh-cn": "第一次居民离开家园"
                 },
                 "type": "string",
                 "role": "json.residents.awayFirst",
@@ -1110,7 +1209,16 @@
             "common": {
                 "name": {
                     "en": "Last resident leaving home",
-                    "de": "Bewohner, welcher zuletzt das Haus verlassen hat"
+                    "de": "Bewohner, welcher zuletzt das Haus verlassen hat",
+                    "ru": "Последний резидент, выходящий из дома",
+                    "pt": "Último residente saindo de casa",
+                    "nl": "Laatste bewoner vertrekt",
+                    "fr": "Last resident leaving home",
+                    "it": "Ultimo residente che lascia casa",
+                    "es": "Último residente saliendo de casa",
+                    "pl": "Pozostali mieszkańcy opuszczają dom",
+                    "uk": "Останнім мешканцем, що виїхали додому",
+                    "zh-cn": "最后居民离开家园"
                 },
                 "type": "string",
                 "role": "json.residents.awayLast",
@@ -1125,17 +1233,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents away",
-                    "de": "Namen der abswesenden Bewohner",
-                    "ru": "Имена жителей вдали",
-                    "pt": "Nomes de residentes fora",
-                    "nl": "Namen van bewoners weg",
-                    "fr": "Noms des résidents éloignés",
-                    "it": "Nomi di residenti via",
-                    "es": "Nombres de los residentes lejos",
-                    "pl": "Nazwy mieszkańców odległe od mieszkańców",
-                    "uk": "Назва жителів",
-                    "zh-cn": "居民姓名"
+                    "en": "List of residents away",
+                    "de": "Liste der abswesenden Bewohner",
+                    "ru": "Список отсутствующих жителей",
+                    "pt": "Lista de residentes ausentes",
+                    "nl": "List van afwezige bewoners",
+                    "fr": "Liste des résidents absents",
+                    "it": "Elenco dei residenti assenti",
+                    "es": "Lista de residentes ausentes",
+                    "pl": "Lista nieobecnych mieszkańców",
+                    "uk": "Перелік нерезидентів",
+                    "zh-cn": "缺席居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.awayList",
@@ -1272,7 +1380,16 @@
             "common": {
                 "name": {
                     "en": "First resident woken up",
-                    "de": "Bewohner, welcher zuerst aufgestanden ist"
+                    "de": "Bewohner, welcher zuerst aufgestanden ist",
+                    "ru": "Первый житель проснулся",
+                    "pt": "Primeiro residente acordou",
+                    "nl": "De eerste bewoner werd wakker",
+                    "fr": "Premier résident réveillé",
+                    "it": "Primo residente svegliato",
+                    "es": "El primer residente se despertó",
+                    "pl": "First rezydent woken up",
+                    "uk": "Перший життєвий жилет",
+                    "zh-cn": "第一居民受伤"
                 },
                 "type": "string",
                 "role": "json.residents.awakeFirst",
@@ -1288,7 +1405,16 @@
             "common": {
                 "name": {
                     "en": "Last resident woken up",
-                    "de": "Bewohner, welcher zuletzt aufgestanden ist"
+                    "de": "Bewohner, welcher zuletzt aufgestanden ist",
+                    "ru": "Последний житель проснулся",
+                    "pt": "Último residente acordou",
+                    "nl": "Laatste bewoner werd wakker",
+                    "fr": "Dernier résident réveillé",
+                    "it": "Ultimo residente svegliato",
+                    "es": "El último residente se despertó",
+                    "pl": "Ostatni rezydent",
+                    "uk": "Останній життєвий жилет",
+                    "zh-cn": "上次居民受伤"
                 },
                 "type": "string",
                 "role": "json.residents.awakeLast",
@@ -1303,17 +1429,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents awake at night",
-                    "de": "Namen der nachts wachen Bewohner",
-                    "ru": "Имена жителей пробуждаются ночью",
-                    "pt": "Nomes de moradores acordados à noite",
-                    "nl": "Namen van bewoners 's nachts wakker",
-                    "fr": "Nom des résidents éveillés la nuit",
-                    "it": "I nomi dei residenti svegli di notte",
-                    "es": "Nombres de los residentes despiertos por la noche",
-                    "pl": "Nazwa mieszkańców budzi się nocą",
-                    "uk": "Назви життєздатних мешканців вночі",
-                    "zh-cn": "A. 居民在夜间有瓦砾"
+                    "en": "List of residents awake at night",
+                    "de": "Liste der nachts wachen Bewohner",
+                    "ru": "Список жителей просыпаются ночью",
+                    "pt": "Lista de moradores acordados à noite",
+                    "nl": "List van bewoners 's nachts wakker",
+                    "fr": "Liste des résidents éveillés la nuit",
+                    "it": "Elenco dei residenti svegli di notte",
+                    "es": "Lista de residentes despiertos por la noche",
+                    "pl": "Lista mieszkańców budzi się w nocy",
+                    "uk": "Список мешканців нічного віку",
+                    "zh-cn": "夜间居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.awakeList",
@@ -1329,7 +1455,16 @@
             "common": {
                 "name": {
                     "en": "Some resident gets ready for bed?",
-                    "de": "Irgendein Bewohner macht sich bettfertig?"
+                    "de": "Irgendein Bewohner macht sich bettfertig?",
+                    "ru": "Некоторые резиденты готовы к постели?",
+                    "pt": "Um residente está pronto para dormir?",
+                    "nl": "Is er een inwoner klaar voor bed?",
+                    "fr": "Un résident se prépare au lit ?",
+                    "it": "Un residente si prepara a letto?",
+                    "es": "¿Algún residente se prepara para la cama?",
+                    "pl": "Część mieszkania jest gotowa do łóżka?",
+                    "uk": "Хтось резидент отримує готовий до ліжка?",
+                    "zh-cn": "有些居民准备好?"
                 },
                 "type": "boolean",
                 "role": "indicator.residents.bedtime",
@@ -1338,7 +1473,16 @@
                 "def": false,
                 "desc": {
                     "en": "Is any resident getting ready for bed?",
-                    "de": "Macht sich irgendein Bewohner bettfertig?"
+                    "de": "Macht sich irgendein Bewohner bettfertig?",
+                    "ru": "Готов ли резидент к постели?",
+                    "pt": "Algum residente está se preparando para a cama?",
+                    "nl": "Maakt een inwoner zich klaar voor bed?",
+                    "fr": "Est-ce qu'un résident se prépare au lit ?",
+                    "it": "Qualche residente si sta preparando per andare a letto?",
+                    "es": "¿Hay algún residente listo para la cama?",
+                    "pl": "Czy każdy mieszkaniec jest gotowy do łóżka?",
+                    "uk": "Чи готовий будь-який резидент на ліжко?",
+                    "zh-cn": "是否有任何居民准备好?"
                 }
             },
             "native": {}
@@ -1349,7 +1493,16 @@
             "common": {
                 "name": {
                     "en": "All residents get ready for bed?",
-                    "de": "Alle Bewohner machen sich bettfertig?"
+                    "de": "Alle Bewohner machen sich bettfertig?",
+                    "ru": "Все жители готовы к постели?",
+                    "pt": "Todos os residentes se preparam para a cama?",
+                    "nl": "Zijn alle bewoners klaar voor bed?",
+                    "fr": "Tous les résidents se préparent au lit ?",
+                    "it": "Tutti i residenti si preparano a letto?",
+                    "es": "¿Todos los residentes se preparan para la cama?",
+                    "pl": "Wszyscy mieszkańcy są gotowi do łóżka?",
+                    "uk": "Всім мешканцям приготують ліжко?",
+                    "zh-cn": "所有居民都准备好?"
                 },
                 "type": "boolean",
                 "role": "indicator.residents.bedtimeAll",
@@ -1358,7 +1511,16 @@
                 "def": false,
                 "desc": {
                     "en": "Are all residents getting ready for bed?",
-                    "de": "Machen sich alle Bewohner bettfertig?"
+                    "de": "Machen sich alle Bewohner bettfertig?",
+                    "ru": "Готовы ли все жители к постели?",
+                    "pt": "Todos os residentes estão a preparar-se para a cama?",
+                    "nl": "Zijn alle bewoners klaar om naar bed te gaan?",
+                    "fr": "Tous les résidents se préparent-ils au lit ?",
+                    "it": "Tutti i residenti si stanno preparando a letto?",
+                    "es": "¿Están todos los residentes listos para la cama?",
+                    "pl": "Wszyscy mieszkańcy są gotowi do łóżka?",
+                    "uk": "Чи готові до ліжка всі мешканці?",
+                    "zh-cn": "所有居民是否准备好?"
                 }
             },
             "native": {}
@@ -1369,7 +1531,16 @@
             "common": {
                 "name": {
                     "en": "Number of residents getting ready for bed",
-                    "de": "Anzahl der sich bettfertig machenden Bewohner"
+                    "de": "Anzahl der sich bettfertig machenden Bewohner",
+                    "ru": "Количество жителей, готовых к постели",
+                    "pt": "Número de moradores se preparando para a cama",
+                    "nl": "Nummers die zich klaarmaken voor bed",
+                    "fr": "Nombre de résidents se préparer pour le lit",
+                    "it": "Numero di residenti che si preparano a letto",
+                    "es": "Número de residentes preparándose para la cama",
+                    "pl": "Liczba mieszkańców gotowych do łóżka",
+                    "uk": "Кількість жителів, які приготуються до ліжка",
+                    "zh-cn": "准备准备接受的居民人数"
                 },
                 "type": "number",
                 "role": "value.residents.bedtimeCount",
@@ -1385,7 +1556,16 @@
             "common": {
                 "name": {
                     "en": "First resident getting ready for bed",
-                    "de": "Bewohner, welcher sich zuerst bettfertig gemacht hat"
+                    "de": "Bewohner, welcher sich zuerst bettfertig gemacht hat",
+                    "ru": "Первый житель готовится к постели",
+                    "pt": "Primeiro residente se preparando para a cama",
+                    "nl": "Eerste bewoner die zich klaarmaakt voor bed",
+                    "fr": "Premier résident se préparer pour le lit",
+                    "it": "Primo residente pronto per il letto",
+                    "es": "Primer residente preparándose para la cama",
+                    "pl": "First rezydent gotowy do łóżka",
+                    "uk": "Перший жилет готовий до ліжка",
+                    "zh-cn": "第一批居民准备好准备好。"
                 },
                 "type": "string",
                 "role": "json.residents.bedtimeFirst",
@@ -1401,7 +1581,16 @@
             "common": {
                 "name": {
                     "en": "Last resident getting ready for bed",
-                    "de": "Bewohner, welcher sich zuletzt bettfertig gemacht hat"
+                    "de": "Bewohner, welcher sich zuletzt bettfertig gemacht hat",
+                    "ru": "Последний житель готовится к постели",
+                    "pt": "Último residente se preparando para a cama",
+                    "nl": "Laatste inwoner die zich klaarmaakt voor bed",
+                    "fr": "Dernier résident se prépare pour le lit",
+                    "it": "Ultimo residente pronto per il letto",
+                    "es": "Último residente preparándose para la cama",
+                    "pl": "Rezydent gotowy do łóżka",
+                    "uk": "Останній мешканець готовий до ліжка",
+                    "zh-cn": "准备好好好的居民"
                 },
                 "type": "string",
                 "role": "json.residents.bedtimeLast",
@@ -1416,8 +1605,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents getting ready for bed",
-                    "de": "Namen der sich bettfertig machenden Bewohner"
+                    "en": "List of residents getting ready for bed",
+                    "de": "Liste der sich bettfertig machenden Bewohner",
+                    "ru": "Список резидентов, готовых к постели",
+                    "pt": "Lista de moradores se preparando para a cama",
+                    "nl": "Leugenaars die zich klaarmaken voor bed",
+                    "fr": "Liste des résidents se préparer pour le lit",
+                    "it": "Elenco dei residenti che si preparano a letto",
+                    "es": "Lista de residentes preparándose para la cama",
+                    "pl": "Lista mieszkańców gotowych do łóżka",
+                    "uk": "Список жителів, які готові до місця",
+                    "zh-cn": "准备名单"
                 },
                 "type": "array",
                 "role": "list.residents.bedtimeList",
@@ -1534,7 +1732,16 @@
             "common": {
                 "name": {
                     "en": "First resident planning to overnight",
-                    "de": "Bewohner, welcher zuerst seine Übernachtung angemeldet hat"
+                    "de": "Bewohner, welcher zuerst seine Übernachtung angemeldet hat",
+                    "ru": "Первый резидент, планирующий ночь",
+                    "pt": "Primeiro planejamento residente durante a noite",
+                    "nl": "Eerste bewoner van plan om de nacht door te gaan",
+                    "fr": "Première planification des résidents à la nuit",
+                    "it": "Prima pianificazione residente a notte",
+                    "es": "Primera planificación residente para pasar la noche",
+                    "pl": "Pierwszy plan mieszkania na noc",
+                    "uk": "Планування першого жителя на ніч",
+                    "zh-cn": "第一次居民规划周多"
                 },
                 "type": "string",
                 "role": "json.residents.overnightFirst",
@@ -1550,7 +1757,16 @@
             "common": {
                 "name": {
                     "en": "Last resident planning to overnight",
-                    "de": "Bewohner, welcher zuletzt seine Übernachtung angemeldet hat"
+                    "de": "Bewohner, welcher zuletzt seine Übernachtung angemeldet hat",
+                    "ru": "Последний резидент, планирующий ночь",
+                    "pt": "Último planejamento residente durante a noite",
+                    "nl": "Laatste bewoner van plan om overnachten",
+                    "fr": "Dernière planification résidente à nuit",
+                    "it": "Ultima pianificazione residente a notte",
+                    "es": "Última planificación residente para pasar la noche",
+                    "pl": "Ostatni plan mieszkania",
+                    "uk": "Останній резидент планування на ніч",
+                    "zh-cn": "最后的居民规划"
                 },
                 "type": "string",
                 "role": "json.residents.overnightLast",
@@ -1565,17 +1781,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents to stay overnight today",
-                    "de": "Namen der Bewohner, die heute übernachten",
-                    "ru": "Имена жителей, чтобы остаться на ночь сегодня",
-                    "pt": "Nomes de moradores para ficar durante a noite hoje",
-                    "nl": "Namen van bewoners om vannacht te blijven",
-                    "fr": "Noms des résidents pour passer la nuit aujourd'hui",
-                    "it": "I nomi dei residenti per rimanere durante la notte di oggi",
-                    "es": "Nombres de los residentes para quedarse esta noche",
-                    "pl": "Nazwy mieszkańców na noc",
-                    "uk": "Назви жителів, які проживають сьогодні",
-                    "zh-cn": "居民在今天夜间停留的名称"
+                    "en": "List of residents to stay overnight today",
+                    "de": "Liste der Bewohner, die heute übernachten",
+                    "ru": "Список жителей, чтобы остаться на ночь сегодня",
+                    "pt": "Lista de moradores para ficar durante a noite hoje",
+                    "nl": "Leugenaar van de bewoners om vannacht te blijven",
+                    "fr": "Liste des résidents pour passer la nuit aujourd'hui",
+                    "it": "Elenco dei residenti per rimanere di notte oggi",
+                    "es": "Lista de residentes para quedarse esta noche",
+                    "pl": "Lista mieszkańców na dzień pobytu",
+                    "uk": "Список мешканців сьогодні",
+                    "zh-cn": "居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.overnightList",
@@ -1591,7 +1807,16 @@
             "common": {
                 "name": {
                     "en": "Some resident has a wake-up call?",
-                    "de": "Irgendein Bewohner wird geweckt?"
+                    "de": "Irgendein Bewohner wird geweckt?",
+                    "ru": "У кого-то жителя звонок?",
+                    "pt": "Algum residente tem uma chamada de despertar?",
+                    "nl": "Heeft een inwoner een wake-up call?",
+                    "fr": "Un résident a un réveil ?",
+                    "it": "Un residente ha una sveglia?",
+                    "es": "¿Algún residente tiene una llamada de atención?",
+                    "pl": "Niektórzy mieszkańcy mają wezwanie powikłań?",
+                    "uk": "Який життєздатний дзвінок?",
+                    "zh-cn": "一些居民有后续呼吁?"
                 },
                 "type": "boolean",
                 "role": "indicator.residents.wakeup",
@@ -1600,7 +1825,16 @@
                 "def": false,
                 "desc": {
                     "en": "Is any resident currently having a wake-up call running?",
-                    "de": "Wird irgendein Bewohner gerade geweckt?"
+                    "de": "Wird irgendein Bewohner gerade geweckt?",
+                    "ru": "Есть ли у любого резидента в настоящее время пробуждение звонит?",
+                    "pt": "Algum residente está a fazer uma chamada de despertar?",
+                    "nl": "Heeft een inwoner momenteel een wake-up call?",
+                    "fr": "Est-ce qu'un résident est en train de se réveiller ?",
+                    "it": "C'e' un residente che ha una sveglia in esecuzione?",
+                    "es": "¿Hay algún residente que tenga una llamada de atención?",
+                    "pl": "Czy każdy mieszkaniec może trwać?",
+                    "uk": "Чи працює будь-який резидент, який наразі має прокидний дзвінок?",
+                    "zh-cn": "是否有任何居民目前有事后呼吁?"
                 }
             },
             "native": {}
@@ -1611,7 +1845,16 @@
             "common": {
                 "name": {
                     "en": "All residents have a wake-up call?",
-                    "de": "Werden alle Bewohner geweckt?"
+                    "de": "Werden alle Bewohner geweckt?",
+                    "ru": "У всех жителей есть звонок?",
+                    "pt": "Todos os residentes têm uma chamada de despertar?",
+                    "nl": "Hebben alle bewoners een wake-up call?",
+                    "fr": "Tous les résidents ont un réveil ?",
+                    "it": "Tutti i residenti hanno una sveglia?",
+                    "es": "¿Todos los residentes tienen una llamada de atención?",
+                    "pl": "Wszyscy mieszkańcy mają wezwanie?",
+                    "uk": "Всім мешканцям є прокидний дзвінок?",
+                    "zh-cn": "所有居民都发出呼吁?"
                 },
                 "type": "boolean",
                 "role": "indicator.residents.wakeupAll",
@@ -1620,7 +1863,16 @@
                 "def": false,
                 "desc": {
                     "en": "Do all residents currently have a wake-up call running?",
-                    "de": "Werden gerade alle Bewohner geweckt?"
+                    "de": "Werden gerade alle Bewohner geweckt?",
+                    "ru": "У всех жителей в настоящее время работает пробуждение?",
+                    "pt": "Todos os residentes têm uma chamada de despertar?",
+                    "nl": "Hebben alle bewoners momenteel een wake-up call?",
+                    "fr": "Tous les résidents ont-ils actuellement un appel de réveil ?",
+                    "it": "Tutti i residenti attualmente hanno una chiamata sveglia in esecuzione?",
+                    "es": "¿Todos los residentes tienen una llamada de atención?",
+                    "pl": "Czy wszyscy mieszkańcy mają obecnie obrót?",
+                    "uk": "Чи є всі жителі, які зараз мають прокидний дзвінок?",
+                    "zh-cn": "是否所有居民都有后续呼吁?"
                 }
             },
             "native": {}
@@ -1631,7 +1883,16 @@
             "common": {
                 "name": {
                     "en": "Number of residents having a wake-up call",
-                    "de": "Anzahl der Bewohner, die geweckt werden"
+                    "de": "Anzahl der Bewohner, die geweckt werden",
+                    "ru": "Количество жителей с просыпающим звонком",
+                    "pt": "Número de residentes que têm uma chamada de despertar",
+                    "nl": "Nummers met een wake-up call",
+                    "fr": "Nombre de résidents ayant un appel de réveil",
+                    "it": "Numero di residenti che hanno una chiamata di sveglia",
+                    "es": "Número de residentes que tienen una llamada de atención",
+                    "pl": "Liczba mieszkańców ma telefon z pobudzeniem",
+                    "uk": "Кількість жителів, які мають прокидний дзвінок",
+                    "zh-cn": "A. 发出呼吁的居民人数"
                 },
                 "type": "number",
                 "role": "value.residents.wakeupCount",
@@ -1647,7 +1908,16 @@
             "common": {
                 "name": {
                     "en": "First resident starting to have a wake-up call",
-                    "de": "Bewohner, dessen Wecker zuerst geklingelt hat"
+                    "de": "Bewohner, dessen Wecker zuerst geklingelt hat",
+                    "ru": "Первый резидент, начиная с пробуждения",
+                    "pt": "Primeiro residente a começar a ter uma chamada de despertar",
+                    "nl": "De eerste bewoner begint een wake-up call",
+                    "fr": "Premier résident qui commence à avoir un appel de réveil",
+                    "it": "Primo residente che inizia ad avere una sveglia",
+                    "es": "Primer residente empezando a tener una llamada de atención",
+                    "pl": "Pierwsi rezydent zaczynają się od wezwania pobudzenia",
+                    "uk": "Перший резидент, починаючи з поїздки",
+                    "zh-cn": "第一居民开始发出呼吁"
                 },
                 "type": "string",
                 "role": "json.residents.wakeupFirst",
@@ -1663,7 +1933,16 @@
             "common": {
                 "name": {
                     "en": "Last resident starting to have a wake-up call",
-                    "de": "Bewohner, dessen Wecker zuletzt geklingelt hat"
+                    "de": "Bewohner, dessen Wecker zuletzt geklingelt hat",
+                    "ru": "Последний резидент начинает звонить",
+                    "pt": "Último residente começando a ter uma chamada de despertar",
+                    "nl": "Laatste inwoner begint een wake-up call",
+                    "fr": "Dernier résident qui commence à avoir un réveil",
+                    "it": "Ultimo residente che inizia ad avere una sveglia",
+                    "es": "El último residente comienza a tener una llamada de despertar",
+                    "pl": "Ostatni mieszkaniec rozpoczyna się od wezwania pobudzenia",
+                    "uk": "Останній резидент, починаючи з того, щоб мати прокидний дзвінок",
+                    "zh-cn": "最终居民开始发出呼吁"
                 },
                 "type": "string",
                 "role": "json.residents.wakeupLast",
@@ -1678,8 +1957,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents having a wake-up call",
-                    "de": "Namen der Bewohner, die geweckt werden"
+                    "en": "List of residents having a wake-up call",
+                    "de": "Liste der Bewohner, die geweckt werden",
+                    "ru": "Список жителей, имеющих просыпающий звонок",
+                    "pt": "Lista de residentes com uma chamada de despertar",
+                    "nl": "De bewoners hebben een wake-up call",
+                    "fr": "Liste des résidents ayant un appel de réveil",
+                    "it": "Elenco dei residenti che hanno una chiamata di sveglia",
+                    "es": "List of residents having a wake-up call",
+                    "pl": "Lista mieszkańców ma telefon z pobudzeniem",
+                    "uk": "Список жителів, які мають прокидний дзвінок",
+                    "zh-cn": "一、背后居民名单"
                 },
                 "type": "array",
                 "role": "list.residents.wakeupList",
@@ -1796,7 +2084,16 @@
             "common": {
                 "name": {
                     "en": "First resident being on their way home",
-                    "de": "Bewohner, welcher sich zuerst auf den Heimweg gemacht hat"
+                    "de": "Bewohner, welcher sich zuerst auf den Heimweg gemacht hat",
+                    "ru": "Первый житель на пути домой",
+                    "pt": "Primeiro residente a caminho de casa",
+                    "nl": "Eerste bewoner op weg naar huis",
+                    "fr": "Premier résident en chemin",
+                    "it": "Il primo residente sta per tornare a casa",
+                    "es": "Primer residente en camino a casa",
+                    "pl": "Pierwsze mieszkanie w drodze do domu",
+                    "uk": "Перший мешканець будинку",
+                    "zh-cn": "第一个居民以其家园为主"
                 },
                 "type": "string",
                 "role": "json.residents.wayhomeFirst",
@@ -1812,7 +2109,16 @@
             "common": {
                 "name": {
                     "en": "Last resident being on their way home",
-                    "de": "Bewohner, welcher sich zuletzt auf den Heimweg gemacht hat"
+                    "de": "Bewohner, welcher sich zuletzt auf den Heimweg gemacht hat",
+                    "ru": "Последний резидент на пути домой",
+                    "pt": "Último residente a caminho de casa",
+                    "nl": "Laatste inwoner op weg naar huis",
+                    "fr": "Dernier résident en chemin",
+                    "it": "L'ultimo residente sta tornando a casa",
+                    "es": "El último residente en camino a casa",
+                    "pl": "Ojczyzna w drodze do domu",
+                    "uk": "Останнім мешканцем, які перебувають на батьківщині",
+                    "zh-cn": "最后一个居民正在家园。"
                 },
                 "type": "string",
                 "role": "json.residents.wayhomeLast",
@@ -1827,17 +2133,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "Names of residents on their way home",
-                    "de": "Namen der Bewohner auf dem Heimweg",
-                    "ru": "Имена жителей на их пути домой",
-                    "pt": "Nomes de moradores em seu caminho para casa",
-                    "nl": "Namen van bewoners op weg naar huis",
-                    "fr": "Noms des résidents sur leur chemin",
-                    "it": "Nomi di residenti sulla loro strada di casa",
-                    "es": "Nombres de los residentes en su camino a casa",
-                    "pl": "Nazwy mieszkańców w drodze do domu",
-                    "uk": "Назва жителів будинку",
-                    "zh-cn": "居民在家里的名称"
+                    "en": "List of residents on their way home",
+                    "de": "Liste der Bewohner auf dem Heimweg",
+                    "ru": "Список жителей на их пути домой",
+                    "pt": "Lista de residentes em seu caminho para casa",
+                    "nl": "Leugenaars op weg naar huis",
+                    "fr": "List of residents on their way home",
+                    "it": "Elenco dei residenti sulla strada di casa",
+                    "es": "Lista de residentes en su camino a casa",
+                    "pl": "Lista mieszkańców w drodze do domu",
+                    "uk": "Список мешканців будинку",
+                    "zh-cn": "B. 居民在家里的名单"
                 },
                 "type": "array",
                 "role": "list.residents.wayhomeList",
