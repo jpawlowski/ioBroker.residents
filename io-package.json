@@ -78,7 +78,8 @@
         "guest": [],
         "pet": [],
         "residentsParentInstanceIDs": [],
-        "DisableAbsentResidentsDailyTimer": "04:59"
+        "DisableAbsentResidentsDailyTimer": "04:59",
+        "ResetOvernightDailyTimer": "04:59"
     },
     "objects": [],
     "instanceObjects": [

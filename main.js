@@ -19,9 +19,11 @@ class Residents extends utils.Adapter {
 
         this.subscriptions = [];
         this.foreignSubscriptions = [];
+        this.presenceSubscriptionMapping = {};
         this.states = [];
 
         this.absentTimeout = null;
+        this.overnightTimeout = null;
         this.calculationTimeout = null;
 
         this.on('ready', this.onReady.bind(this));
@@ -210,7 +212,7 @@ class Residents extends utils.Adapter {
                         native: {},
                     });
 
-                    const activityStates = {
+                    const activityStatesObj = {
                         // 000-0999: Not present at home / Away
                         0: 'Away: Extended Absence',
                         1: 'Away: On the Road for Today',
@@ -218,45 +220,44 @@ class Residents extends utils.Adapter {
 
                         // 1000-1999: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
                         1000: 'Home',
-                        // 1001: 'Home: Boring',
 
-                        // // 1100-1199: WAKING TIME at home: Food
-                        // 1100: 'Food: Cooking',
-                        // 1110: 'Food: Eating',
-                        // 1120: 'Food: Feeding',
+                        // 1100-1199: WAKING TIME at home: Food
+                        1100: 'Food: Cooking',
+                        1110: 'Food: Eating',
+                        1120: 'Food: Feeding',
 
-                        // // 1200-1299: WAKING TIME at home: Housework
-                        // 1200: 'Housework: General',
-                        // 1210: 'Housework: Laundry',
-                        // 1220: 'Housework: Cleaning',
-                        // 1230: 'Housework: Repairing',
+                        // 1200-1299: WAKING TIME at home: Housework
+                        1200: 'Housework: General',
+                        1210: 'Housework: Laundry',
+                        1220: 'Housework: Cleaning',
+                        1230: 'Housework: Repairing',
 
-                        // // 1300-1399: WAKING TIME at home: Working / Educating / Earning Money
-                        // 1300: 'Job: Working',
-                        // 1310: 'Job: Break from Working',
-                        // 1350: 'Job: Learning',
-                        // 1360: 'Job: Break from Learning',
+                        // 1300-1399: WAKING TIME at home: Working / Educating / Earning Money
+                        1300: 'Job: Working',
+                        1310: 'Job: Break from Working',
+                        1350: 'Job: Learning',
+                        1360: 'Job: Break from Learning',
 
-                        // // 1400-1499: WAKING TIME at home: Free Time / Being Mentally Active
-                        // 1400: 'Mental: General Relaxing',
-                        // 1410: 'Mental: Reading',
+                        // 1400-1499: WAKING TIME at home: Free Time / Being Mentally Active
+                        1400: 'Mental: General Relaxing',
+                        1410: 'Mental: Reading',
 
-                        // // 1500-1599: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
-                        // 1500: 'Fun: Gaming',
-                        // 1510: 'Fun: Making Music',
+                        // 1500-1599: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
+                        1500: 'Fun: Gaming',
+                        1510: 'Fun: Making Music',
 
-                        // // 1600-1699: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
-                        // 1600: 'Fun: Listening to Music',
-                        // 1610: 'Fun: Watching Video',
+                        // 1600-1699: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
+                        1600: 'Fun: Listening to Music',
+                        1610: 'Fun: Watching Video',
 
-                        // // 1700-1799: WAKING TIME at home: Body care
-                        // 1700: 'Body: Sporting',
-                        // 1750: 'Body: Bathing',
-                        // 1760: 'Body: Showering',
+                        // 1700-1799: WAKING TIME at home: Body care
+                        1700: 'Body: Sporting',
+                        1750: 'Body: Bathing',
+                        1760: 'Body: Showering',
 
-                        // // 1800-1899: WAKING TIME at home: Self care
-                        // 1800: 'Self: Meditating',
-                        // 1810: 'Self: Thinking',
+                        // 1800-1899: WAKING TIME at home: Self care
+                        1800: 'Self: Meditating',
+                        1810: 'Self: Thinking',
 
                         // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
                         1900: 'Wind Down: Preparing Bedtime',
@@ -283,11 +284,29 @@ class Residents extends utils.Adapter {
                         2210: 'Wake Up: Implicit awakening by presence',
                     };
 
-                    for (const key in activityStates) {
-                        if (Number(key) >= 10000) break;
-                        if (Number(key) < 1000) continue;
+                    const activityStates = {
+                        0: '',
+                    };
+                    const taskStates = {
+                        1000: '',
+                    };
+
+                    for (const key in activityStatesObj) {
+                        activityStates[key] = activityStatesObj[key];
+
+                        // Numbers below 1000 only for activity.state
+                        if (Number(key) < 1000) {
+                            continue;
+                        }
+
+                        // Only numbers below 1900 for activity.task
+                        else if (Number(key) < 1900) {
+                            taskStates[key] = activityStatesObj[key];
+                        }
+
+                        // DND variants for activity.state
                         const newKey = Number(key) + 10000;
-                        let newVal = activityStates[key];
+                        let newVal = activityStatesObj[key];
                         if (newVal.includes(':')) {
                             newVal = newVal.replace(/:\s+/g, ': Do Not Disturb (') + ')';
                         } else {
@@ -317,6 +336,37 @@ class Residents extends utils.Adapter {
                                     de: 'Bewohner Aktivitätsstatus',
                                 },
                                 states: activityStates,
+                            },
+                            native: {},
+                        },
+                        {
+                            preserve: {
+                                common: ['name'],
+                            },
+                        },
+                    );
+
+                    await this.setObjectAsync(
+                        id + '.activity.task',
+                        {
+                            type: 'state',
+                            common: {
+                                name: {
+                                    en: name + ' is going after this task',
+                                    de: name + ' geht dieser Aufgabe nach',
+                                },
+                                type: 'number',
+                                role: 'level.mode.resident.task',
+                                min: 1000,
+                                max: 12999,
+                                read: true,
+                                write: true,
+                                def: 1000,
+                                desc: {
+                                    en: 'The task the resident is going after right now.',
+                                    de: 'Die Aufgabe, der der Bewohner gerade nachgeht.',
+                                },
+                                states: taskStates,
                             },
                             native: {},
                         },
@@ -364,14 +414,22 @@ class Residents extends utils.Adapter {
                                     en: name + ' is getting ready for bed?',
                                     de: name + ' macht sich bettfertig?',
                                 },
-                                type: 'boolean',
-                                role: 'switch.mode.resident.bedtime',
+                                type: 'number',
+                                role: 'level.mode.resident.bedtime',
+                                min: 0,
+                                max: 12999,
                                 read: true,
                                 write: true,
-                                def: false,
+                                def: 0,
                                 desc: {
                                     en: 'Is this resident getting ready for bed right now?',
                                     de: 'Macht sich dieser Bewohner gerade bettfertig?',
+                                },
+                                states: {
+                                    0: 'Off',
+                                    1: 'Wind Down: Preparing Bedtime',
+                                    2: 'Bedtime: Getting to Bed',
+                                    3: 'Night: In Bed',
                                 },
                             },
                             native: {},
@@ -951,6 +1009,17 @@ class Residents extends utils.Adapter {
                 this.subscriptions.push(id + '.presence.*');
                 this.subscriptions.push(id + '.presenceFollowing.*');
 
+                if (
+                    resident.foreignPresenceObjectId !== undefined &&
+                    typeof resident.foreignPresenceObjectId === 'string' &&
+                    resident.foreignPresenceObjectId != ''
+                ) {
+                    this.foreignSubscriptions.push(resident.foreignPresenceObjectId);
+                    if (this.presenceSubscriptionMapping[resident.foreignPresenceObjectId] === undefined)
+                        this.presenceSubscriptionMapping[resident.foreignPresenceObjectId] = [];
+                    this.presenceSubscriptionMapping[resident.foreignPresenceObjectId].push(id);
+                }
+
                 // Yahka instance update
                 if (
                     resident['yahkaInstanceId'] &&
@@ -1153,27 +1222,51 @@ class Residents extends utils.Adapter {
             }
         }
         for (const pattern in this.foreignSubscriptions) {
-            const stateList = await this.getStatesAsync(this.foreignSubscriptions[pattern]);
+            const stateList = await this.getForeignStatesAsync(this.foreignSubscriptions[pattern]);
             for (const id in stateList) {
                 this.states[id] = stateList[id];
                 this.log.silly('Subscribing to foreign events for ' + id);
-                this.subscribeStates(id);
+                this.subscribeForeignStates(id);
             }
         }
 
-        this.setResidentsSummary();
+        await this.setResidentsSummary();
 
         this.timeoutDisableAbsentResidents(true);
+        this.timeoutResetOvernight(true);
     }
 
     /**
+     * Disable any resident that is currently away, assuming to be away for the day as there was no overnight
+     *
      * @param {boolean} [initialize]
      */
     timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
-            // Disable any resident that is currently away,
-            // assuming to be away for the day as there was no overnight
-            this.setStateAsync(this.namespace + '.control.state.disableAll', { val: true, ack: false });
+            this.residents.forEach(async (resident) => {
+                const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+                const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
+
+                if (enabled === false) {
+                    this.log.debug(
+                        'timeoutDisableAbsentResidents: ' +
+                            resident['id'] +
+                            " is already 'disabled', therefore it is not changed.",
+                    );
+                } else if (away === false) {
+                    this.log.debug(
+                        'timeoutDisableAbsentResidents: ' +
+                            resident['id'] +
+                            " is not 'away', therefore it is not disabled.",
+                    );
+                } else {
+                    this.log.info('timeoutDisableAbsentResidents: Disabling absent device ' + resident['id'] + '.');
+                    await this.setStateAsync(resident['id'] + '.enabled', {
+                        val: false,
+                        ack: false,
+                    });
+                }
+            });
         }
 
         // Create new timeout
@@ -1185,9 +1278,75 @@ class Residents extends utils.Adapter {
                 )} HH:mm:ss)`,
             );
             this.absentTimeout = this.setTimeout(() => {
-                this.log.debug('Started nightly absent timeout');
+                this.log.info('Started daily absent timeout');
                 this.absentTimeout = null;
                 this.timeoutDisableAbsentResidents();
+            }, runtimeMilliseconds);
+        }
+    }
+
+    /**
+     * Set overnight to default for roomies that stayed overnight
+     *
+     * @param {boolean} [initialize]
+     */
+    timeoutResetOvernight(initialize) {
+        if (!initialize) {
+            this.residents.forEach(async (resident) => {
+                const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+                const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))?.val;
+                const overnightDef = (await this.getObjectAsync(resident['id']))?.common.def;
+
+                if (resident['type'] === 'pet') {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' + resident['id'] + ' is a pet without night state - ignoring.',
+                    );
+                } else if (resident['type'] === 'guest') {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' +
+                            resident['id'] +
+                            ' is a guest, therefore is excluded from automatic reset.',
+                    );
+                } else if (overnight === overnightDef) {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' +
+                            resident['id'] +
+                            " activity 'overnight' is already " +
+                            overnightDef +
+                            ', therefore is not changed.',
+                    );
+                } else if (home === false) {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' + resident['id'] + ' is not at home, therefore is excluded.',
+                    );
+                } else {
+                    this.log.info(
+                        "timeoutResetOvernight: Resetting 'overnight' for" +
+                            resident['id'] +
+                            ' to ' +
+                            overnightDef +
+                            '.',
+                    );
+                    await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                        val: overnightDef,
+                        ack: false,
+                    });
+                }
+            });
+        }
+
+        // Create new timeout
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.ResetOvernightDailyTimer);
+        if (runtimeMilliseconds != null) {
+            this.log.debug(
+                `Creating overnight reset timeout in ${runtimeMilliseconds}ms (in ${this.convertMillisecondsToDuration(
+                    runtimeMilliseconds,
+                )} HH:mm:ss)`,
+            );
+            this.overnightTimeout = this.setTimeout(() => {
+                this.log.info('Started daily overnight reset');
+                this.overnightTimeout = null;
+                this.timeoutResetOvernight();
             }, runtimeMilliseconds);
         }
     }
@@ -1203,6 +1362,10 @@ class Residents extends utils.Adapter {
             if (this.absentTimeout) {
                 this.clearTimeout(this.absentTimeout);
                 this.log.debug('Cleared absent timeout');
+            }
+            if (this.overnightTimeout) {
+                this.clearTimeout(this.overnightTimeout);
+                this.log.debug('Cleared overnight timeout');
             }
 
             callback();
@@ -1770,11 +1933,8 @@ class Residents extends utils.Adapter {
             }
         }
 
-        // Foreign geofency instance events
-        else if (adapterName === 'geofency') {
-            if (typeof level2 != 'string') return;
-            if (typeof level3 != 'string') return;
-
+        // Other foreign events
+        else {
             if (state) {
                 // The state was controlled (ack=false)
                 if (!state.ack) {
@@ -1782,15 +1942,8 @@ class Residents extends utils.Adapter {
                 }
                 // The state was updated (ack=true)
                 else {
-                    if (level3 === 'json') {
-                        switch (level2.toLowerCase()) {
-                            case 'home':
-                                break;
-
-                            case 'wayhome':
-                                break;
-                        }
-                    }
+                    // @ts-ignore
+                    this.setResidentDevicePresenceFromEvent(id, state);
                 }
             }
 
@@ -1798,8 +1951,6 @@ class Residents extends utils.Adapter {
             else {
                 //
             }
-        } else {
-            this.log.error('Received event from unsupported adapter type ' + adapterName);
         }
     }
 
@@ -1824,7 +1975,7 @@ class Residents extends utils.Adapter {
         const enabled = (await this.getStateAsync(device + '.enabled'))?.val;
 
         let stateAwake = false;
-        let stateBedtime = false;
+        let stateBedtime = 0;
         let stateWakeup = false;
         let stateWayhome = false;
 
@@ -1841,8 +1992,12 @@ class Residents extends utils.Adapter {
                 // 1000-1999: WAKING TIME at home
                 else if (nextActivityState >= 1000 && nextActivityState < 2000) {
                     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                    if (nextActivityState >= 1900) {
-                        stateBedtime = true;
+                    if (nextActivityState === 1900) {
+                        stateBedtime = 1;
+                    } else if (nextActivityState === 1901) {
+                        stateBedtime = 2;
+                    } else if (nextActivityState === 1902) {
+                        stateBedtime = 3;
                     }
                 }
 
@@ -1909,10 +2064,21 @@ class Residents extends utils.Adapter {
                 break;
 
             case 'bedtime':
-                if (state.val === true) {
-                    await this.setStateChangedAsync(device + '.activity.state', { val: 1900, ack: false });
+                if (currPresenceState === 1) {
+                    if (state.val === 1) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 1900, ack: false });
+                    } else if (state.val === 2) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 1901, ack: false });
+                    } else if (state.val === 3) {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 1902, ack: false });
+                    } else {
+                        await this.setStateChangedAsync(device + '.activity.state', { val: 1000, ack: false });
+                    }
                 } else {
-                    await this.setStateChangedAsync(device + '.activity.state', { val: 1000, ack: false });
+                    this.log.warn(device + ' requires home state to start bedtime process');
+                    state.val = 0;
+                    state.q = 0x40;
+                    await this.setStateAsync(device + '.activity.bedtime', state);
                 }
                 break;
 
@@ -1946,6 +2112,27 @@ class Residents extends utils.Adapter {
                     });
                 }
                 await this.setResidentsSummary();
+                break;
+
+            case 'task':
+                state.ack = true;
+                if (currPresenceState === 1) {
+                    if (state.val === true) {
+                        //
+                    } else {
+                        //
+                    }
+                    await this.setStateAsync(device + '.activity.task', state);
+                    state.ack = false;
+                    await this.setStateChangedAsync(device + '.activity.state', state);
+                } else {
+                    if (state.val === true) {
+                        this.log.warn(device + ' requires home state to set specific tasks');
+                        state.val = oldState.val;
+                        state.q = 0x40;
+                    }
+                    await this.setStateAsync(device + '.activity.task', state);
+                }
                 break;
 
             case 'wakeup':
@@ -1994,6 +2181,10 @@ class Residents extends utils.Adapter {
                 }
                 await this.setStateChangedAsync(device + '.presence.state', { val: 0, ack: false });
                 break;
+
+            default:
+                this.log.warn(device + ': Controlling unknown activity ' + activity);
+                break;
         }
     }
 
@@ -2014,6 +2205,7 @@ class Residents extends utils.Adapter {
      * @param {ioBroker.State} oldState
      */
     async setResidentDevicePresence(device, presence, state, oldState) {
+        const currOvernightVal = (await this.getStateAsync(device + '.activity.overnight'))?.val;
         let currActivityState = await this.getStateAsync(device + '.activity.state');
         const residentType = (await this.getObjectAsync(device))?.native.type;
         let currActivityVal = null;
@@ -2026,7 +2218,7 @@ class Residents extends utils.Adapter {
             currActivityState = state;
         }
 
-        const enabled = (await this.getStateAsync(device + '.enabled'))?.val;
+        let enabled = (await this.getStateAsync(device + '.enabled'))?.val;
         let stateNight = false;
         let stateHome = false;
         let stateActivity = 0;
@@ -2035,9 +2227,16 @@ class Residents extends utils.Adapter {
             case 'state':
                 if (typeof state.val != 'number') return;
 
+                // Disable if no overnight stay planned
+                if (currOvernightVal === false && state.val === 0) {
+                    await this.setStateChangedAsync(device + '.enabled', { val: false, ack: false });
+                    enabled = false;
+                }
+
                 if (enabled === true) {
                     stateActivity = 1;
                 }
+
                 // Always reset mood if presence state was changed
                 if (residentType != 'pet' && state.val != oldState.val) {
                     await this.setStateChangedAsync(device + '.mood.state', { val: 0, ack: false });
@@ -2186,11 +2385,132 @@ class Residents extends utils.Adapter {
      * @param {ioBroker.State} oldState
      */
     async setResidentDevicePresenceFollowing(device, presence, state, oldState) {
+        // eslint-disable-next-line no-unused-vars
+        const oldValue = oldState.val;
         await this.setStateChangedAsync(device + '.presenceFollowing.' + presence, {
             val: state.val,
             ack: true,
             from: state.from,
         });
+    }
+
+    /**
+     * Is called from onStateChange()
+     * @param {string} id
+     * @param {ioBroker.State} state
+     * @param {ioBroker.StateObject} _stateObj
+     */
+    async setResidentDevicePresenceFromEvent(id, state, _stateObj) {
+        const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
+        if (!stateObj) return;
+        let type = stateObj.common.type;
+        let presence = null;
+
+        if (stateObj.type != 'state') {
+            this.log.error(id + ': Object needs to be a state datapoint to enable presence monitoring');
+            return false;
+        } else if (
+            type != 'boolean' &&
+            type != 'number' &&
+            type != 'string' &&
+            // @ts-ignore
+            type != 'json'
+        ) {
+            this.log.error(
+                id +
+                    ": Monitored presence datapoint needs to be of type 'boolean', 'number', 'string', 'mixed', or 'json'",
+            );
+            return false;
+        }
+
+        if (type === 'mixed' || type === 'string') {
+            type = this.getDatatypeFromString(state.val);
+            if (type === null) {
+                this.log.error(id + ': Monitored presence datapoint seems inapproproate due to unknown string format');
+                return false;
+            }
+            this.log.silly(id + ": Interpreting presence datapoint as type '" + type + "'");
+        }
+
+        let jsonObj = null;
+        let jsonPresenceVal = null;
+        switch (type) {
+            case 'boolean':
+                presence = Boolean(state.val);
+                break;
+
+            case 'number':
+                if (stateObj.common.min && stateObj.common.min != 0) {
+                    this.log.error(
+                        id +
+                            ': Monitored presence datapoint seems inapproproate with minimum value of ' +
+                            stateObj.common.min,
+                    );
+                    return false;
+                }
+                if (stateObj.common.max && stateObj.common.max != 1) {
+                    this.log.error(
+                        id +
+                            ': Monitored presence datapoint seems inapproproate with maximum value of ' +
+                            stateObj.common.max,
+                    );
+                    return false;
+                }
+                presence = Number(state.val) === 1 ? true : false;
+                break;
+
+            case 'json':
+                try {
+                    jsonObj = JSON.parse(String(state.val));
+                } catch (e) {
+                    this.log.error(id + ': Error while parsing JSON value');
+                    return false;
+                }
+                if (jsonObj.entry !== undefined) {
+                    jsonPresenceVal = jsonObj.entry;
+                } else if (jsonObj.presence !== undefined) {
+                    jsonPresenceVal = jsonObj.presence;
+                } else if (jsonObj.present !== undefined) {
+                    jsonPresenceVal = jsonObj.present;
+                }
+                if (jsonPresenceVal !== null) type = this.getDatatypeFromString(jsonPresenceVal);
+                if (type === null || type === 'json') {
+                    this.log.error(id + ': JSON does not contain any expected property or value');
+                    return false;
+                }
+                state.val = jsonPresenceVal;
+                this.setResidentDevicePresenceFromEvent(id, state, {
+                    _id: stateObj._id,
+                    type: 'state',
+                    common: {
+                        name: stateObj.common.name,
+                        role: 'state',
+                        type: type,
+                        read: true,
+                        write: false,
+                    },
+                    native: {},
+                });
+                return;
+        }
+
+        if (presence === null) {
+            this.log.error(id + ': Unable to determine presence state');
+        } else if (this.presenceSubscriptionMapping[id] !== undefined) {
+            for (const device in this.presenceSubscriptionMapping[id]) {
+                this.log.debug(
+                    id +
+                        ': Detected presence update for ' +
+                        this.presenceSubscriptionMapping[id][device] +
+                        ': ' +
+                        presence,
+                );
+                await this.setStateChangedAsync(this.presenceSubscriptionMapping[id][device] + '.presence.home', {
+                    val: presence,
+                    ack: false,
+                });
+            }
+        }
     }
 
     /**
@@ -2524,10 +2844,14 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {string} timeOfDay
+     * Convert HH:mm or HH:mm:ss to milliseconds until next occurance
+     *
+     * @param {string} timeOfDay - time in HH:mm or HH:mm:ss
      */
     getMillisecondsUntilTime(timeOfDay) {
+        if (!timeOfDay) return null;
         const timeOfDayArray = timeOfDay.split(':').map(Number);
+        if (!timeOfDayArray || timeOfDayArray.length < 2) return null;
         if (timeOfDayArray.length === 2) {
             timeOfDayArray.push(0);
         }
@@ -2572,18 +2896,42 @@ class Residents extends utils.Adapter {
      * @param {string} id
      */
     cleanNamespace(id) {
-        return id
-            .trim()
-            .replace(/\0./g, '_') // Replace dots with underscores
-            .replace(/\s/g, '_') // Replace whitespaces with underscores
-            .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
-            .replace(/[_]+$/g, '') // Remove underscores end
-            .replace(/^[_]+/g, '') // Remove underscores beginning
-            .replace(/_+/g, '_') // Replace multiple underscores with one
-            .toLowerCase()
-            .replace(/_([a-z])/g, (m, w) => {
-                return w.toUpperCase();
-            });
+        return (
+            id
+                .trim()
+                .replace(/\0./g, '_') // Replace dots with underscores
+                .replace(/\s/g, '_') // Replace whitespaces with underscores
+                .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
+                .replace(/[_]+$/g, '') // Remove underscores end
+                .replace(/^[_]+/g, '') // Remove underscores beginning
+                .replace(/_+/g, '_') // Replace multiple underscores with one
+                .toLowerCase()
+                // @ts-ignore
+                .replace(/_([a-z])/g, (m, w) => {
+                    return w.toUpperCase();
+                })
+        );
+    }
+
+    /**
+     * @param {any} string
+     * @returns ioBroker.CommonState common.type
+     */
+    getDatatypeFromString(string) {
+        const val = String(string).toLowerCase();
+        let type = null;
+        switch (val) {
+            case 'false':
+            case 'true':
+                type = 'boolean';
+                break;
+
+            case '0':
+            case '1':
+                type = 'number';
+                break;
+        }
+        return type;
     }
 }
 
