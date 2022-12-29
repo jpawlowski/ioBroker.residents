@@ -32,21 +32,22 @@ class Residents extends utils.Adapter {
     }
 
     async onReady() {
-        this.roomies = this.config.roomie;
-        this.pets = this.config.pet;
-        this.guests = this.config.guest;
+        this.roomies = this.config.roomie !== undefined ? this.config.roomie : [];
+        this.pets = this.config.pet !== undefined ? this.config.pet : [];
+        this.guests = this.config.guest !== undefined ? this.config.guest : [];
         this.residents = this.roomies;
-        this.residents = this.residents.concat(this.config.pet);
-        this.residents = this.residents.concat(this.config.guest);
+        this.residents = this.residents.concat(this.pets);
+        this.residents = this.residents.concat(this.guests);
 
         // Group mode
         if (
+            this.config.residentsParentInstanceIDs !== undefined &&
             Array.isArray(this.config.residentsParentInstanceIDs) &&
             this.config.residentsParentInstanceIDs.length > 0
         ) {
             let subscribedToParentEvents = false;
             for (const i in this.config.residentsParentInstanceIDs) {
-                const instance = this.config.residentsParentInstanceIDs[i];
+                const instance = String(this.config.residentsParentInstanceIDs[i]);
                 if (
                     instance.startsWith('residents.') &&
                     instance.split('.').length === 2 &&
@@ -1244,16 +1245,18 @@ class Residents extends utils.Adapter {
     timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
             this.residents.forEach(async (resident) => {
-                const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
+                const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                const away = await this.getStateAsync(resident['id'] + '.presence.away');
 
-                if (enabled === false) {
+                if (!enabled || !away) return;
+
+                if (enabled.val === false) {
                     this.log.debug(
                         'timeoutDisableAbsentResidents: ' +
                             resident['id'] +
                             " is already 'disabled', therefore it is not changed.",
                     );
-                } else if (away === false) {
+                } else if (away.val === false) {
                     this.log.debug(
                         'timeoutDisableAbsentResidents: ' +
                             resident['id'] +
@@ -1293,9 +1296,11 @@ class Residents extends utils.Adapter {
     timeoutResetOvernight(initialize) {
         if (!initialize) {
             this.residents.forEach(async (resident) => {
-                const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
-                const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))?.val;
-                const overnightDef = (await this.getObjectAsync(resident['id']))?.common.def;
+                const home = await this.getStateAsync(resident['id'] + '.presence.home');
+                const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
+                const overnightObj = await this.getObjectAsync(resident['id'] + '.activity.overnight');
+
+                if (!home || !overnight || !overnightObj) return;
 
                 if (resident['type'] === 'pet') {
                     this.log.debug(
@@ -1307,28 +1312,28 @@ class Residents extends utils.Adapter {
                             resident['id'] +
                             ' is a guest, therefore is excluded from automatic reset.',
                     );
-                } else if (overnight === overnightDef) {
+                } else if (overnight.val === overnightObj.common.def) {
                     this.log.debug(
                         'timeoutResetOvernight: ' +
                             resident['id'] +
                             " activity 'overnight' is already " +
-                            overnightDef +
+                            overnightObj.common.def +
                             ', therefore is not changed.',
                     );
-                } else if (home === false) {
+                } else if (home.val === false) {
                     this.log.debug(
                         'timeoutResetOvernight: ' + resident['id'] + ' is not at home, therefore is excluded.',
                     );
                 } else {
                     this.log.info(
-                        "timeoutResetOvernight: Resetting 'overnight' for" +
+                        "timeoutResetOvernight: Resetting 'overnight' for " +
                             resident['id'] +
                             ' to ' +
-                            overnightDef +
+                            overnightObj.common.def +
                             '.',
                     );
                     await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
-                        val: overnightDef,
+                        val: overnightObj.common.def,
                         ack: false,
                     });
                 }
@@ -1375,7 +1380,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * Is called if a subscribed state changes
+     * Distribute state events
+     *
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
      */
@@ -1385,6 +1391,85 @@ class Residents extends utils.Adapter {
         const adapterInstance = a.shift(); // adapter instance
         const eventNamespace = adapterName + '.' + adapterInstance; // adapter namespace
         const level1 = a.shift(); // first level ID
+
+        // The state was deleted
+        if (!state) {
+            this.setResidentsSummary();
+            return;
+        }
+
+        // Own events
+        if (eventNamespace === this.namespace) {
+            // The state was controlled (ack=false)
+            if (!state.ack) {
+                // Global residents commands
+                if (level1 === 'control') {
+                    this.processGlobalControlCommand(id, state);
+                }
+
+                // An individual residents device was controlled
+                else {
+                    this.processResidentDeviceControlCommand(id, state);
+                }
+            }
+
+            // The state was updated (ack=true)
+            else {
+                // ignore some of our own ack events
+                if (
+                    level1 === 'control' ||
+                    level1 === 'group' ||
+                    level1 === 'info' ||
+                    level1 === 'mood' ||
+                    level1 === 'state'
+                )
+                    return;
+
+                this.processResidentDeviceUpdateEvent(id, state);
+            }
+        }
+
+        // Foreign residents instance events
+        else if (adapterName === 'residents') {
+            // The state was controlled (ack=false)
+            if (!state.ack) {
+                //
+            }
+            // The state was updated (ack=true)
+            else {
+                // parent residents instance summary state was updated
+                if (level1 === 'state' || level1 === 'mood') {
+                    this.log.debug('Received parent ' + level1 + ' update from ' + eventNamespace);
+                    this.setResidentsSummary();
+                }
+            }
+        }
+
+        // Other foreign events
+        else {
+            // The state was controlled (ack=false)
+            if (!state.ack) {
+                //
+            }
+            // The state was updated (ack=true)
+            else {
+                // @ts-ignore
+                this.setResidentDevicePresenceFromEvent(id, state);
+            }
+        }
+    }
+
+    /**
+     * Process global events of this residents instance
+     *
+     * @param {string} id
+     * @param {ioBroker.State} state
+     */
+    processGlobalControlCommand(id, state) {
+        const a = id.split('.');
+        a.shift(); // adapter name
+        a.shift(); // adapter instance
+        const level1 = a.shift(); // first level ID
         const level2 = a.shift(); // second level ID
         const level3 = a.shift(); // third level ID
         const allLevels = [level1, level2, level3].join('.');
@@ -1393,564 +1478,489 @@ class Residents extends utils.Adapter {
 
         if (typeof level1 != 'string') return;
 
+        // const oldState = this.states[id];
+        this.states[id] = state;
+
+        switch (levels2_3) {
+            case 'state.disableAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const away = await this.getStateAsync(resident['id'] + '.presence.away');
+
+                    if (!enabled || !away) return;
+
+                    if (enabled.val === false) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already 'disabled', therefore it is not changed.",
+                        );
+                    } else if (away.val === false) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is not 'away', therefore it is not disabled.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Disabling absent device ' + resident['id'] + '.');
+                        await this.setStateAsync(resident['id'] + '.enabled', {
+                            val: false,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'state.enableAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+
+                    if (!enabled) return;
+
+                    if (enabled.val === true) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already 'enabled', therefore it is not changed.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Enabling device ' + resident['id'] + '.');
+                        await this.setStateAsync(resident['id'] + '.enabled', {
+                            val: true,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'presence.setHomeAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const home = await this.getStateAsync(resident['id'] + '.presence.home');
+
+                    if (!enabled || !home) return;
+
+                    if (home.val == true) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already 'home', therefore it is not changed.",
+                        );
+                    } else if (enabled.val === true) {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'home'.");
+                        await this.setStateAsync(resident['id'] + '.presence.home', {
+                            val: true,
+                            ack: false,
+                        });
+                    } else {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is 'disabled', therefore is is excluded from group control.",
+                        );
+                    }
+                });
+                break;
+
+            case 'presence.unsetHomeAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const home = await this.getStateAsync(resident['id'] + '.presence.home');
+
+                    if (!enabled || !home) return;
+
+                    if (home.val == false) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already 'away', therefore it is not changed.",
+                        );
+                    } else if (enabled.val === true) {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
+                        await this.setStateAsync(resident['id'] + '.presence.home', {
+                            val: false,
+                            ack: false,
+                        });
+                    } else {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is 'disabled', therefore is is excluded from group control.",
+                        );
+                    }
+                });
+                break;
+
+            case 'presence.setNightAll':
+                this.residents.forEach(async (resident) => {
+                    const home = await this.getStateAsync(resident['id'] + '.presence.home');
+                    const night = await this.getStateAsync(resident['id'] + '.presence.night');
+
+                    if (!home || !night) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is a pet without night state - ignoring.');
+                    } else if (night.val === true) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already at 'night', therefore it is not changed.",
+                        );
+                    } else if (home.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is not 'home', therefore is is excluded from group control.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'night'.");
+                        await this.setStateAsync(resident['id'] + '.presence.night', {
+                            val: true,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'presence.unsetNightAll':
+                this.residents.forEach(async (resident) => {
+                    const home = await this.getStateAsync(resident['id'] + '.presence.home');
+                    const night = await this.getStateAsync(resident['id'] + '.presence.night');
+
+                    if (!home || !night) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is a pet without night state - ignoring.');
+                    } else if (night.val === false) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already not 'night', therefore it is not changed.",
+                        );
+                    } else if (home.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is not 'home', therefore is is excluded from group control.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'night'.");
+                        await this.setStateAsync(resident['id'] + '.presence.night', {
+                            val: false,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'presence.setAwayAll':
+                this.residents.forEach(async (resident) => {
+                    const away = await this.getStateAsync(resident['id'] + '.presence.away');
+
+                    if (!away) return;
+
+                    if (away.val === true) {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + " is already at 'away', therefore it is not changed.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
+                        await this.setStateAsync(resident['id'] + '.presence.away', {
+                            val: true,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'presence.unsetAwayAll':
+                this.residents.forEach(async (resident) => {
+                    const away = await this.getStateAsync(resident['id'] + '.presence.away');
+
+                    if (!away) return;
+
+                    if (away.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is already at not 'away', therefore it is not changed.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'away'.");
+                        await this.setStateAsync(resident['id'] + '.presence.away', {
+                            val: false,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'activity.setOvernightAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
+
+                    if (!enabled || !overnight) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is a pet without night state - ignoring.');
+                    } else if (overnight.val === true) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " activity 'overnight' is already active, therefore it is not changed.",
+                        );
+                    } else if (enabled.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is 'disabled', therefore is is excluded from group control.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'overnight'.");
+                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
+                            val: true,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'activity.unsetOvernightAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
+
+                    if (!enabled || !overnight) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is a pet without night state - ignoring.');
+                    } else if (overnight.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " activity 'overnight' is already disabled, therefore it is not changed.",
+                        );
+                    } else if (enabled.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is 'disabled', therefore is is excluded from group control.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'overnight'.");
+                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
+                            val: false,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'activity.resetOvernightAll':
+                this.residents.forEach(async (resident) => {
+                    const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                    const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
+                    const overnightObj = await this.getObjectAsync(resident['id'] + '.activity.overnight');
+
+                    if (!enabled || !overnight || !overnightObj) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is a pet without night state - ignoring.');
+                    } else if (overnight.val === overnightObj.common.def) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " activity 'overnight' is already " +
+                                overnightObj.common.def +
+                                ', therefore it is not changed.',
+                        );
+                    } else if (enabled.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " is 'disabled', therefore is is excluded from group control.",
+                        );
+                    } else {
+                        this.log.info(
+                            allLevels +
+                                ": Resetting 'overnight' for " +
+                                resident['id'] +
+                                ' to ' +
+                                overnightObj.common.def +
+                                '.',
+                        );
+                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                            val: overnightObj.common.def,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'activity.setWayhomeAll':
+                this.residents.forEach(async (resident) => {
+                    const wayhome = await this.getStateAsync(resident['id'] + '.activity.wayhome');
+
+                    if (!wayhome) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + ' is a pet without wayhome state - ignoring.',
+                        );
+                    } else if (wayhome.val === true) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " activity 'wayhome' is already active, therefore it is not changed.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'wayhome'.");
+                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
+                            val: true,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            case 'activity.unsetWayhomeAll':
+                this.residents.forEach(async (resident) => {
+                    const wayhome = await this.getStateAsync(resident['id'] + '.activity.wayhome');
+
+                    if (!wayhome) return;
+
+                    if (resident['type'] === 'pet') {
+                        this.log.debug(
+                            allLevels + ': ' + resident['id'] + ' is a pet without wayhome state - ignoring.',
+                        );
+                    } else if (wayhome.val === false) {
+                        this.log.debug(
+                            allLevels +
+                                ': ' +
+                                resident['id'] +
+                                " activity 'wayhome' is already disabled, therefore it is not changed.",
+                        );
+                    } else {
+                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'wayhome'.");
+                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
+                            val: false,
+                            ack: false,
+                        });
+                    }
+                });
+                break;
+
+            default:
+                this.log.warn('Received unknown command ' + level2 + '.' + level3);
+                break;
+        }
+
+        state.ack = true;
+        this.setStateAsync(id, state);
+    }
+
+    /**
+     * Process device control events that are handled by this residents instance
+     *
+     * @param {string} id
+     * @param {ioBroker.State} state
+     */
+    processResidentDeviceControlCommand(id, state) {
+        const a = id.split('.');
+        a.shift(); // adapter name
+        a.shift(); // adapter instance
+        const level1 = a.shift(); // first level ID
+        const level2 = a.shift(); // second level ID
+        const level3 = a.shift(); // third level ID
+
+        if (typeof level1 != 'string') return;
+
         const oldState = this.states[id];
         this.states[id] = state;
 
-        // Own events
-        if (eventNamespace === this.namespace) {
-            if (state) {
-                // The state was controlled (ack=false)
-                if (!state.ack) {
-                    // Global residents commands
-                    if (level1 === 'control') {
-                        switch (levels2_3) {
-                            case 'state.disableAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
+        switch (level2) {
+            case 'enabled':
+                this.log.debug(level1 + ': Controlling ' + id);
+                this.enableResidentDevice(level1, state, oldState);
+                break;
 
-                                    if (enabled === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already 'disabled', therefore it is not changed.",
-                                        );
-                                    } else if (away === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is not 'away', therefore it is not disabled.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Disabling absent device ' + resident['id'] + '.');
-                                        await this.setStateAsync(resident['id'] + '.enabled', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
+            case 'activity':
+                if (typeof level3 != 'string') return;
+                this.log.debug(level1 + ': Controlling ' + id);
+                this.setResidentDeviceActivity(level1, level3, state, oldState);
+                break;
 
-                            case 'state.enableAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
+            case 'mood':
+                this.log.debug(level1 + ': Controlling ' + id);
+                this.setResidentDeviceMood(level1, state);
+                break;
 
-                                    if (enabled === true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already 'enabled', therefore it is not changed.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Enabling device ' + resident['id'] + '.');
-                                        await this.setStateAsync(resident['id'] + '.enabled', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
+            case 'presence':
+                if (typeof level3 != 'string') return;
+                this.log.debug(level1 + ': Controlling ' + id);
+                this.setResidentDevicePresence(level1, level3, state, oldState);
+                break;
 
-                            case 'presence.setHomeAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
+            case 'presenceFollowing':
+                if (typeof level3 != 'string') return;
+                this.log.debug(level1 + ': Controlling ' + id);
+                this.setResidentDevicePresenceFollowing(level1, level3, state, oldState);
+                break;
 
-                                    if (home == true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already 'home', therefore it is not changed.",
-                                        );
-                                    } else if (enabled === true) {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'home'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.home', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    } else {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is 'disabled', therefore is is excluded from group control.",
-                                        );
-                                    }
-                                });
-                                break;
-
-                            case 'presence.unsetHomeAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
-
-                                    if (home == false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already 'away', therefore it is not changed.",
-                                        );
-                                    } else if (enabled === true) {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.home', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    } else {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is 'disabled', therefore is is excluded from group control.",
-                                        );
-                                    }
-                                });
-                                break;
-
-                            case 'presence.setNightAll':
-                                this.residents.forEach(async (resident) => {
-                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
-                                    const night = (await this.getStateAsync(resident['id'] + '.presence.night'))?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without night state - ignoring.',
-                                        );
-                                    } else if (night === true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already at 'night', therefore it is not changed.",
-                                        );
-                                    } else if (home === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is not 'home', therefore is is excluded from group control.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'night'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.night', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'presence.unsetNightAll':
-                                this.residents.forEach(async (resident) => {
-                                    const home = (await this.getStateAsync(resident['id'] + '.presence.home'))?.val;
-                                    const night = (await this.getStateAsync(resident['id'] + '.presence.night'))?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without night state - ignoring.',
-                                        );
-                                    } else if (night === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already not 'night', therefore it is not changed.",
-                                        );
-                                    } else if (home === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is not 'home', therefore is is excluded from group control.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'night'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.night', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'presence.setAwayAll':
-                                this.residents.forEach(async (resident) => {
-                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
-
-                                    if (away === true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already at 'away', therefore it is not changed.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'away'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.away', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'presence.unsetAwayAll':
-                                this.residents.forEach(async (resident) => {
-                                    const away = (await this.getStateAsync(resident['id'] + '.presence.away'))?.val;
-
-                                    if (away === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is already at not 'away', therefore it is not changed.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'away'.");
-                                        await this.setStateAsync(resident['id'] + '.presence.away', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'activity.setOvernightAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
-                                        ?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without night state - ignoring.',
-                                        );
-                                    } else if (overnight === true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " activity 'overnight' is already active, therefore it is not changed.",
-                                        );
-                                    } else if (enabled === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is 'disabled', therefore is is excluded from group control.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'overnight'.");
-                                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'activity.unsetOvernightAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
-                                        ?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without night state - ignoring.',
-                                        );
-                                    } else if (overnight === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " activity 'overnight' is already disabled, therefore it is not changed.",
-                                        );
-                                    } else if (enabled === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is 'disabled', therefore is is excluded from group control.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'overnight'.");
-                                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'activity.resetOvernightAll':
-                                this.residents.forEach(async (resident) => {
-                                    const enabled = (await this.getStateAsync(resident['id'] + '.enabled'))?.val;
-                                    const overnight = (await this.getStateAsync(resident['id'] + '.activity.overnight'))
-                                        ?.val;
-                                    const overnightDef = (await this.getObjectAsync(resident['id']))?.common.def;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without night state - ignoring.',
-                                        );
-                                    } else if (overnight === overnightDef) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " activity 'overnight' is already " +
-                                                overnightDef +
-                                                ', therefore it is not changed.',
-                                        );
-                                    } else if (enabled === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " is 'disabled', therefore is is excluded from group control.",
-                                        );
-                                    } else {
-                                        this.log.info(
-                                            allLevels +
-                                                ": Resetting 'overnight' for" +
-                                                resident['id'] +
-                                                "'overnight' to " +
-                                                overnightDef +
-                                                '.',
-                                        );
-                                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
-                                            val: overnightDef,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'activity.setWayhomeAll':
-                                this.residents.forEach(async (resident) => {
-                                    const wayhome = (await this.getStateAsync(resident['id'] + '.activity.wayhome'))
-                                        ?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without wayhome state - ignoring.',
-                                        );
-                                    } else if (wayhome === true) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " activity 'wayhome' is already active, therefore it is not changed.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'wayhome'.");
-                                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
-                                            val: true,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            case 'activity.unsetWayhomeAll':
-                                this.residents.forEach(async (resident) => {
-                                    const wayhome = (await this.getStateAsync(resident['id'] + '.activity.wayhome'))
-                                        ?.val;
-
-                                    if (resident['type'] === 'pet') {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                ' is a pet without wayhome state - ignoring.',
-                                        );
-                                    } else if (wayhome === false) {
-                                        this.log.debug(
-                                            allLevels +
-                                                ': ' +
-                                                resident['id'] +
-                                                " activity 'wayhome' is already disabled, therefore it is not changed.",
-                                        );
-                                    } else {
-                                        this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'wayhome'.");
-                                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
-                                            val: false,
-                                            ack: false,
-                                        });
-                                    }
-                                });
-                                break;
-
-                            default:
-                                this.log.warn('Received unknown command ' + level2 + '.' + level3);
-                                break;
-                        }
-
-                        this.setStateAsync(id, {
-                            val: state.val,
-                            ack: true,
-                            from: state.from,
-                        });
-                    }
-
-                    // An individual residents device was controlled
-                    else {
-                        switch (level2) {
-                            case 'enabled':
-                                this.log.debug(level1 + ': Controlling ' + id);
-                                this.enableResidentDevice(level1, state, oldState);
-                                break;
-
-                            case 'activity':
-                                if (typeof level3 != 'string') return;
-                                this.log.debug(level1 + ': Controlling ' + id);
-                                this.setResidentDeviceActivity(level1, level3, state, oldState);
-                                break;
-
-                            case 'mood':
-                                this.log.debug(level1 + ': Controlling ' + id);
-                                this.setResidentDeviceMood(level1, state);
-                                break;
-
-                            case 'presence':
-                                if (typeof level3 != 'string') return;
-                                this.log.debug(level1 + ': Controlling ' + id);
-                                this.setResidentDevicePresence(level1, level3, state, oldState);
-                                break;
-
-                            case 'presenceFollowing':
-                                if (typeof level3 != 'string') return;
-                                this.log.debug(level1 + ': Controlling ' + id);
-                                this.setResidentDevicePresenceFollowing(level1, level3, state, oldState);
-                                break;
-
-                            default:
-                                this.log.warn(level1 + ': Controlling unknown channel ' + level2);
-                                break;
-                        }
-                    }
-                }
-
-                // The state was updated (ack=true)
-                else {
-                    // ignore some of our own ack events
-                    if (
-                        level1 === 'control' ||
-                        level1 === 'group' ||
-                        level1 === 'info' ||
-                        level1 === 'mood' ||
-                        level1 === 'state'
-                    ) {
-                        return;
-                    }
-
-                    switch (level2) {
-                        case 'activity':
-                            if (level3 === 'state') {
-                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
-                                this.setResidentsSummary();
-                            }
-                            break;
-
-                        case 'enabled':
-                            if (state.val === true) {
-                                this.log.debug(this.namespace + ": Received ack'ed enablement of " + level1);
-                                this.setResidentsSummary();
-                            }
-                            break;
-
-                        case 'mood':
-                            if (level3 === 'state') {
-                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
-                                this.setResidentsSummary();
-                            }
-                            break;
-
-                        case 'presence':
-                            if (level3 === 'state') {
-                                this.log.debug(this.namespace + ": Received ack'ed update of " + id);
-                                this.setResidentsSummary();
-                            }
-                            break;
-
-                        default:
-                            this.log.warn(this.namespace + ": Received unknown ack'ed update of " + id);
-                            break;
-                    }
-                }
-            }
-
-            // The state was deleted
-            else {
-                this.setResidentsSummary();
-            }
+            default:
+                this.log.warn(level1 + ': Controlling unknown channel ' + level2);
+                break;
         }
+    }
 
-        // Foreign residents instance events
-        else if (adapterName === 'residents') {
-            if (state) {
-                // The state was controlled (ack=false)
-                if (!state.ack) {
-                    //
-                }
-                // The state was updated (ack=true)
-                else {
-                    // parent instance state was updated
-                    if (level1 === 'state') {
-                        this.log.debug('Received parent state update from ' + eventNamespace);
-                        this.setResidentsSummary();
-                    }
-                }
-            }
+    /**
+     * Process device update events that are handled by this residents instance
+     *
+     * @param {string} id
+     * @param {ioBroker.State} state
+     */
+    processResidentDeviceUpdateEvent(id, state) {
+        const a = id.split('.');
+        a.shift(); // adapter name
+        a.shift(); // adapter instance
+        const level1 = a.shift(); // first level ID
+        const level2 = a.shift(); // second level ID
+        const level3 = a.shift(); // third level ID
 
-            // The state was deleted
-            else {
-                this.setResidentsSummary();
-            }
-        }
+        // const oldState = this.states[id];
+        this.states[id] = state;
 
-        // Other foreign events
-        else {
-            if (state) {
-                // The state was controlled (ack=false)
-                if (!state.ack) {
-                    //
+        switch (level2) {
+            case 'activity':
+                if (level3 === 'state') {
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.setResidentsSummary();
                 }
-                // The state was updated (ack=true)
-                else {
-                    // @ts-ignore
-                    this.setResidentDevicePresenceFromEvent(id, state);
-                }
-            }
+                break;
 
-            // The state was deleted
-            else {
-                //
-            }
+            case 'enabled':
+                if (state.val === true) {
+                    this.log.debug(this.namespace + ": Received ack'ed enablement of " + level1);
+                    this.setResidentsSummary();
+                }
+                break;
+
+            case 'mood':
+                if (level3 === 'state') {
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.setResidentsSummary();
+                }
+                break;
+
+            case 'presence':
+                if (level3 === 'state') {
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.setResidentsSummary();
+                }
+                break;
+
+            default:
+                this.log.warn(this.namespace + ": Received unknown ack'ed update of " + id);
+                break;
         }
     }
 
@@ -2702,10 +2712,12 @@ class Residents extends utils.Adapter {
         }
 
         this.log.debug(
-            '  Completed loop through with ' + (totalResidentsCount + totalPetCount + disabledCount) + ' resident(s).',
+            '  Completed loop-through of ' +
+                (totalResidentsCount + totalPetCount + disabledCount) +
+                ' resident devices.',
         );
 
-        // Sort Lists
+        // Sort Lists + Write First/Last datapoints
         disabledList.sort(this.reverseSortResidentsListByTimecode);
         await this.setStateChangedAsync('info.state.disabledFirst', {
             val: JSON.stringify(disabledList.length > 0 ? disabledList[disabledList.length - 1] : {}),
