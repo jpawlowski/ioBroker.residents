@@ -373,10 +373,10 @@
                     "zh-cn": "第一居民在入侵状态下"
                 },
                 "type": "string",
-                "role": "json.residents.disabledFirst",
+                "role": "text.residents.disabledFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -398,10 +398,10 @@
                     "zh-cn": "入侵国家的最后居民"
                 },
                 "type": "string",
-                "role": "json.residents.disabledLast",
+                "role": "text.residents.disabledLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -669,10 +669,10 @@
                     "zh-cn": "第一个居民点"
                 },
                 "type": "string",
-                "role": "json.residents.homeFirst",
+                "role": "text.residents.homeFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -694,10 +694,10 @@
                     "zh-cn": "最后居民点"
                 },
                 "type": "string",
-                "role": "json.residents.homeLast",
+                "role": "text.residents.homeLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -845,10 +845,10 @@
                     "zh-cn": "先逃回家国"
                 },
                 "type": "string",
-                "role": "json.residents.petsHomeFirst",
+                "role": "text.residents.petsHomeFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -870,10 +870,10 @@
                     "zh-cn": "到达家国的最后时间"
                 },
                 "type": "string",
-                "role": "json.residents.petsHomeLast",
+                "role": "text.residents.petsHomeLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1021,10 +1021,10 @@
                     "zh-cn": "第一批居民"
                 },
                 "type": "string",
-                "role": "json.residents.nightFirst",
+                "role": "text.residents.nightFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1046,10 +1046,10 @@
                     "zh-cn": "被掠夺的最后居民"
                 },
                 "type": "string",
-                "role": "json.residents.nightLast",
+                "role": "text.residents.nightLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1197,10 +1197,10 @@
                     "zh-cn": "第一次居民离开家园"
                 },
                 "type": "string",
-                "role": "json.residents.awayFirst",
+                "role": "text.residents.awayFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1222,10 +1222,10 @@
                     "zh-cn": "最后居民离开家园"
                 },
                 "type": "string",
-                "role": "json.residents.awayLast",
+                "role": "text.residents.awayLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1393,10 +1393,10 @@
                     "zh-cn": "第一居民受伤"
                 },
                 "type": "string",
-                "role": "json.residents.awakeFirst",
+                "role": "text.residents.awakeFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1418,10 +1418,10 @@
                     "zh-cn": "上次居民受伤"
                 },
                 "type": "string",
-                "role": "json.residents.awakeLast",
+                "role": "text.residents.awakeLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1569,10 +1569,10 @@
                     "zh-cn": "第一批居民准备好准备好。"
                 },
                 "type": "string",
-                "role": "json.residents.bedtimeFirst",
+                "role": "text.residents.bedtimeFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1594,10 +1594,10 @@
                     "zh-cn": "准备好好好的居民"
                 },
                 "type": "string",
-                "role": "json.residents.bedtimeLast",
+                "role": "text.residents.bedtimeLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1745,10 +1745,10 @@
                     "zh-cn": "第一次居民规划周多"
                 },
                 "type": "string",
-                "role": "json.residents.overnightFirst",
+                "role": "text.residents.overnightFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1770,10 +1770,10 @@
                     "zh-cn": "最后的居民规划"
                 },
                 "type": "string",
-                "role": "json.residents.overnightLast",
+                "role": "text.residents.overnightLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1921,10 +1921,10 @@
                     "zh-cn": "第一居民开始发出呼吁"
                 },
                 "type": "string",
-                "role": "json.residents.wakeupFirst",
+                "role": "text.residents.wakeupFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -1946,10 +1946,10 @@
                     "zh-cn": "最终居民开始发出呼吁"
                 },
                 "type": "string",
-                "role": "json.residents.wakeupLast",
+                "role": "text.residents.wakeupLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -2097,10 +2097,10 @@
                     "zh-cn": "第一个居民以其家园为主"
                 },
                 "type": "string",
-                "role": "json.residents.wayhomeFirst",
+                "role": "text.residents.wayhomeFirst",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
@@ -2122,10 +2122,10 @@
                     "zh-cn": "最后一个居民正在家园。"
                 },
                 "type": "string",
-                "role": "json.residents.wayhomeLast",
+                "role": "text.residents.wayhomeLast",
                 "read": true,
                 "write": false,
-                "def": "{}"
+                "def": ""
             },
             "native": {}
         },
