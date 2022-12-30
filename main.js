@@ -40,9 +40,11 @@ class Residents extends utils.Adapter {
         this.residents = this.roomies;
         this.residents = this.residents.concat(this.pets);
         this.residents = this.residents.concat(this.guests);
+        const objectTemplates = await this.getForeignObjectAsync('system.adapter.' + this.namespace);
 
         // Group mode
         if (
+            objectTemplates &&
             this.config.residentsParentInstanceIDs != undefined &&
             Array.isArray(this.config.residentsParentInstanceIDs) &&
             this.config.residentsParentInstanceIDs.length > 0
@@ -56,33 +58,46 @@ class Residents extends utils.Adapter {
                     instance.split('.').length == 2 &&
                     instance != this.namespace
                 ) {
+                    this.log.debug('Monitoring parent resident instance ' + instance);
                     this.subscriptions.push(instance + '.mood');
                     this.subscriptions.push(instance + '.state');
                     this.parentInstances.push(instance);
+                } else {
+                    this.log.error('Failed to enable monitoring of desired parent resident instance ' + instance);
                 }
             }
         }
 
-        if (this.parentInstances.length > 0) {
-            const objectTemplates =
-                // @ts-ignore
-                (await this.getForeignObjectAsync('system.adapter.' + this.namespace))?.instanceObjects;
-
+        if (objectTemplates && this.parentInstances.length > 0) {
             await this.setObjectNotExistsAsync('group', {
                 type: 'folder',
                 common: {
                     name: {
                         en: 'Information on the group structure of the residents',
                         de: 'Informationen zur Gruppenstruktur der Bewohner',
+                        ru: 'Информация о структуре группы жителей',
+                        pt: 'InformaÃ§Ãμes sobre a estrutura de grupo dos residentes',
+                        nl: 'Informatie over de groepsstructuur van de bewoners',
+                        fr: 'Information sur la structure de groupe des résidents',
+                        it: 'Informazioni sulla struttura del gruppo dei residenti',
+                        es: 'Información sobre la estructura grupal de los residentes',
+                        pl: 'Informacje o strukturze grupowej mieszkańców',
+                        uk: 'Інформація про групову структуру мешканців',
+                        'zh-cn': '关于居民群体结构的资料',
                     },
                 },
                 native: {},
             });
 
-            await this.setObjectNotExistsAsync('group.info', objectTemplates.filter((e) => e._id == 'info')[0]);
+            await this.setObjectNotExistsAsync(
+                'group.info',
+                // @ts-ignore
+                objectTemplates.instanceObjects.filter((e) => e._id == 'info')[0],
+            );
             await this.setObjectNotExistsAsync(
                 'group.info.state',
-                objectTemplates.filter((e) => e._id == 'info.state')[0],
+                // @ts-ignore
+                objectTemplates.instanceObjects.filter((e) => e._id == 'info.state')[0],
             );
 
             await this.setObjectNotExistsAsync('group.info.state.originID', {
@@ -91,6 +106,15 @@ class Residents extends utils.Adapter {
                     name: {
                         en: 'Origin instance ID for group state',
                         de: 'Ursprüngliche Instanz-ID für Gruppenstatus',
+                        ru: 'Происхождение идентификатор для группового государства',
+                        pt: 'ID de instância de origem para estado de grupo',
+                        nl: 'Origine ID voor groepsstaat',
+                        fr: 'Origin instance ID for group state',
+                        it: 'ID istanza di origine per stato di gruppo',
+                        es: 'ID de instancia de origen para estado de grupo',
+                        pl: 'Określenie ID dla państwa grupowego',
+                        uk: 'Ідентифікатор походження для групового стану',
+                        'zh-cn': '例如,开发集团国家',
                     },
                     type: 'string',
                     role: 'state',
@@ -101,8 +125,16 @@ class Residents extends utils.Adapter {
                 native: {},
             });
 
-            await this.setObjectNotExistsAsync('group.state', objectTemplates.filter((e) => e._id == 'state')[0]);
-            await this.setObjectNotExistsAsync('group.mood', objectTemplates.filter((e) => e._id == 'mood')[0]);
+            await this.setObjectNotExistsAsync(
+                'group.state',
+                // @ts-ignore
+                objectTemplates.instanceObjects.filter((e) => e._id == 'state')[0],
+            );
+            await this.setObjectNotExistsAsync(
+                'group.mood',
+                // @ts-ignore
+                objectTemplates.instanceObjects.filter((e) => e._id == 'mood')[0],
+            );
 
             this.subscriptions.push('group.state');
             this.subscriptions.push('group.mood');
@@ -156,6 +188,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is within distance?',
                                 de: name + ' ist in Reichweite?',
+                                ru: name + ' находится в пределах расстояния?',
+                                pt: name + ' está a uma distância?',
+                                nl: name + 'is binnen de afstand?',
+                                fr: name + ' est à distance?',
+                                it: name + ' è a distanza?',
+                                es: name + ' está a poca distancia?',
+                                pl: name + 'jest w odległości ok?',
+                                uk: name + ' знаходиться на відстані?',
+                                'zh-cn': '姓名+在距离内?',
                             },
                             type: 'boolean',
                             role: 'switch.enable',
@@ -165,6 +206,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Reachability state',
                                 de: 'Erreichbarkeitsstatus',
+                                ru: 'Состояние доступности',
+                                pt: 'Estado de alcance',
+                                nl: 'Vertaling',
+                                fr: 'État de la responsabilité',
+                                it: 'Stato di adesione',
+                                es: 'Estado de responsabilidad',
+                                pl: 'Państwo Reaktywności',
+                                uk: 'Станом наближення',
+                                'zh-cn': 'B. 可持续性',
                             },
                         },
                         native: {},
@@ -182,6 +232,15 @@ class Residents extends utils.Adapter {
                         name: {
                             en: 'Information about ' + name,
                             de: 'Informationen über ' + name,
+                            ru: 'Информация о ' + name,
+                            pt: 'Informação sobre ' + name,
+                            nl: 'Informatie over ' + name,
+                            fr: 'Informations sur ' + name,
+                            it: 'Informazioni su ' + name,
+                            es: 'Información sobre ' + name,
+                            pl: 'Informacja o ' + name,
+                            uk: 'Інформація про ' + name,
+                            'zh-cn': '关于“+名称”的信息',
                         },
                     },
                     native: {},
@@ -193,6 +252,15 @@ class Residents extends utils.Adapter {
                         name: {
                             en: 'Display name for ' + this.namespace + '.' + id,
                             de: 'Anzeigename für ' + this.namespace + '.' + id,
+                            ru: 'Имя дисплея для ' + this.namespace + '.' + id,
+                            pt: 'Nome de exibição para ' + this.namespace + '.' + id,
+                            nl: 'Vertaling ' + this.namespace + '.' + id,
+                            fr: "Nom d'affichage pour " + this.namespace + '.' + id,
+                            it: 'Visualizzazione nome per ' + this.namespace + '.' + id,
+                            es: 'Nombre de la pantalla para ' + this.namespace + '.' + id,
+                            pl: 'Dysplay name for ' + this.namespace + '.' + id,
+                            uk: 'Назва екрану для ' + this.namespace + '.' + id,
+                            'zh-cn': this.namespace + '.' + id + ' 的区别名',
                         },
                         type: 'string',
                         role: 'text.resident.name',
@@ -211,6 +279,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: 'Activity states of ' + name,
                                 de: 'Aktivitätsstatus von ' + name,
+                                ru: 'Состояние деятельности ' + name,
+                                pt: 'Estados de atividade de ' + name,
+                                nl: 'Activiteit staat van ' + name,
+                                fr: "État d'activité de " + name,
+                                it: 'Stati di attività di ' + name,
+                                es: 'Estado de actividad de ' + name,
+                                pl: 'Aktywność stanów ' + name,
+                                uk: 'Стани діяльності ' + name,
+                                'zh-cn': name + ' 动产国',
                             },
                         },
                         native: {},
@@ -327,6 +404,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' activity state',
                                     de: name + ' Aktivitätsstatus',
+                                    ru: name + ' активность государство',
+                                    pt: 'estado de atividade ' + name,
+                                    nl: name + ' activiteit staat',
+                                    fr: "état de l ' activité " + name,
+                                    it: name + ' attività stato',
+                                    es: 'estado de actividad ' + name,
+                                    pl: 'państwo aktywności ' + name,
+                                    uk: 'стан діяльності ' + name,
+                                    'zh-cn': name + ' 动植物活动',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.activity',
@@ -338,6 +424,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Resident activity state',
                                     de: 'Bewohner Aktivitätsstatus',
+                                    ru: 'Государственная деятельность',
+                                    pt: 'Estado de atividade residente',
+                                    nl: 'Husident activiteit',
+                                    fr: 'État résident',
+                                    it: 'Stato di attività residenziale',
+                                    es: 'Estado de actividad residente',
+                                    pl: 'Stany Zjednoczone',
+                                    uk: 'Державна діяльність',
+                                    'zh-cn': '驻地活动州',
                                 },
                                 states: activityStates,
                             },
@@ -358,6 +453,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is going after this task',
                                     de: name + ' geht dieser Aufgabe nach',
+                                    ru: name + ' XYZ идет после этой задачи',
+                                    pt: name + ' vai atrás desta tarefa',
+                                    nl: name + ' gaat achter deze taak aan',
+                                    fr: name + ' va après cette tâche',
+                                    it: name + ' sta andando dopo questo compito',
+                                    es: name + ' va tras esta tarea',
+                                    pl: name + ' po tym wydarzeniu się z tego zadania',
+                                    uk: name + ' йде після цього завдання',
+                                    'zh-cn': name + ' 任务结束后',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.task',
@@ -369,6 +473,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'The task the resident is going after right now.',
                                     de: 'Die Aufgabe, der der Bewohner gerade nachgeht.',
+                                    ru: 'Задача резидента продолжается прямо сейчас.',
+                                    pt: 'A tarefa que o residente vai fazer agora.',
+                                    nl: 'De taak die de bewoner nu gaat doen.',
+                                    fr: 'La tâche que le résident poursuit maintenant.',
+                                    it: 'Il compito che il residente sta seguendo in questo momento.',
+                                    es: 'La tarea que el residente va tras ahora.',
+                                    pl: 'Zadaniem rezydenta jest teraz.',
+                                    uk: 'Завдання життєрадісника йде прямо зараз.',
+                                    'zh-cn': '居民现在正处于权利之后。.',
                                 },
                                 states: taskStates,
                             },
@@ -389,6 +502,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is awake at night?',
                                     de: name + ' ist nachts wach?',
+                                    ru: name + ' пробуждается ночью?',
+                                    pt: name + ' está acordado à noite?',
+                                    nl: name + " is 's nachts wakker?",
+                                    fr: name + ' est réveillée la nuit ?',
+                                    it: name + " e' sveglia di notte?",
+                                    es: '¿' + name + ' está despierto por la noche?',
+                                    pl: name + ' jest nocą?',
+                                    uk: name + ' це нічний час?',
+                                    'zh-cn': name + ' 在夜间是一种wak?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.awake',
@@ -398,6 +520,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident awake at night right now?',
                                     de: 'Liegt dieser Bewohner gerade nachts wach im Bett?',
+                                    ru: 'Этот житель пробуждает ночью прямо сейчас?',
+                                    pt: 'Este residente está acordado à noite?',
+                                    nl: "Is deze bewoner 's nachts wakker?",
+                                    fr: 'Est-ce que ce résident est réveillé la nuit ?',
+                                    it: "Questo residente e' sveglio di notte?",
+                                    es: '¿Este residente está despierto por la noche?',
+                                    pl: 'Czy ten mieszkaniec budzi się w nocy?',
+                                    uk: 'Чи є це життєдіяльцем вночі прямо зараз?',
+                                    'zh-cn': '现在该居民是否在夜间权利下滑?',
                                 },
                             },
                             native: {},
@@ -417,6 +548,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is getting ready for bed?',
                                     de: name + ' macht sich bettfertig?',
+                                    ru: name + ' готовится к постели?',
+                                    pt: name + ' está se preparando para a cama?',
+                                    nl: name + ' gaat naar bed?',
+                                    fr: name + ' se prépare pour le lit ?',
+                                    it: name + ' si sta preparando per dormire?',
+                                    es: '¿' + name + ' se está preparando para la cama?',
+                                    pl: name + ' jest gotowy do łóżka?',
+                                    uk: name + ' готовий до ліжка?',
+                                    'zh-cn': name + ' 是否准备好?',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.bedtime',
@@ -428,6 +568,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident getting ready for bed right now?',
                                     de: 'Macht sich dieser Bewohner gerade bettfertig?',
+                                    ru: 'Готов ли этот резидент к постели прямо сейчас?',
+                                    pt: 'Este residente está a preparar-se para a cama?',
+                                    nl: 'Maakt deze bewoner zich nu klaar voor bed?',
+                                    fr: 'Est-ce que ce résident se prépare au lit maintenant ?',
+                                    it: 'Questo residente si sta preparando per andare a letto?',
+                                    es: '¿Este residente se está preparando para la cama ahora mismo?',
+                                    pl: 'Obecnie mieszkaniec jest gotowy do łóżka?',
+                                    uk: 'Чи готовий резидент до ліжка прямо зараз?',
+                                    'zh-cn': '现在该居民是否愿意获得权利?',
                                 },
                                 states: {
                                     0: 'Off',
@@ -453,6 +602,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' does not want to be disturbed?',
                                     de: name + ' möchte nicht gestört werden?',
+                                    ru: name + ' не хочет тревожиться?',
+                                    pt: name + ' não quer ser perturbado?',
+                                    nl: name + ' wil niet gestoord worden?',
+                                    fr: name + ' ne veut pas être perturbé?',
+                                    it: name + ' non vuole essere disturbato?',
+                                    es: name + ' no quiere ser molestado?',
+                                    pl: name + ' nie chce być zaniepokojony?',
+                                    uk: name + ' не хоче турбувати?',
+                                    'zh-cn': '十国不想受到干扰?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.dnd',
@@ -462,6 +620,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Does the resident currently not want to be disturbed or interrupted?',
                                     de: 'Möchte der Bewohner gerade nicht gestört oder unterbrochen werden?',
+                                    ru: 'В настоящее время резидент не хочет нарушать или прервать?',
+                                    pt: 'O residente atualmente não quer ser perturbado ou interrompido?',
+                                    nl: 'Wil de bewoner niet gestoord of gestoord worden?',
+                                    fr: 'Le résident ne veut-il pas actuellement être perturbé ou interrompu?',
+                                    it: 'Attualmente il residente non vuole essere disturbato o interrotto?',
+                                    es: '¿El residente actualmente no quiere ser perturbado o interrumpido?',
+                                    pl: 'Czy mieszkaniec nie chce być zaniepokojony lub przerywany?',
+                                    uk: 'Чи не хоче бути порушеним чи переривається резидент?',
+                                    'zh-cn': '目前居民是否不愿意受到混乱或打断?',
                                 },
                             },
                             native: {},
@@ -481,6 +648,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' will stay overnight today?',
                                     de: name + ' wird heute übernachten?',
+                                    ru: name + ' останется сегодня ночью?',
+                                    pt: name + ' vai passar a noite hoje?',
+                                    nl: name + ' blijft vannacht?',
+                                    fr: name + " passera la nuit aujourd'hui?",
+                                    it: name + ' rimarrà per tutta la notte oggi?',
+                                    es: '¿' + name + ' se quedará esta noche?',
+                                    pl: 'Obecnie ' + name + ' będzie nocą?',
+                                    uk: name + ' буде залишатися на ніч сьогодні?',
+                                    'zh-cn': name + ' 国将在今天夜间停留?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.overnight',
@@ -490,6 +666,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident going to stay overnight today?',
                                     de: 'Wird dieser Bewohner heute über Nacht bleiben?',
+                                    ru: 'Этот резидент собирается остаться на ночь сегодня?',
+                                    pt: 'Este residente vai ficar hoje à noite?',
+                                    nl: 'Blijft deze inwoner vannacht?',
+                                    fr: "Est-ce que ce résident va passer la nuit aujourd'hui ?",
+                                    it: 'Questo residente sta per rimanere per tutta la notte oggi?',
+                                    es: '¿Este residente va a quedarse esta noche?',
+                                    pl: 'Czy ten mieszkaniec będzie nocą?',
+                                    uk: 'Чи є цей резидент, який сьогодні працює?',
+                                    'zh-cn': '今天这个居民是否会过夜?',
                                 },
                             },
                             native: {},
@@ -509,6 +694,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' has a wake-up call running?',
                                     de: name + ' hat einen laufenden Weckruf?',
+                                    ru: 'У ' + name + ' работает пробуждение?',
+                                    pt: 'A ' + name + ' tem uma chamada a acordar?',
+                                    nl: 'Heeft ' + name + ' een wake-up call?',
+                                    fr: name + ' a un réveil en cours ?',
+                                    it: name + ' ha una sveglia in funzione?',
+                                    es: '¿' + name + ' tiene una llamada de atención?',
+                                    pl: name + ' ma nawoływane wezwanie?',
+                                    uk: name + ' має прокидний дзвінок?',
+                                    'zh-cn': name + ' 祖先发出呼吁吗?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.wakeup',
@@ -518,6 +712,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident currently being woken up?',
                                     de: 'Ist dieser Bewohner gerade auf dem Heimweg?',
+                                    ru: 'В настоящее время этот резидент просыпается?',
+                                    pt: 'Este residente está a ser acordado?',
+                                    nl: 'Wordt deze bewoner nu wakker?',
+                                    fr: 'Est-ce que ce résident est actuellement réveillé ?',
+                                    it: "Questo residente e' attualmente svegliato?",
+                                    es: '¿Se está despertando a este residente?',
+                                    pl: 'Obecnie mieszkaniec jest wychowywany?',
+                                    uk: 'Чи є на даний момент резидент?',
+                                    'zh-cn': '目前该居民是否受到创伤?',
                                 },
                             },
                             native: {},
@@ -537,6 +740,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' has snoozed the wake-up call?',
                                     de: name + ' hat den Weckruf pausiert?',
+                                    ru: name + ' разбил звонок?',
+                                    pt: 'A ' + name + ' deu cabo da chamada de despertar?',
+                                    nl: name + ' heeft de wake-up call doorzocht?',
+                                    fr: name + ' a sauté le réveil ?',
+                                    it: name + ' ha snoozed la sveglia?',
+                                    es: name + ' ha snoozed la llamada de atención?',
+                                    pl: name + " słyszało okrzyki. '",
+                                    uk: name + ' snoozed the break-up виклик?',
+                                    'zh-cn': name + ' hasnoozed the 随后的呼吁? 评 注',
                                 },
                                 type: 'boolean',
                                 role: 'button.residents.wakeupSnoozed',
@@ -546,6 +758,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Has this resident currently snoozed a wake-up call?',
                                     de: 'Hat dieser Bewohner gerade einen Weckruf pausiert?',
+                                    ru: 'В настоящее время этот резидент разбил звонок?',
+                                    pt: 'Este residente já fez uma chamada de despertar?',
+                                    nl: 'Heeft deze inwoner momenteel een wake-up call gedaan?',
+                                    fr: 'Est-ce que ce résident a fait un rappel ?',
+                                    it: 'Questo residente ha attualmente snoozed una chiamata di sveglia?',
+                                    es: '¿Este residente ha snoozed una llamada de atención?',
+                                    pl: 'Czy ten rezydent słyszał okrzyk?',
+                                    uk: 'Чи зателефонував цей резидент?',
+                                    'zh-cn': '目前这一居民没有人听了一次呼吁?',
                                 },
                             },
                             native: {},
@@ -565,6 +786,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is on way home?',
                                     de: name + ' ist auf dem Heimweg?',
+                                    ru: name + ' это дома?',
+                                    pt: name + ' está a caminho de casa?',
+                                    nl: name + ' is op weg naar huis?',
+                                    fr: name + ' est en route ?',
+                                    it: name + ' sta tornando a casa?',
+                                    es: '¿' + name + ' está de camino a casa?',
+                                    pl: name + ' jest w drodze do domu?',
+                                    uk: name + ' на шляху додому?',
+                                    'zh-cn': name + ' 祖国是家?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.wayhome',
@@ -574,6 +804,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident on way home?',
                                     de: 'Ist dieser Bewohner gerade auf dem Heimweg?',
+                                    ru: 'Это резидент на пути домой?',
+                                    pt: 'Este residente está a caminho de casa?',
+                                    nl: 'Is deze bewoner op weg naar huis?',
+                                    fr: 'Est-ce que ce résident est en chemin ?',
+                                    it: 'Questo residente sta tornando a casa?',
+                                    es: '¿Está este residente de camino a casa?',
+                                    pl: 'Czy ten mieszka w drodze do domu?',
+                                    uk: 'Чи є це резидент на шляху додому?',
+                                    'zh-cn': '是否住在家里?',
                                 },
                             },
                             native: {},
@@ -594,6 +833,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: 'Mood of ' + name,
                                 de: 'Laune von ' + name,
+                                ru: 'Настроение ' + name,
+                                pt: 'Humor de ' + name,
+                                nl: 'Stemming van ' + name,
+                                fr: 'Humeur de ' + name,
+                                it: "Stato d'animo di " + name,
+                                es: 'Humor de ' + name,
+                                pl: 'Przewodnik ' + name,
+                                uk: 'Мудрий ' + name,
+                                'zh-cn': name + ' 国',
                             },
                         },
                         native: {},
@@ -607,6 +855,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' mood state',
                                     de: name + ' Launenstatus',
+                                    ru: 'Состояние настроения ' + name,
+                                    pt: 'Estado de humor ' + name,
+                                    nl: name + ' stemmingsstatus',
+                                    fr: "État d'humeur " + name,
+                                    it: "Stato dell'umore " + name,
+                                    es: 'Estado de ánimo ' + name,
+                                    pl: 'Stan nastroju ' + name,
+                                    uk: 'Статус настрою ' + name,
+                                    'zh-cn': name + ' 劳伦状态',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.mood',
@@ -618,6 +875,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Mood of the resident with negative or positive tendency',
                                     de: 'Laune des Bewohners mit negativer oder positiver Tendenz',
+                                    ru: 'Настроение резидента с негативной или положительной тенденцией',
+                                    pt: 'Humor do residente com tendência negativa ou positiva',
+                                    nl: 'Stemming van de bewoner met een negatieve of positieve neiging',
+                                    fr: 'Humeur du résident à tendance négative ou positive',
+                                    it: 'Umore del residente con tendenza negativa o positiva',
+                                    es: 'Estado de ánimo del residente con tendencia negativa o positiva',
+                                    pl: 'Nastrój mieszkańca z tendencją negatywną lub pozytywną',
+                                    uk: 'Примушені резидента з негативною або позитивною тенденцією',
+                                    'zh-cn': '居民的情绪有消极或积极的倾向',
                                 },
                                 states: {
                                     '-5': "-5: Couldn't Get Worse",
@@ -649,6 +915,15 @@ class Residents extends utils.Adapter {
                         name: {
                             en: 'Indirect presence inheritance for ' + name,
                             de: 'Indirekte Präsenzvererbung für ' + name,
+                            ru: 'Непрямое наследство присутствия для ' + name,
+                            pt: 'Herança de presença indireta para ' + name,
+                            nl: 'Indirecte erfenis voor ' + name,
+                            fr: 'Héritage de présence indirecte pour ' + name,
+                            it: 'Eredità di presenza indiretta per ' + name,
+                            es: 'Herencia de presencia indirecta para ' + name,
+                            pl: 'Przeznaczenie ' + name,
+                            uk: 'Непряма спадщина присутності для ' + name,
+                            'zh-cn': name + ' 直接存在的继承权',
                         },
                     },
                     native: {},
@@ -662,6 +937,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is inheriting a home state?',
                                 de: name + ' erbt einen Zuhausestatus?',
+                                ru: name + ' наследует состояние дома?',
+                                pt: 'O ' + name + ' herda um estado de casa?',
+                                nl: name + ' erft een thuisstaat?',
+                                fr: name + " hérite d'un État d'origine ?",
+                                it: name + ' sta ereditando uno stato di casa?',
+                                es: '¿' + name + ' hereda un estado de origen?',
+                                pl: name + ' dziedziczy kraj?',
+                                uk: name + ' є спадковим станом будинку?',
+                                'zh-cn': '祖国正在继承一个家庭国?',
                             },
                             type: 'boolean',
                             role: 'switch.enable',
@@ -671,6 +955,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Follow-them functionality for coming & leaving home',
                                 de: 'Follow-them Funktion für Kommen & Gehen',
+                                ru: 'Функциональность для приезда и выхода из дома',
+                                pt: 'Funcionalidade de acompanhamento para vir e sair de casa',
+                                nl: 'Volg de functionaliteit voor het verlaten van thuis',
+                                fr: 'Fonctionnalités de suivi pour rentrer & quitter la maison',
+                                it: 'Funzionalità di follow-them per tornare e lasciare casa',
+                                es: 'Funcionalidad de seguimiento para salir de casa',
+                                pl: 'Wstępna funkcjonalność dla nadchodzącego i opuszczania domu',
+                                uk: 'Дотримуйтесь функціональності для приїзду та виїзду додому',
+                                'zh-cn': '今后和离开家园的后续工作功能',
                             },
                         },
                         native: {},
@@ -691,6 +984,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is following home state of this person',
                                 de: name + ' folgt dem Zuhausestatus dieser Person',
+                                ru: name + ' следит за домашним состоянием этого человека',
+                                pt: name + ' está seguindo o estado de casa desta pessoa',
+                                nl: name + ' volgt de staat van deze persoon',
+                                fr: name + " suit l'état de la maison de cette personne",
+                                it: name + ' sta seguendo lo stato di casa di questa persona',
+                                es: name + ' sigue el estado natal de esta persona',
+                                pl: name + ' poprzedza stan rzeczy tej osoby',
+                                uk: name + ' - це домашня держава цієї особи',
+                                'zh-cn': name + ' 正处于这一人的家里。',
                             },
                             type: 'string',
                             role: 'string.resident',
@@ -700,6 +1002,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Which person is being followed?',
                                 de: 'Welcher Person wird gefolgt?',
+                                ru: 'Какой человек следует?',
+                                pt: 'Qual pessoa está sendo seguida?',
+                                nl: 'Welke persoon wordt gevolgd?',
+                                fr: 'Quelle personne est suivie ?',
+                                it: 'Quale persona viene seguita?',
+                                es: '¿A qué persona se le sigue?',
+                                pl: 'Co się dzieje?',
+                                uk: 'Яку людину слідувати?',
+                                'zh-cn': '谁是谁?',
                             },
                         },
                         native: {},
@@ -719,6 +1030,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is following these presence events',
                                 de: name + ' folgt diesen Anwesenheits-Ereignissen',
+                                ru: name + ' следит за этими событиями присутствия',
+                                pt: name + ' está seguindo estes eventos de presença',
+                                nl: name + ' volgt deze aanwezigheidsevenementen',
+                                fr: name + ' suit ces événements de présence',
+                                it: name + ' segue questi eventi di presenza',
+                                es: name + ' sigue estos eventos de presencia',
+                                pl: name + ' potwierdza te zdarzenia',
+                                uk: name + ' слідувати за цими подіями присутності',
+                                'zh-cn': '第十次会议之后',
                             },
                             type: 'number',
                             role: 'value.resident',
@@ -733,6 +1053,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Which presence states is this person following?',
                                 de: 'Welchem Anwesenheitsstatus folgt diese Person?',
+                                ru: 'Какое присутствие говорит этот человек?',
+                                pt: 'Que estados de presença esta pessoa está seguindo?',
+                                nl: 'Welke aanwezigheid volgt deze persoon?',
+                                fr: 'Quelle est cette personne qui suit ?',
+                                it: 'Quale presenza afferma che questa persona sta seguendo?',
+                                es: '¿Qué estados de presencia sigue esta persona?',
+                                pl: 'Jaka jest obecna osoba?',
+                                uk: 'Яка присутність в цій особі?',
+                                'zh-cn': '哪些存在国?',
                             },
                         },
                         native: {},
@@ -754,6 +1083,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is inheriting a night state?',
                                     de: name + ' erbt einen Nachtstatus?',
+                                    ru: name + ' наследует ночное состояние?',
+                                    pt: 'A ' + name + ' herda um estado nocturno?',
+                                    nl: name + ' erft een nachtstaat?',
+                                    fr: name + " hérite d'un état de nuit ?",
+                                    it: name + ' sta ereditando uno stato di notte?',
+                                    es: '¿' + name + ' hereda un estado nocturno?',
+                                    pl: name + ' dziedziczy stan nocny?',
+                                    uk: name + ' – спадщина нічного стану?',
+                                    'zh-cn': '祖国正在继承一个夜间国家?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.enable',
@@ -763,6 +1101,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Follow-them functionality for the night state',
                                     de: 'Follow-them Funktion für den Nachtstatus',
+                                    ru: 'Функционал для ночного государства',
+                                    pt: 'Funcionalidade de acompanhamento para o estado noturno',
+                                    nl: 'Volg hun functie voor de nachtelijke staat',
+                                    fr: "Fonctionnalité de suivi pour l'état de nuit",
+                                    it: 'Funzionalità di follow-them per lo stato di notte',
+                                    es: 'Funcionalidad de seguimiento para el estado nocturno',
+                                    pl: 'Wstępna funkcjonalność dla nocnego stanu',
+                                    uk: 'Дотримуйтесь функціональності для нічного стану',
+                                    'zh-cn': '夜间国家的后续行动功能',
                                 },
                             },
                             native: {},
@@ -783,6 +1130,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is following sleep state of this person',
                                     de: name + ' folgt dem Schlafstatus dieser Person',
+                                    ru: name + ' следит за состоянием сна этого человека',
+                                    pt: name + ' está seguindo o estado de sono desta pessoa',
+                                    nl: name + ' volgt slaaptoestand van deze persoon',
+                                    fr: name + " suit l'état de sommeil de cette personne",
+                                    it: name + ' sta seguendo lo stato di sonno di questa persona',
+                                    es: name + ' sigue el estado de sueño de esta persona',
+                                    pl: name + ' jest stanem snu tej osoby',
+                                    uk: name + ' - це наступний стан сну цієї людини',
+                                    'zh-cn': name + ' 是这个人睡觉的后裔',
                                 },
                                 type: 'string',
                                 role: 'string.resident',
@@ -792,6 +1148,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Which person is being followed?',
                                     de: 'Welcher Person wird gefolgt?',
+                                    ru: 'Какой человек следует?',
+                                    pt: 'Qual pessoa está sendo seguida?',
+                                    nl: 'Welke persoon wordt gevolgd?',
+                                    fr: 'Quelle personne est suivie ?',
+                                    it: 'Quale persona viene seguita?',
+                                    es: '¿A qué persona se le sigue?',
+                                    pl: 'Co się dzieje?',
+                                    uk: 'Яку людину слідувати?',
+                                    'zh-cn': '谁是谁?',
                                 },
                             },
                             native: {},
@@ -811,6 +1176,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is following these night presence events',
                                     de: name + ' folgt diesen nächtlichen Anwesenheits-Ereignissen',
+                                    ru: name + ' следит за этими ночными событиями присутствия',
+                                    pt: name + ' está seguindo estes eventos de presença noturna',
+                                    nl: name + ' volgt deze nachtelijke gebeurtenissen',
+                                    fr: name + ' suit ces événements nocturnes',
+                                    it: name + ' segue questi eventi di presenza notturna',
+                                    es: name + ' sigue estos eventos de presencia nocturna',
+                                    pl: name + ' po tych nocnych wydarzeniach obecna jest obecna',
+                                    uk: name + ' - це наступні події нічної присутності',
+                                    'zh-cn': '第' + name + '次会议之后',
                                 },
                                 type: 'number',
                                 role: 'value.resident',
@@ -825,6 +1199,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Which night states is this person following?',
                                     de: 'Welchem Nachtstatus folgt diese Person?',
+                                    ru: 'Какая ночь говорит этот человек?',
+                                    pt: 'Que noite afirma que esta pessoa está a seguir?',
+                                    nl: 'Welke nacht staat deze persoon te volgen?',
+                                    fr: 'Quelle nuit est-ce que cette personne suit ?',
+                                    it: "Qual e' la notte in cui sta seguendo questa persona?",
+                                    es: '¿Qué estados de noche es esta persona que sigue?',
+                                    pl: 'Co nocne stany to osoba następująca?',
+                                    uk: 'Які нічні стани є такою особою:?',
+                                    'zh-cn': '哪一个夜间州是谁?',
                                 },
                             },
                             native: {},
@@ -843,6 +1226,15 @@ class Residents extends utils.Adapter {
                         name: {
                             en: 'Presence states of ' + name,
                             de: 'Anwesenheitsstatus von ' + name,
+                            ru: 'Состояние присутствия ' + name,
+                            pt: 'Estados de presença de ' + name,
+                            nl: 'Druk staat van ' + name,
+                            fr: 'État de présence de ' + name,
+                            it: 'Stati di presenza di ' + name,
+                            es: 'Estados de presencia de ' + name,
+                            pl: 'Państwa prezydenckie ' + name,
+                            uk: 'Заочні стани ' + name,
+                            'zh-cn': name + ' 祖先国',
                         },
                     },
                     native: {},
@@ -856,6 +1248,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is at home?',
                                 de: name + ' ist zuhause?',
+                                ru: name + ' дома?',
+                                pt: 'O ' + name + ' está em casa?',
+                                nl: name + ' is thuis?',
+                                fr: name + ' est à la maison ?',
+                                it: name + " e' a casa?",
+                                es: '¿' + name + ' está en casa?',
+                                pl: name + ' jest w domu?',
+                                uk: name + ' в домашніх умовах?',
+                                'zh-cn': name + '祖国是家?',
                             },
                             type: 'boolean',
                             role: 'switch.mode.resident.home',
@@ -865,6 +1266,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Is this resident at home?',
                                 de: 'Ist dieser Bewohner zuhause?',
+                                ru: 'Это резидент дома?',
+                                pt: 'É residente em casa?',
+                                nl: 'Is deze bewoner thuis?',
+                                fr: 'Est-ce que ce résident est à la maison ?',
+                                it: "E' residente a casa?",
+                                es: '¿Es residente en casa?',
+                                pl: 'Czy ten mieszka w domu?',
+                                uk: 'Чи є це резидент будинку?',
+                                'zh-cn': '是否住在家里?',
                             },
                         },
                         native: {},
@@ -884,6 +1294,15 @@ class Residents extends utils.Adapter {
                             name: {
                                 en: name + ' is away?',
                                 de: name + ' ist abwesend?',
+                                ru: name + ' находится вдали?',
+                                pt: 'O ' + name + ' está fora?',
+                                nl: name + ' is afwezig?',
+                                fr: name + ' est parti ?',
+                                it: name + " e' via?",
+                                es: '¿' + name + ' está fuera?',
+                                pl: name + ' jest już odległy?',
+                                uk: name + ' є далеко?',
+                                'zh-cn': name + ' 不存在？',
                             },
                             type: 'boolean',
                             role: 'switch.mode.resident.away',
@@ -893,6 +1312,15 @@ class Residents extends utils.Adapter {
                             desc: {
                                 en: 'Is this resident away?',
                                 de: 'Ist dieser Bewohner abwesend?',
+                                ru: 'Это резидент?',
+                                pt: 'Este residente está fora?',
+                                nl: 'Is deze bewoner weg?',
+                                fr: 'Est-ce que ce résident est parti ?',
+                                it: "E' via questo residente?",
+                                es: '¿Este residente está fuera?',
+                                pl: 'Czy to mieszka?',
+                                uk: 'Чи є це резидент?',
+                                'zh-cn': '是否住在该居民?',
                             },
                         },
                         native: {},
@@ -914,6 +1342,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' presence state',
                                     de: name + ' Anwesenheitsstatus',
+                                    ru: name + ' состояние присутствия',
+                                    pt: 'Estado de presença ' + name,
+                                    nl: name + ' aanwezigheidsstatus',
+                                    fr: 'Statut de présence ' + name,
+                                    it: 'Stato di presenza ' + name,
+                                    es: 'Estado de presencia ' + name,
+                                    pl: 'Stan obecności ' + name,
+                                    uk: 'Стан присутності ' + name,
+                                    'zh-cn': name + ' 存在状态',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.presence',
@@ -925,6 +1362,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Resident presence state',
                                     de: 'Bewohner Anwesenheitsstatus',
+                                    ru: 'Состояние присутствия',
+                                    pt: 'Estado de presença residente',
+                                    nl: 'Verblijfsvergunning staat',
+                                    fr: 'Présence résidente',
+                                    it: 'Stato di presenza residente',
+                                    es: 'Estado de presencia residente',
+                                    pl: 'Stany Zjednoczone',
+                                    uk: 'Стан присутності резидента',
+                                    'zh-cn': '驻地存在',
                                 },
                                 states: {
                                     0: 'Away',
@@ -951,6 +1397,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' is at sleep?',
                                     de: name + ' schläft?',
+                                    ru: name + ' у сна?',
+                                    pt: 'O ' + name + ' está a dormir?',
+                                    nl: name + ' slaapt?',
+                                    fr: name + ' est en sommeil ?',
+                                    it: name + ' sta dormendo?',
+                                    es: '¿' + name + ' está durmiendo?',
+                                    pl: name + ' jest w snu?',
+                                    uk: name + ' на сонці?',
+                                    'zh-cn': name + ' 睡觉?',
                                 },
                                 type: 'boolean',
                                 role: 'switch.mode.resident.night',
@@ -960,6 +1415,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Is this resident at sleep?',
                                     de: 'Schläft dieser Bewohner gerade?',
+                                    ru: 'Это резидент сон?',
+                                    pt: 'Este residente está a dormir?',
+                                    nl: 'Is deze inwoner in slaap?',
+                                    fr: 'Est-ce que ce résident dort ?',
+                                    it: "E' residente a dormire?",
+                                    es: '¿Este residente está durmiendo?',
+                                    pl: 'Czy ten mieszkaniec śpi?',
+                                    uk: 'Чи є це житель уві сні?',
+                                    'zh-cn': '这个居民是否睡觉?',
                                 },
                             },
                             native: {},
@@ -979,6 +1443,15 @@ class Residents extends utils.Adapter {
                                 name: {
                                     en: name + ' presence state',
                                     de: name + ' Anwesenheitsstatus',
+                                    ru: name + ' состояние присутствия',
+                                    pt: 'Estado de presença ' + name,
+                                    nl: name + ' aanwezigheidsstatus',
+                                    fr: 'Statut de présence ' + name,
+                                    it: 'Stato di presenza ' + name,
+                                    es: 'Estado de presencia ' + name,
+                                    pl: 'Stan obecności ' + name,
+                                    uk: 'Стан присутності ' + name,
+                                    'zh-cn': name + ' 存在状态',
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.presence',
@@ -990,6 +1463,15 @@ class Residents extends utils.Adapter {
                                 desc: {
                                     en: 'Resident presence state',
                                     de: 'Bewohner Anwesenheitsstatus',
+                                    ru: 'Состояние присутствия',
+                                    pt: 'Estado de presença residente',
+                                    nl: 'Verblijfsvergunning staat',
+                                    fr: 'Présence résidente',
+                                    it: 'Stato di presenza residente',
+                                    es: 'Estado de presencia residente',
+                                    pl: 'Stany Zjednoczone',
+                                    uk: 'Стан присутності резидента',
+                                    'zh-cn': '驻地存在',
                                 },
                                 states: {
                                     0: 'Away',
@@ -1241,148 +1723,6 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * Disable any resident that is currently away, assuming to be away for the day as there was no overnight
-     *
-     * @param {boolean} [initialize]
-     */
-    timeoutDisableAbsentResidents(initialize) {
-        if (!initialize) {
-            this.residents.forEach(async (resident) => {
-                const enabled = await this.getStateAsync(resident['id'] + '.enabled');
-                const away = await this.getStateAsync(resident['id'] + '.presence.away');
-
-                if (!enabled || !away) return;
-
-                if (enabled.val == false) {
-                    this.log.debug(
-                        'timeoutDisableAbsentResidents: ' +
-                            resident['id'] +
-                            " is already 'disabled', therefore it is not changed.",
-                    );
-                } else if (away.val == false) {
-                    this.log.debug(
-                        'timeoutDisableAbsentResidents: ' +
-                            resident['id'] +
-                            " is not 'away', therefore it is not disabled.",
-                    );
-                } else {
-                    this.log.info('timeoutDisableAbsentResidents: Disabling absent device ' + resident['id'] + '.');
-                    await this.setStateAsync(resident['id'] + '.enabled', {
-                        val: false,
-                        ack: false,
-                    });
-                }
-            });
-        }
-
-        // Create new timeout
-        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.DisableAbsentResidentsDailyTimer);
-        if (runtimeMilliseconds != null) {
-            this.log.debug(
-                `Creating absent timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(
-                    runtimeMilliseconds,
-                )} HH:mm:ss)`,
-            );
-            this.absentTimeout = this.setTimeout(() => {
-                this.log.info('Started daily absent timeout');
-                this.absentTimeout = null;
-                this.timeoutDisableAbsentResidents();
-            }, runtimeMilliseconds);
-        }
-    }
-
-    /**
-     * Set overnight to default for roomies that stayed overnight
-     *
-     * @param {boolean} [initialize]
-     */
-    timeoutResetOvernight(initialize) {
-        if (!initialize) {
-            this.residents.forEach(async (resident) => {
-                const home = await this.getStateAsync(resident['id'] + '.presence.home');
-                const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
-                const overnightObj = await this.getObjectAsync(resident['id'] + '.activity.overnight');
-
-                if (!home || !overnight || !overnightObj) return;
-
-                if (resident['type'] == 'pet') {
-                    this.log.debug(
-                        'timeoutResetOvernight: ' + resident['id'] + ' is a pet without night state - ignoring.',
-                    );
-                } else if (resident['type'] == 'guest') {
-                    this.log.debug(
-                        'timeoutResetOvernight: ' +
-                            resident['id'] +
-                            ' is a guest, therefore is excluded from automatic reset.',
-                    );
-                } else if (overnight.val == overnightObj.common.def) {
-                    this.log.debug(
-                        'timeoutResetOvernight: ' +
-                            resident['id'] +
-                            " activity 'overnight' is already " +
-                            overnightObj.common.def +
-                            ', therefore is not changed.',
-                    );
-                } else if (home.val == false) {
-                    this.log.debug(
-                        'timeoutResetOvernight: ' + resident['id'] + ' is not at home, therefore is excluded.',
-                    );
-                } else {
-                    this.log.info(
-                        "timeoutResetOvernight: Resetting 'overnight' for " +
-                            resident['id'] +
-                            ' to ' +
-                            overnightObj.common.def +
-                            '.',
-                    );
-                    await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
-                        val: overnightObj.common.def,
-                        ack: false,
-                    });
-                }
-            });
-        }
-
-        // Create new timeout
-        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.ResetOvernightDailyTimer);
-        if (runtimeMilliseconds != null) {
-            this.log.debug(
-                `Creating overnight reset timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(
-                    runtimeMilliseconds,
-                )} HH:mm:ss)`,
-            );
-            this.overnightTimeout = this.setTimeout(() => {
-                this.log.info('Started daily overnight reset');
-                this.overnightTimeout = null;
-                this.timeoutResetOvernight();
-            }, runtimeMilliseconds);
-        }
-    }
-
-    onUnload(callback) {
-        try {
-            this.log.info('Clean up everything ...');
-
-            if (this.calculationTimeout) {
-                this.clearTimeout(this.calculationTimeout);
-                this.log.debug('Cleared calculation timeout');
-            }
-            if (this.absentTimeout) {
-                this.clearTimeout(this.absentTimeout);
-                this.log.debug('Cleared absent timeout');
-            }
-            if (this.overnightTimeout) {
-                this.clearTimeout(this.overnightTimeout);
-                this.log.debug('Cleared overnight timeout');
-            }
-
-            callback();
-        } catch (e) {
-            callback();
-        }
-    }
-
-    /**
      * Distribute state events
      *
      * @param {string} id
@@ -1459,6 +1799,29 @@ class Residents extends utils.Adapter {
                 // @ts-ignore
                 this.setResidentDevicePresenceFromEvent(id, state);
             }
+        }
+    }
+
+    onUnload(callback) {
+        try {
+            this.log.info('Clean up everything ...');
+
+            if (this.calculationTimeout) {
+                this.clearTimeout(this.calculationTimeout);
+                this.log.debug('Cleared calculation timeout');
+            }
+            if (this.absentTimeout) {
+                this.clearTimeout(this.absentTimeout);
+                this.log.debug('Cleared absent timeout');
+            }
+            if (this.overnightTimeout) {
+                this.clearTimeout(this.overnightTimeout);
+                this.log.debug('Cleared overnight timeout');
+            }
+
+            callback();
+        } catch (e) {
+            callback();
         }
     }
 
@@ -2979,6 +3342,125 @@ class Residents extends utils.Adapter {
     }
 
     /**
+     * Disable any resident that is currently away, assuming to be away for the day as there was no overnight
+     *
+     * @param {boolean} [initialize]
+     */
+    timeoutDisableAbsentResidents(initialize) {
+        if (!initialize) {
+            this.residents.forEach(async (resident) => {
+                const enabled = await this.getStateAsync(resident['id'] + '.enabled');
+                const away = await this.getStateAsync(resident['id'] + '.presence.away');
+
+                if (!enabled || !away) return;
+
+                if (enabled.val == false) {
+                    this.log.debug(
+                        'timeoutDisableAbsentResidents: ' +
+                            resident['id'] +
+                            " is already 'disabled', therefore it is not changed.",
+                    );
+                } else if (away.val == false) {
+                    this.log.debug(
+                        'timeoutDisableAbsentResidents: ' +
+                            resident['id'] +
+                            " is not 'away', therefore it is not disabled.",
+                    );
+                } else {
+                    this.log.info('timeoutDisableAbsentResidents: Disabling absent device ' + resident['id'] + '.');
+                    await this.setStateAsync(resident['id'] + '.enabled', {
+                        val: false,
+                        ack: false,
+                    });
+                }
+            });
+        }
+
+        // Create new timeout
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.DisableAbsentResidentsDailyTimer);
+        if (runtimeMilliseconds != null) {
+            this.log.debug(
+                `Creating absent timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(
+                    runtimeMilliseconds,
+                )} HH:mm:ss)`,
+            );
+            this.absentTimeout = this.setTimeout(() => {
+                this.log.info('Started daily absent timeout');
+                this.absentTimeout = null;
+                this.timeoutDisableAbsentResidents();
+            }, runtimeMilliseconds);
+        }
+    }
+
+    /**
+     * Set overnight to default for roomies that stayed overnight
+     *
+     * @param {boolean} [initialize]
+     */
+    timeoutResetOvernight(initialize) {
+        if (!initialize) {
+            this.residents.forEach(async (resident) => {
+                const home = await this.getStateAsync(resident['id'] + '.presence.home');
+                const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
+                const overnightObj = await this.getObjectAsync(resident['id'] + '.activity.overnight');
+
+                if (!home || !overnight || !overnightObj) return;
+
+                if (resident['type'] == 'pet') {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' + resident['id'] + ' is a pet without night state - ignoring.',
+                    );
+                } else if (resident['type'] == 'guest') {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' +
+                            resident['id'] +
+                            ' is a guest, therefore is excluded from automatic reset.',
+                    );
+                } else if (overnight.val == overnightObj.common.def) {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' +
+                            resident['id'] +
+                            " activity 'overnight' is already " +
+                            overnightObj.common.def +
+                            ', therefore is not changed.',
+                    );
+                } else if (home.val == false) {
+                    this.log.debug(
+                        'timeoutResetOvernight: ' + resident['id'] + ' is not at home, therefore is excluded.',
+                    );
+                } else {
+                    this.log.info(
+                        "timeoutResetOvernight: Resetting 'overnight' for " +
+                            resident['id'] +
+                            ' to ' +
+                            overnightObj.common.def +
+                            '.',
+                    );
+                    await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                        val: overnightObj.common.def,
+                        ack: false,
+                    });
+                }
+            });
+        }
+
+        // Create new timeout
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.ResetOvernightDailyTimer);
+        if (runtimeMilliseconds != null) {
+            this.log.debug(
+                `Creating overnight reset timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(
+                    runtimeMilliseconds,
+                )} HH:mm:ss)`,
+            );
+            this.overnightTimeout = this.setTimeout(() => {
+                this.log.info('Started daily overnight reset');
+                this.overnightTimeout = null;
+                this.timeoutResetOvernight();
+            }, runtimeMilliseconds);
+        }
+    }
+
+    /**
      * Convert HH:mm or HH:mm:ss to milliseconds until next occurance
      *
      * @param {string} timeOfDay - time in HH:mm or HH:mm:ss
@@ -3074,6 +3556,7 @@ class Residents extends utils.Adapter {
      * @param {object} b
      */
     reverseSortResidentsListByTimecode(a, b) {
+        if (a.tc == undefined || b.tc == undefined) return 0;
         if (a.tc < b.tc) {
             return 1;
         }
