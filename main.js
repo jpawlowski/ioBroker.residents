@@ -380,7 +380,8 @@ class Residents extends utils.Adapter {
                         activityStates[key] = activityStatesObj[key];
 
                         // Numbers below 1000 only for activity.state
-                        if (Number(key) < 1000) {
+                        // Numbers from 2000 onwards only for night time
+                        if (Number(key) < 1000 || Number(key) >= 2000) {
                             continue;
                         }
 
@@ -470,7 +471,7 @@ class Residents extends utils.Adapter {
                                 type: 'number',
                                 role: 'level.mode.resident.task',
                                 min: 1000,
-                                max: 12999,
+                                max: 1899,
                                 read: true,
                                 write: true,
                                 def: 1000,
@@ -1824,7 +1825,7 @@ class Residents extends utils.Adapter {
             } else if (this.wayhomeSubscriptionMapping[id] != undefined) {
                 this.setResidentDevicePresenceFromEvent(id, state);
             } else {
-                this.log.warn(id + ': Unexpected event');
+                this.log.error(id + ': Unexpected event');
             }
         }
     }
@@ -2261,7 +2262,7 @@ class Residents extends utils.Adapter {
             }
 
             default: {
-                this.log.warn('Received unknown command ' + level2 + '.' + level3);
+                this.log.error('Received unknown command ' + level2 + '.' + level3);
                 break;
             }
         }
@@ -2291,40 +2292,40 @@ class Residents extends utils.Adapter {
 
         switch (level2) {
             case 'enabled': {
-                this.log.debug(level1 + ': Controlling ' + id);
+                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
                 this.enableResidentDevice(level1, state, oldState);
                 break;
             }
 
             case 'activity': {
                 if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id);
+                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
                 this.setResidentDeviceActivity(level1, level3, state, oldState);
                 break;
             }
 
             case 'mood': {
-                this.log.debug(level1 + ': Controlling ' + id);
-                this.setResidentDeviceMood(level1, state);
+                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
+                this.setResidentDeviceMood(level1, state, oldState);
                 break;
             }
 
             case 'presence': {
                 if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id);
+                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
                 this.setResidentDevicePresence(level1, level3, state, oldState);
                 break;
             }
 
             case 'presenceFollowing': {
                 if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id);
+                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
                 this.setResidentDevicePresenceFollowing(level1, level3, state, oldState);
                 break;
             }
 
             default: {
-                this.log.warn(level1 + ': Controlling unknown channel ' + level2);
+                this.log.error(level1 + ': Controlling unknown channel ' + level2);
                 break;
             }
         }
@@ -2350,7 +2351,7 @@ class Residents extends utils.Adapter {
         switch (level2) {
             case 'activity': {
                 if (level3 == 'state') {
-                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
                 break;
@@ -2366,7 +2367,7 @@ class Residents extends utils.Adapter {
 
             case 'mood': {
                 if (level3 == 'state') {
-                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
                 break;
@@ -2374,14 +2375,14 @@ class Residents extends utils.Adapter {
 
             case 'presence': {
                 if (level3 == 'state') {
-                    this.log.debug(this.namespace + ": Received ack'ed update of " + id);
+                    this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
                 break;
             }
 
             default: {
-                this.log.warn(this.namespace + ": Received unknown ack'ed update of " + id);
+                this.log.error(this.namespace + ": Received unknown ack'ed update of " + id + ': ' + state.val);
                 break;
             }
         }
@@ -2410,10 +2411,8 @@ class Residents extends utils.Adapter {
         )
             return;
 
-        if (activityState.val >= 10000) {
-            activityState.val = Number(activityState.val) - 10000;
-        }
-        let nextActivityState = Number(activityState.val);
+        if (!oldState) oldState = state;
+        if (activityState.val >= 10000) activityState.val = Number(activityState.val) - 10000;
         if (command == 'dnd') dndState.val = oldState.val;
 
         let stateAwake = false;
@@ -2423,54 +2422,75 @@ class Residents extends utils.Adapter {
 
         switch (command) {
             case 'state': {
-                if (typeof state.val != 'number') return;
-                nextActivityState = state.val;
+                if (typeof state.val != 'number' || oldState.val == undefined) return;
+                if (oldState.val >= 10000) oldState.val = Number(oldState.val) - 10000;
+                let changePresenceToHome = false;
+                let changePresenceToAway = false;
 
                 // 000-0999: Not present at home / Away
-                if (nextActivityState == 2) {
-                    stateWayhome = true;
+                if (state.val < 1000) {
+                    changePresenceToAway = true;
+                    if (state.val == 2) stateWayhome = true;
                 }
 
                 // 1000-1999: WAKING TIME at home
-                else if (nextActivityState >= 1000 && nextActivityState < 2000) {
+                else if (state.val >= 1000 && state.val < 2000) {
                     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                    if (nextActivityState == 1900) {
+                    if (state.val == 1900) {
                         stateBedtime = 1;
-                    } else if (nextActivityState == 1901) {
+                    } else if (state.val == 1901) {
                         stateBedtime = 2;
-                    } else if (nextActivityState == 1902) {
+                    } else if (state.val == 1902) {
                         stateBedtime = 3;
                     }
                 }
 
                 // 2000-2999: SLEEPING TIME at home
-                else if (nextActivityState >= 2000 && nextActivityState < 3000) {
+                else if (state.val >= 2000 && state.val < 3000) {
                     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                    if (nextActivityState >= 2010 && nextActivityState < 2020) {
+                    if (state.val >= 2010 && state.val < 2020) {
                         stateAwake = true;
                     }
 
                     // 2100-2199: SLEEPING TIME at home: While I should get up
-                    else if (nextActivityState >= 2100 && nextActivityState < 2200) {
+                    else if (state.val >= 2100 && state.val < 2200) {
                         stateWakeup = true;
-
-                        if (activityState.val >= 2100) {
-                            nextActivityState = Number(activityState.val);
-                            if (activityState.val < 2105) activityState.val = Number(activityState.val) + 1;
-                        }
                     }
 
                     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                    else if (nextActivityState >= 2200) {
+                    else if (state.val >= 2200) {
                         stateAwake = true;
+                        changePresenceToHome = true;
                     }
                 }
 
-                // Reflect DND in state value
-                if (dndState.val == true && nextActivityState < 10000) {
-                    nextActivityState += 10000;
-                } else if (dndState.val == false && nextActivityState >= 10000) {
-                    nextActivityState -= 10000;
+                // Enforce DND during night time
+                if (presenceState.val == 2) {
+                    if (state.val >= 10000) state.val -= 10000;
+                    if (dndState.val == false) {
+                        await this.setStateAsync(device + '.activity.dnd', { val: true, ack: true });
+                    }
+                }
+
+                // Reflect DND in state value when at home and awake
+                else if (presenceState.val == 1) {
+                    if (oldState.val >= 2000) {
+                        await this.setStateAsync(device + '.activity.dnd', { val: false, ack: true });
+                        dndState.val = false;
+                    }
+                    if (dndState.val == true && state.val < 10000) {
+                        state.val += 10000;
+                    } else if (dndState.val == false && state.val >= 10000) {
+                        state.val -= 10000;
+                    }
+                }
+
+                // Remove DND in state value when away
+                else {
+                    if (state.val >= 10000) state.val -= 10000;
+                    if (dndState.val == true) {
+                        await this.setStateAsync(device + '.activity.dnd', { val: false, ack: true });
+                    }
                 }
 
                 await this.setStateAsync(device + '.activity.awake', { val: stateAwake, ack: true });
@@ -2478,41 +2498,63 @@ class Residents extends utils.Adapter {
                 await this.setStateAsync(device + '.activity.wakeup', { val: stateWakeup, ack: true });
                 await this.setStateAsync(device + '.activity.wayhome', { val: stateWayhome, ack: true });
 
-                state.val = nextActivityState;
                 state.ack = true;
-                this.setStateAsync(device + '.activity.state', state);
+                await this.setStateAsync(device + '.activity.state', state);
+
+                // Only take over task value between 1000 and 1900
+                if (state.val >= 10000) state.val -= 10000;
+                if (state.val < 1000 || state.val >= 1900) state.val = 1000;
+                await this.setStateAsync(device + '.activity.task', state);
+
+                if (presenceState.val == 2 && changePresenceToHome) {
+                    await this.setStateAsync(device + '.presence.night', { val: false, ack: true });
+                    await this.setStateAsync(device + '.presence.state', { val: 1, ack: true });
+                } else if (presenceState.val > 0 && changePresenceToAway) {
+                    await this.setStateAsync(device + '.presence.night', { val: false, ack: true });
+                    await this.setStateAsync(device + '.presence.home', { val: false, ack: true });
+                    await this.setStateAsync(device + '.presence.away', { val: true, ack: true });
+                    await this.setStateAsync(device + '.presence.state', { val: 0, ack: true });
+                }
                 break;
             }
 
             case 'awake': {
-                let newActivityVal = 1000;
-                if (state.val == true) {
-                    // Awake during night >> irregular occurance
-                    if (activityState.val == 2000 || activityState.val == 2010 || activityState.val == 2020) {
-                        newActivityVal = 2010;
-                    }
+                if (activityState.val < 2000) {
+                    this.log.warn(device + ': Awake state can only be controlled during night time');
+                    state.ack = true;
+                    state.val = oldState.val;
+                    state.q = 0x40;
+                    await this.setStateAsync(device + '.activity.awake', state);
+                } else {
+                    let newActivityVal = 1000;
+                    if (state.val == true) {
+                        // Awake during night >> irregular occurance
+                        if (activityState.val == 2000 || activityState.val == 2010 || activityState.val == 2020) {
+                            newActivityVal = 2010;
+                        }
 
-                    // Awake during wakeup >> got up from sleep
-                    else if (activityState.val >= 2100) {
-                        newActivityVal = 2200;
-                    } else {
-                        newActivityVal = 2210;
+                        // Awake during wakeup >> got up from sleep
+                        else if (activityState.val >= 2100) {
+                            newActivityVal = 2200;
+                        } else {
+                            newActivityVal = 2210;
+                        }
+                    } else if (activityState.val >= 2010 && activityState.val < 2020) {
+                        newActivityVal = 2020;
                     }
-                } else if (activityState.val >= 2010 && activityState.val < 2020) {
-                    newActivityVal = 2020;
+                    this.setResidentDeviceActivity(
+                        device,
+                        'state',
+                        { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
+                        activityState,
+                    );
                 }
-                this.setResidentDeviceActivity(
-                    device,
-                    'state',
-                    { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
-                    activityState,
-                );
                 break;
             }
 
             case 'bedtime': {
                 state.ack = true;
-                if (presenceState.val == 1) {
+                if (activityState.val >= 1000) {
                     let newActivityVal = 1000;
                     if (state.val == 1) {
                         newActivityVal = 1900;
@@ -2528,7 +2570,7 @@ class Residents extends utils.Adapter {
                         activityState,
                     );
                 } else {
-                    this.log.warn(device + ' requires home state to start bedtime process');
+                    this.log.warn(device + ': Presence at home is required to start bed time process');
                     state.val = 0;
                     state.q = 0x40;
                     await this.setStateAsync(device + '.activity.bedtime', state);
@@ -2538,9 +2580,13 @@ class Residents extends utils.Adapter {
 
             case 'dnd': {
                 state.ack = true;
-                if (state.val == true && presenceState.val == 0) {
-                    this.log.warn(device + ': Do Not Disturb can only be enabled during presence at home');
+                if (presenceState.val == 0) {
+                    this.log.warn(device + ': Do Not Disturb can only be controlled during presence at home');
                     state.val = false;
+                    state.q = 0x40;
+                } else if (presenceState.val == 2) {
+                    this.log.warn(device + ': Do Not Disturb can not be controlled during night time');
+                    state.val = true;
                     state.q = 0x40;
                 } else {
                     this.setResidentDeviceActivity(
@@ -2579,20 +2625,11 @@ class Residents extends utils.Adapter {
             case 'task': {
                 state.ack = true;
                 if (presenceState.val == 1) {
-                    if (state.val == true) {
-                        //
-                    } else {
-                        //
-                    }
-                    await this.setStateAsync(device + '.activity.task', state);
-                    state.ack = false;
-                    await this.setStateAsync(device + '.activity.state', state);
+                    this.setResidentDeviceActivity(device, 'state', state, activityState);
                 } else {
-                    if (state.val == true) {
-                        this.log.warn(device + ' requires home state to set specific tasks');
-                        state.val = oldState.val;
-                        state.q = 0x40;
-                    }
+                    this.log.warn(device + ': Tasks can only be controlled during waking time at home');
+                    state.val = oldState.val;
+                    state.q = 0x40;
                     await this.setStateAsync(device + '.activity.task', state);
                 }
                 break;
@@ -2613,7 +2650,7 @@ class Residents extends utils.Adapter {
                     );
                 } else {
                     if (state.val == true) {
-                        this.log.warn(device + ' requires night state to start a wake-up call');
+                        this.log.warn(device + ': A wake-up call can only be triggered during night time at home');
                         state.val = false;
                         state.q = 0x40;
                     }
@@ -2625,7 +2662,7 @@ class Residents extends utils.Adapter {
             case 'wakeupSnooze': {
                 if (state.val != true) return;
                 state.ack = true;
-                if (activityState.val >= 2100) {
+                if (activityState.val >= 2100 && activityState.val < 2200) {
                     let newActivityVal = Number(activityState.val);
                     if (activityState.val < 2105) newActivityVal++;
                     this.setResidentDeviceActivity(
@@ -2635,7 +2672,7 @@ class Residents extends utils.Adapter {
                         activityState,
                     );
                 } else {
-                    this.log.debug(device + ' has no wake-up call running that could be snoozed');
+                    this.log.warn(device + ' has no wake-up call running that could be snoozed');
                     state.val = true;
                     state.q = 0x41;
                 }
@@ -2646,7 +2683,8 @@ class Residents extends utils.Adapter {
             case 'wayhome': {
                 let newActivityVal = 0;
                 if (state.val == true) {
-                    await this.setStateChangedAsync(device + '.enabled', { val: true, ack: true });
+                    if (enabledState.val == false)
+                        await this.setStateAsync(device + '.enabled', { val: true, ack: true });
                     newActivityVal = 2;
                 } else if (enabledState.val == true) {
                     newActivityVal = 1;
@@ -2657,7 +2695,6 @@ class Residents extends utils.Adapter {
                     { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
                     activityState,
                 );
-                await this.setStateChangedAsync(device + '.presence.state', { val: 0, ack: false });
                 break;
             }
 
@@ -2673,8 +2710,19 @@ class Residents extends utils.Adapter {
      *
      * @param {string} device
      * @param {ioBroker.State} state
+     * @param {ioBroker.State} oldState
      */
-    async setResidentDeviceMood(device, state) {
+    async setResidentDeviceMood(device, state, oldState) {
+        const presenceState = await this.getStateAsync(device + '.presence.state');
+        if (!presenceState || presenceState.val == undefined) return;
+        if (!oldState) oldState = state;
+
+        if (presenceState.val != 1) {
+            this.log.warn(device + ': Mood can only be controlled during waking time at home');
+            state.val = oldState.val;
+            state.q = 0x40;
+        }
+
         state.ack = true;
         await this.setStateAsync(device + '.mood.state', state);
     }
@@ -2695,9 +2743,9 @@ class Residents extends utils.Adapter {
         const residentType = (await this.getObjectAsync(device))?.native.type;
         if (!enabledState || !presenceState || presenceState.val == undefined) return;
 
-        if (activityState && activityState.val != undefined && activityState.val >= 10000) {
+        if (activityState && activityState.val != undefined && activityState.val >= 10000)
             activityState.val = Number(activityState.val) - 10000;
-        }
+        if (!oldState) oldState = state;
 
         let stateNight = false;
         let stateHome = false;
@@ -2720,7 +2768,7 @@ class Residents extends utils.Adapter {
 
                 // Always reset mood if presence state was changed
                 if (residentType != 'pet' && state.val != oldState.val) {
-                    await this.setStateChangedAsync(device + '.mood.state', { val: 0, ack: false });
+                    await this.setStateChangedAsync(device + '.mood.state', { val: 0, ack: true });
                 }
 
                 // When present at home

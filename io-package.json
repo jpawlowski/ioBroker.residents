@@ -126,10 +126,12 @@
                     "1": "Pet Home",
                     "2": "Way Home",
                     "3": "Home",
-                    "4": "Bedtime",
-                    "5": "Awake",
-                    "6": "Wake Up",
-                    "7": "Night"
+                    "4": "Wind Down",
+                    "5": "Bed Time",
+                    "6": "Got Up",
+                    "7": "Night Walk",
+                    "8": "Wake Up",
+                    "9": "Night"
                 }
             },
             "native": {}
