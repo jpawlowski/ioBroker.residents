@@ -102,14 +102,14 @@
                 },
                 "type": "number",
                 "role": "value.resident.mode",
-                "min": -1,
-                "max": 7,
+                "min": 0,
+                "max": 10,
                 "read": true,
                 "write": false,
-                "def": -1,
+                "def": 0,
                 "desc": {
-                    "en": "Cumulative overall presence state",
-                    "de": "Kummulierter Gesamtstatus für die Bewohner Anwesenheit",
+                    "en": "Cumulative overall presence state\n0 = Disabled\n1 = Away\n2 = Pet Home\n3 = Way Home\n4 = Home\n5 = Wind Down\n6 = Bedtime\n7 = Got Up\n8 = Night Walk\n9 = Wake Up\n10 = Night",
+                    "de": "Kummulierter Gesamtstatus für die Bewohner Anwesenheit\n0 = Deaktiviert\n1 = Abwesend\n2 = Haustier zu Hause\n3 = Nachhauseweg\n4 = Zuhause\n5 = Entspannen\n6 = Schlafenszeit\n7 = Aufgestanden\n8 = Nachtgang\n9 = Aufwachen\n10 = Nacht",
                     "ru": "Совокупное общее состояние присутствия",
                     "pt": "Estado de presença global cumulativo",
                     "nl": "Cumulatief over alle aanwezigheid staat",
@@ -121,21 +121,22 @@
                     "zh-cn": "总体存在"
                 },
                 "states": {
-                    "-1": "Disabled",
-                    "0": "Away",
-                    "1": "Pet Home",
-                    "2": "Way Home",
-                    "3": "Home",
-                    "4": "Wind Down",
-                    "5": "Bed Time",
-                    "6": "Got Up",
-                    "7": "Night Walk",
-                    "8": "Wake Up",
-                    "9": "Night"
+                    "0": "Disabled",
+                    "1": "Away",
+                    "2": "Pet Home",
+                    "3": "Way Home",
+                    "4": "Home",
+                    "5": "Wind Down",
+                    "6": "Bedtime",
+                    "7": "Got Up",
+                    "8": "Night Walk",
+                    "9": "Wake Up",
+                    "10": "Night"
                 }
             },
             "native": {}
         },
+
         {
             "_id": "mood",
             "type": "state",
@@ -178,6 +179,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info",
             "type": "folder",
@@ -198,6 +200,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.reachable",
             "type": "state",
@@ -236,6 +239,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.state",
             "type": "channel",
@@ -256,6 +260,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.state.disabled",
             "type": "state",
@@ -432,6 +437,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.state.totalCount",
             "type": "state",
@@ -454,31 +460,6 @@
                 "read": true,
                 "write": false,
                 "def": 0
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.state.parentInstanceIDs",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Parent residents instances",
-                    "de": "Übergeordnete Bewohnerinstanzen",
-                    "ru": "Родители инстанций",
-                    "pt": "Casos de moradores de pais",
-                    "nl": "Oude bewoners bijvoorbeeld",
-                    "fr": "Nombre de parents",
-                    "it": "Parent residenti istanze",
-                    "es": "Casos de residentes",
-                    "pl": "Instancja mieszkańców",
-                    "uk": "Парентні резиденти",
-                    "zh-cn": "父母居民"
-                },
-                "type": "array",
-                "role": "list.residents.parent",
-                "read": true,
-                "write": false,
-                "def": "[]"
             },
             "native": {}
         },
@@ -532,6 +513,33 @@
             },
             "native": {}
         },
+
+        {
+            "_id": "info.state.parentInstanceIDs",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Parent residents instances",
+                    "de": "Übergeordnete Bewohnerinstanzen",
+                    "ru": "Родители инстанций",
+                    "pt": "Casos de moradores de pais",
+                    "nl": "Oude bewoners bijvoorbeeld",
+                    "fr": "Nombre de parents",
+                    "it": "Parent residenti istanze",
+                    "es": "Casos de residentes",
+                    "pl": "Instancja mieszkańców",
+                    "uk": "Парентні резиденти",
+                    "zh-cn": "父母居民"
+                },
+                "type": "array",
+                "role": "list.residents.parent",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+
         {
             "_id": "info.presence",
             "type": "channel",
@@ -552,6 +560,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.presence.home",
             "type": "state",
@@ -728,6 +737,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.presence.petsHome",
             "type": "state",
@@ -904,6 +914,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.presence.night",
             "type": "state",
@@ -1080,6 +1091,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.presence.away",
             "type": "state",
@@ -1256,6 +1268,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.activity",
             "type": "channel",
@@ -1276,182 +1289,7 @@
             },
             "native": {}
         },
-        {
-            "_id": "info.activity.awake",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Some resident awake at night?",
-                    "de": "Irgendein Bewohner nachts wach?",
-                    "ru": "Кто-то житель пробуждает ночью?",
-                    "pt": "Um residente acordado à noite?",
-                    "nl": "Een inwoner 's nachts wakker?",
-                    "fr": "Un résident s'est réveillé la nuit ?",
-                    "it": "Un residente sveglio di notte?",
-                    "es": "¿Algún residente despierto por la noche?",
-                    "pl": "Niektórzy mieszkają w nocy?",
-                    "uk": "Який життєдіяльник вночі?",
-                    "zh-cn": "一些居民在夜里有心?"
-                },
-                "type": "boolean",
-                "role": "indicator.residents.awake",
-                "read": true,
-                "write": false,
-                "def": false,
-                "desc": {
-                    "en": "Is any resident awake at night?",
-                    "de": "Ist irgendein Bewohner nachts wach?",
-                    "ru": "Пробуждается ли резидент ночью?",
-                    "pt": "Algum residente está acordado à noite?",
-                    "nl": "Is er iemand 's nachts wakker?",
-                    "fr": "Est-ce qu'un résident est réveillé la nuit ?",
-                    "it": "C'e' un residente sveglio di notte?",
-                    "es": "¿Hay algún residente despierto por la noche?",
-                    "pl": "Czy ktokolwiek mieszka?",
-                    "uk": "Чи є на ніч резидент?",
-                    "zh-cn": "是否有任何居民在夜间睡觉?"
-                }
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.activity.awakeAll",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "All residents awake at night?",
-                    "de": "Alle Bewohner nachts wach?",
-                    "ru": "Все жители проснулись ночью?",
-                    "pt": "Todos os residentes acordados à noite?",
-                    "nl": "Zijn alle bewoners 's nachts wakker?",
-                    "fr": "Tous les résidents sont réveillés la nuit ?",
-                    "it": "Tutti i residenti si svegliano di notte?",
-                    "es": "¿Todos los residentes despiertos por la noche?",
-                    "pl": "Wszyscy mieszkańcy śpią nocą?",
-                    "uk": "Всім мешканцям нічного віку?",
-                    "zh-cn": "所有居民在夜间有心智?"
-                },
-                "type": "boolean",
-                "role": "indicator.residents.awakeAll",
-                "read": true,
-                "write": false,
-                "def": false,
-                "desc": {
-                    "en": "Are all residents awake at night?",
-                    "de": "Sind alle Bewohner nachts wach?",
-                    "ru": "Все жители проснулись ночью?",
-                    "pt": "Todos os residentes estão acordados à noite?",
-                    "nl": "Zijn alle bewoners 's nachts wakker?",
-                    "fr": "Tous les résidents sont réveillés la nuit ?",
-                    "it": "Tutti i residenti sono svegli di notte?",
-                    "es": "¿Están todos los residentes despiertos por la noche?",
-                    "pl": "Wszyscy mieszkańcy nocą przebudzają się?",
-                    "uk": "Чи є всі мешканці нічим?",
-                    "zh-cn": "是否所有居民都在夜里瓦?"
-                }
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.activity.awakeCount",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Number of residents awake at night",
-                    "de": "Anzahl der nachts wachen Bewohner",
-                    "ru": "Количество жителей пробуждают ночью",
-                    "pt": "Número de moradores acordados à noite",
-                    "nl": "Nummers wakker 's nachts",
-                    "fr": "Nombre de résidents éveillés la nuit",
-                    "it": "Numero di residenti svegli di notte",
-                    "es": "Número de residentes despiertos por la noche",
-                    "pl": "Liczba mieszkańców budzi się w nocy",
-                    "uk": "Кількість мешканців нічного віку",
-                    "zh-cn": "夜间居民人数"
-                },
-                "type": "number",
-                "role": "value.residents.awakeCount",
-                "read": true,
-                "write": false,
-                "def": 0
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.activity.awakeFirst",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "First resident woken up",
-                    "de": "Bewohner, welcher zuerst aufgestanden ist",
-                    "ru": "Первый житель проснулся",
-                    "pt": "Primeiro residente acordou",
-                    "nl": "De eerste bewoner werd wakker",
-                    "fr": "Premier résident réveillé",
-                    "it": "Primo residente svegliato",
-                    "es": "El primer residente se despertó",
-                    "pl": "First rezydent woken up",
-                    "uk": "Перший життєвий жилет",
-                    "zh-cn": "第一居民受伤"
-                },
-                "type": "string",
-                "role": "text.residents.awakeFirst",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.activity.awakeLast",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "Last resident woken up",
-                    "de": "Bewohner, welcher zuletzt aufgestanden ist",
-                    "ru": "Последний житель проснулся",
-                    "pt": "Último residente acordou",
-                    "nl": "Laatste bewoner werd wakker",
-                    "fr": "Dernier résident réveillé",
-                    "it": "Ultimo residente svegliato",
-                    "es": "El último residente se despertó",
-                    "pl": "Ostatni rezydent",
-                    "uk": "Останній життєвий жилет",
-                    "zh-cn": "上次居民受伤"
-                },
-                "type": "string",
-                "role": "text.residents.awakeLast",
-                "read": true,
-                "write": false,
-                "def": ""
-            },
-            "native": {}
-        },
-        {
-            "_id": "info.activity.awakeList",
-            "type": "state",
-            "common": {
-                "name": {
-                    "en": "List of residents awake at night",
-                    "de": "Liste der nachts wachen Bewohner",
-                    "ru": "Список жителей просыпаются ночью",
-                    "pt": "Lista de moradores acordados à noite",
-                    "nl": "List van bewoners 's nachts wakker",
-                    "fr": "Liste des résidents éveillés la nuit",
-                    "it": "Elenco dei residenti svegli di notte",
-                    "es": "Lista de residentes despiertos por la noche",
-                    "pl": "Lista mieszkańców budzi się w nocy",
-                    "uk": "Список мешканців нічного віку",
-                    "zh-cn": "夜间居民名单"
-                },
-                "type": "array",
-                "role": "list.residents.awakeList",
-                "read": true,
-                "write": false,
-                "def": "[]"
-            },
-            "native": {}
-        },
+
         {
             "_id": "info.activity.bedtime",
             "type": "state",
@@ -1628,6 +1466,715 @@
             },
             "native": {}
         },
+
+        {
+            "_id": "info.activity.gotup",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident just got up?",
+                    "de": "Irgendein Bewohner ist gerade aufgestanden?",
+                    "ru": "Некоторые резиденты только что получили?",
+                    "pt": "Um residente levantou-se?",
+                    "nl": "Is er net een inwoner opgestaan?",
+                    "fr": "Un résident vient de se lever ?",
+                    "it": "Un residente si e' appena alzato?",
+                    "es": "¿Un residente acaba de levantarse?",
+                    "pl": "Część mieszkaniowa właśnie się wychowuje?",
+                    "uk": "Який житель просто отримав?",
+                    "zh-cn": "有些居民刚走?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.gotup",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident just got up from sleep?",
+                    "de": "Ist irgendein Bewohner erst gerade aufgestanden?",
+                    "ru": "Есть ли у любого резидента только сон?",
+                    "pt": "Algum residente acabou de se levantar do sono?",
+                    "nl": "Is er net een inwoner opgestaan uit slaap?",
+                    "fr": "Un résident vient de se lever du sommeil ?",
+                    "it": "C'e' un residente appena alzato dal sonno?",
+                    "es": "¿Algún residente acaba de levantarse del sueño?",
+                    "pl": "Czy każdy mieszkaniec chodzi o sen?",
+                    "uk": "Чи опинився резидент?",
+                    "zh-cn": "是否有任何居民刚刚从睡觉?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.gotupAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents just got up?",
+                    "de": "Alle Bewohner sind gerade aufgestanden?",
+                    "ru": "Все резиденты только что выросли?",
+                    "pt": "Todos os residentes acabaram de se levantar?",
+                    "nl": "Alle bewoners zijn net opgestaan?",
+                    "fr": "Tous les résidents viennent de se lever ?",
+                    "it": "Tutti gli abitanti si sono alzati?",
+                    "es": "¿Todos los residentes acaban de levantarse?",
+                    "pl": "Wszystkich mieszkańców spoczęło?",
+                    "uk": "Всім мешканцям, які тільки отримали?",
+                    "zh-cn": "所有居民都刚刚获得?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.gotupAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Did all residents just get up from sleep?",
+                    "de": "Sind alle Bewohner gerade erst aufgestanden?",
+                    "ru": "Все жители просто спали?",
+                    "pt": "Todos os residentes levantaram-se do sono?",
+                    "nl": "Zijn alle bewoners net uit slaap gevallen?",
+                    "fr": "Est-ce que tous les résidents viennent de dormir ?",
+                    "it": "Tutti gli abitanti si sono alzati dal sonno?",
+                    "es": "¿Todos los residentes se levantaron del sueño?",
+                    "pl": "Wszyscy mieszkańcy wychodzą z snu?",
+                    "uk": "Чи не всі мешканці, як тільки з сну?",
+                    "zh-cn": "是否所有居民都刚刚睡觉?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.gotupCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents who just got up",
+                    "de": "Anzahl der gerade aufgestandenen Bewohner",
+                    "ru": "Количество жителей, которые только что получили",
+                    "pt": "Número de moradores que acabaram de se levantar",
+                    "nl": "Nummer van de bewoners die net opstaan",
+                    "fr": "Nombre de résidents qui viennent de se lever",
+                    "it": "Numero di residenti che si sono appena alzati",
+                    "es": "Número de residentes que acaban de levantarse",
+                    "pl": "Liczba mieszkańców, którzy tylko dostali się",
+                    "uk": "Кількість жителів, які просто отримали",
+                    "zh-cn": "刚到达的居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.gotupCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.gotupFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident who got up",
+                    "de": "Bewohner, welcher zuerst aufgestanden ist",
+                    "ru": "Первый резидент, который встал",
+                    "pt": "Primeiro residente que se levantou",
+                    "nl": "Eerste bewoner die opstond",
+                    "fr": "Premier résident qui s'est levé",
+                    "it": "Primo residente che si è alzato",
+                    "es": "Primer residente que se levantó",
+                    "pl": "Pierwsi mieszkający",
+                    "uk": "Перший резидент, який отримав",
+                    "zh-cn": "第一批居民"
+                },
+                "type": "string",
+                "role": "text.residents.gotupFirst",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.gotupLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident who got up",
+                    "de": "Bewohner, welcher zuletzt aufgestanden ist",
+                    "ru": "Последний резидент, который встал",
+                    "pt": "Último residente que se levantou",
+                    "nl": "Laatste inwoner kwam op",
+                    "fr": "Dernier résident qui s'est levé",
+                    "it": "Ultimo residente che si è alzato",
+                    "es": "Último residente que se levantó",
+                    "pl": "Ostatni mieszkaniec",
+                    "uk": "Останній резидент, який отримав",
+                    "zh-cn": "最终居民"
+                },
+                "type": "string",
+                "role": "text.residents.gotupLast",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.gotupList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "List of residents who just got up",
+                    "de": "Liste der sich gerade aufgestandenen Bewohner",
+                    "ru": "Список резидентов, которые только что получили",
+                    "pt": "Lista de residentes que acabaram de se levantar",
+                    "nl": "List van bewoners die net opstonden",
+                    "fr": "Liste des résidents qui viennent de se relever",
+                    "it": "Lista dei residenti che si sono appena alzati",
+                    "es": "Lista de residentes que acaban de levantarse",
+                    "pl": "Lista mieszkańców, którzy tylko dostali się",
+                    "uk": "Список жителів, які просто отримали",
+                    "zh-cn": "刚刚到达的居民名单"
+                },
+                "type": "array",
+                "role": "list.residents.gotupList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+
+        {
+            "_id": "info.activity.nightwalk",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident walks around at night?",
+                    "de": "Irgendein Bewohner läuft nachts umher?",
+                    "ru": "Некоторые резиденты ходят по ночам?",
+                    "pt": "Algum residente anda por aí à noite?",
+                    "nl": "Loopt er 's nachts iemand rond?",
+                    "fr": "Des résidents se baladent la nuit ?",
+                    "it": "Un residente va in giro di notte?",
+                    "es": "¿Algún residente camina por la noche?",
+                    "pl": "Niektórzy mieszkają nocą?",
+                    "uk": "Який життєздатчик ходить вночі?",
+                    "zh-cn": "一些居民夜间行?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.nightwalk",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident walking around during the night while they should be sleeping in bed?",
+                    "de": "Läuft irgendein Bewohner nachts umher, während es im Bett schlafen sollte?",
+                    "ru": "Есть ли резидент, прогуляться в ночное время, когда они должны спать в постели?",
+                    "pt": "Algum residente anda por aí durante a noite enquanto deve dormir na cama?",
+                    "nl": "Loopt er iemand rond tijdens de nacht terwijl ze in bed zouden moeten slapen?",
+                    "fr": "Est-ce qu'un résident se promène pendant qu'il dort au lit ?",
+                    "it": "C'e' qualche residente che si aggira durante la notte mentre dovrebbero dormire a letto?",
+                    "es": "¿Hay algún residente caminando durante la noche mientras que deberían dormir en la cama?",
+                    "pl": "Czy każdy mieszkaniec chodził w nocy, podczas gdy powinien spać w łóżku?",
+                    "uk": "Чи є у будь-якого мешканця, що проходить протягом ночі, коли вони повинні бути спати в ліжку?",
+                    "zh-cn": "在夜间,任何居民都应该睡觉?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.nightwalkAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents walk around at night?",
+                    "de": "Alle Bewohner laufen nachts umher?",
+                    "ru": "Все жители ходят ночью?",
+                    "pt": "Todos os residentes andam à noite?",
+                    "nl": "Alle bewoners lopen 's nachts rond?",
+                    "fr": "Tous les résidents se baladent la nuit ?",
+                    "it": "Tutti gli abitanti si aggirano di notte?",
+                    "es": "¿Todos los residentes andan por la noche?",
+                    "pl": "Wszyscy mieszkańcy spacerują nocą?",
+                    "uk": "Всім мешканцям прогулятися в ніч?",
+                    "zh-cn": "所有居民都在夜间走?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.nightwalkAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents walking around at night while they should be sleeping in bed?",
+                    "de": "Laufen alle Bewohner nachts umher, während sie im Bett schlafen sollten?",
+                    "ru": "Все жители ходят ночью, пока они должны спать в постели?",
+                    "pt": "Todos os residentes andam à noite enquanto deviam dormir na cama?",
+                    "nl": "Loopt iedereen 's nachts rond terwijl ze in bed zouden moeten slapen?",
+                    "fr": "Est-ce que tous les résidents se baladent la nuit pendant qu'ils devraient dormir au lit ?",
+                    "it": "Tutti i residenti sono in giro di notte mentre dovrebbero dormire a letto?",
+                    "es": "¿Están todos los residentes caminando por la noche mientras deberían dormir en la cama?",
+                    "pl": "Wszyscy mieszkańcy udają się w nocy, gdy powinni spać w łóżku?",
+                    "uk": "Чи є всі мешканці, які ходять в ніч, коли вони повинні бути спальними місцями?",
+                    "zh-cn": "是否所有的居民在夜间走,他们应该睡觉?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.nightwalkCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents who walk around at night",
+                    "de": "Anzahl der nachts umherlaufenden Bewohner",
+                    "ru": "Количество жителей, которые ходят ночью",
+                    "pt": "Número de moradores que andam por aí à noite",
+                    "nl": "Nummers die 's nachts rondlopen",
+                    "fr": "Nombre de résidents qui se baladent la nuit",
+                    "it": "Numero di residenti che camminano di notte",
+                    "es": "Número de residentes que caminan por la noche",
+                    "pl": "Liczba mieszkańców mieszkających w nocy",
+                    "uk": "Кількість жителів, які ходять в ніч",
+                    "zh-cn": "夜间行居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.nightwalkCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.nightwalkFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident who walked around at night",
+                    "de": "Bewohner, welcher zuerst nachts umhergelaufen ist",
+                    "ru": "Первый житель, который ходил по ночам",
+                    "pt": "Primeiro residente que andou por aí à noite",
+                    "nl": "Eerste bewoner die 's nachts rondliep",
+                    "fr": "Premier résident qui a marché la nuit",
+                    "it": "Primo residente che ha camminato intorno alla notte",
+                    "es": "Primer residente que caminaba por la noche",
+                    "pl": "Pierwszy mieszkaniec, który chodził po nocy",
+                    "uk": "Перший резидент, який прогулявся в ніч",
+                    "zh-cn": "夜间行第一居民"
+                },
+                "type": "string",
+                "role": "text.residents.nightwalkFirst",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.nightwalkLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident who walked around at night",
+                    "de": "Bewohner, welcher zuletzt nachts umhergelaufen ist",
+                    "ru": "Последний резидент, который ходил по ночам",
+                    "pt": "Último residente que andou por aí à noite",
+                    "nl": "Laatste inwoner die 's nachts rondliep",
+                    "fr": "Dernier résident qui a marché la nuit",
+                    "it": "Ultimo residente che ha camminato per la notte",
+                    "es": "El último residente que andaba por la noche",
+                    "pl": "Ostatni mieszkaniec, który chodził w nocy",
+                    "uk": "Останнім мешканцем, який прогулявся в ніч",
+                    "zh-cn": "流落在夜附近的最后居民"
+                },
+                "type": "string",
+                "role": "text.residents.nightwalkLast",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.nightwalkList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "List of residents who walk around at night",
+                    "de": "Liste der nachts umherlaufenden Bewohner",
+                    "ru": "Список жителей, которые ходят по ночам",
+                    "pt": "Lista de moradores que andam por aí à noite",
+                    "nl": "Leugenaars die 's nachts rondlopen",
+                    "fr": "Liste des résidents qui parcourent la nuit",
+                    "it": "Elenco dei residenti che camminano di notte",
+                    "es": "Lista de residentes que caminan por la noche",
+                    "pl": "Lista mieszkańców mieszkających w nocy",
+                    "uk": "Список жителів, які прогулялися в ніч",
+                    "zh-cn": "夜间行居民名单"
+                },
+                "type": "array",
+                "role": "list.residents.nightwalkList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+
+        {
+            "_id": "info.activity.winddown",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident winding down before bedtime?",
+                    "de": "Irgendein Bewohner entspannt sich vor dem Zubettgehen?",
+                    "ru": "Некоторый житель просыпается перед сном?",
+                    "pt": "Um residente a ir para a cama?",
+                    "nl": "Een inwoner die voor het slapen gaat?",
+                    "fr": "Un résident qui s'est couché avant le coucher ?",
+                    "it": "Un residente che si abbaia prima di andare a letto?",
+                    "es": "¿Algún residente se hundió antes de acostarse?",
+                    "pl": "Część mieszkalnych wiatrów przed łóżkiem?",
+                    "uk": "Який життєвий обмотки перед сном?",
+                    "zh-cn": "某些居民在等待时间前逃亡?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.winddown",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Is any resident relaxing before going to bed next?",
+                    "de": "Entspannt sich irgendein Bewohner gerade, bevor es anschließend schlafen geht?",
+                    "ru": "Релаксирует ли резидент перед сном?",
+                    "pt": "Algum residente é relaxante antes de ir para a cama em seguida?",
+                    "nl": "Ontspant een inwoner voor hij naar bed gaat?",
+                    "fr": "Est-ce qu'un résident se relaxe avant de se coucher ?",
+                    "it": "Qualche residente si rilassa prima di andare a letto accanto?",
+                    "es": "¿Hay algún residente que se relaje antes de acostarse?",
+                    "pl": "Czy każdy mieszkaniec rozluźnia się, zanim udusi się w łóżku?",
+                    "uk": "Чи є у будь-якому резиденту, що відпочиває перед сном?",
+                    "zh-cn": "是否在即将到来之前放松居住?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.winddownAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All resident winding down before bedtime?",
+                    "de": "Alle Bewohner entspannen sich vor dem Zubettgehen?",
+                    "ru": "Все резиденты просыпаются перед сном?",
+                    "pt": "Todos os residentes vão para baixo antes de dormir?",
+                    "nl": "Alle inwoners die voor het slapen gaan liggen?",
+                    "fr": "Tous les résidents se coucher avant le coucher ?",
+                    "it": "Tutti i residenti che si abbandonano prima di andare a letto?",
+                    "es": "¿Todos los residentes terminan antes de acostarse?",
+                    "pl": "Wszyscy mieszkają przed upływem czasu?",
+                    "uk": "Всім мешканцем обмотки перед сном?",
+                    "zh-cn": "所有的居民都在等待时间下滑?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.winddownAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Are all residents relaxing before going to bed next?",
+                    "de": "Entspannen sich alle Bewohner gerade, bevor es anschließend schlafen geht?",
+                    "ru": "Все жители отдыхают перед сном рядом?",
+                    "pt": "Todos os moradores estão relaxando antes de ir para a cama em seguida?",
+                    "nl": "Ontspanen alle bewoners voor ze naar bed gaan?",
+                    "fr": "Est-ce que tous les résidents se relaxent avant de se coucher après?",
+                    "it": "Tutti i residenti si rilassano prima di andare a letto accanto?",
+                    "es": "¿Todos los residentes se relajan antes de ir a la cama después?",
+                    "pl": "Wszyscy mieszkańcy rozluźnią się, zanim udają się do łóżka?",
+                    "uk": "Чи розслабляють всі мешканці перед сном?",
+                    "zh-cn": "是否有所有居民在即将到来之前放松?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.winddownCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents who wind down",
+                    "de": "Anzahl der sich entspannenden Bewohner",
+                    "ru": "Количество жителей, которые ветерют вниз",
+                    "pt": "Número de moradores que acabam",
+                    "nl": "Nummers van de bewoners die naar beneden komen",
+                    "fr": "Nombre de résidents qui descendent",
+                    "it": "Numero di residenti che si abbatte",
+                    "es": "Número de residentes que terminan",
+                    "pl": "Liczba mieszkańców, którzy zniszczyli się w dół",
+                    "uk": "Кількість мешканців, які випадають",
+                    "zh-cn": "被赶走的居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.winddownCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.winddownFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident who began to wind down",
+                    "de": "Bewohner, welcher zuerst begonnen hat sich zu entspannen",
+                    "ru": "Первый резидент, который начал ветер",
+                    "pt": "Primeiro residente que começou a acabar",
+                    "nl": "Eerste bewoner die begon te ontploffen",
+                    "fr": "Premier résident qui a commencé à s'effondrer",
+                    "it": "Primo residente che ha cominciato a vento giù",
+                    "es": "Primer residente que comenzó a terminar",
+                    "pl": "Pierwsi mieszkańcy, którzy zaczęli uciekać",
+                    "uk": "Перший житель, який почав згорнути",
+                    "zh-cn": "开始缩编的第一居民"
+                },
+                "type": "string",
+                "role": "text.residents.winddownFirst",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.winddownLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident who began to wind down",
+                    "de": "Bewohner, welcher zuletzt begonnen hat sich zu entspannen",
+                    "ru": "Последний резидент, который начал ветер",
+                    "pt": "Último residente que começou a acabar",
+                    "nl": "De laatste bewoner die begon te ontploffen",
+                    "fr": "Dernier résident qui a commencé à s'effondrer",
+                    "it": "Ultimo residente che ha cominciato a vento giù",
+                    "es": "Último residente que comenzó a terminar",
+                    "pl": "Ostatni mieszkaniec, który zaczął wiedzieć",
+                    "uk": "Останнім мешканцем, який розпочався",
+                    "zh-cn": "最终逃亡的居民"
+                },
+                "type": "string",
+                "role": "text.residents.winddownLast",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.winddownList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "List of residents who wind down",
+                    "de": "Liste der sich entspannenden Bewohner",
+                    "ru": "Список жителей, которые ветерют вниз",
+                    "pt": "Lista de residentes que acabam",
+                    "nl": "List van de bewoners die instorten",
+                    "fr": "List of residents who wind down",
+                    "it": "Elenco dei residenti che si snodano",
+                    "es": "Lista de residentes que terminan",
+                    "pl": "Lista mieszkańców, którzy wiatrują",
+                    "uk": "Список мешканців, які згортають",
+                    "zh-cn": "被赶走的居民名单"
+                },
+                "type": "array",
+                "role": "list.residents.winddownList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+
+        {
+            "_id": "info.activity.dnd",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Some resident doesn't want to be disturbed?",
+                    "de": "Irgendein Bewohner möchte nicht gestört werden?",
+                    "ru": "Некоторые резиденты не хотят быть нарушены?",
+                    "pt": "Um residente não quer ser perturbado?",
+                    "nl": "Een inwoner wil niet gestoord worden?",
+                    "fr": "Un résident ne veut pas être perturbé ?",
+                    "it": "Un residente non vuole essere disturbato?",
+                    "es": "¿Algún residente no quiere ser molestado?",
+                    "pl": "Niektórzy mieszkańcy nie chcą być zaniepokojoni?",
+                    "uk": "Хто не хоче турбувати?",
+                    "zh-cn": "有些居民希望受到干扰?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.dnd",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Has any resident enabled do-not-disturb mode?",
+                    "de": "Möchte irgendein Bewohner gerade nicht gestört werden?",
+                    "ru": "Имеет ли какой-либо резидент включен режим do-not-disturb?",
+                    "pt": "Algum residente habilitado modo do-not-disturb?",
+                    "nl": "Is een inwoner in staat om niet-disturb modus te doen?",
+                    "fr": "Un résident a-t-il permis de ne pas perturber le mode ?",
+                    "it": "Qualche residente ha abilitato la modalità do-not-disturb?",
+                    "es": "¿Tiene algún residente habilitado el modo do-not-disturb?",
+                    "pl": "Każdy mieszkaniec pozwala na niedyscyplinację?",
+                    "uk": "Чи можливо будь-який резидент, який ввімкнений режим?",
+                    "zh-cn": "是否有任何居民能够无干扰?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.dndAll",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "All residents don't want to be disturbed?",
+                    "de": "Alle Bewohner möchten nicht gestört werden?",
+                    "ru": "Все жители не хотят быть нарушены?",
+                    "pt": "Todos os residentes não querem ser perturbados?",
+                    "nl": "Alle bewoners willen niet gestoord worden?",
+                    "fr": "Tous les résidents ne veulent pas être perturbés ?",
+                    "it": "Tutti i residenti non vogliono essere disturbati?",
+                    "es": "¿Todos los residentes no quieren ser molestados?",
+                    "pl": "Wszyscy mieszkańcy nie chcą być zaniepokojoni?",
+                    "uk": "Всі мешканці не хочуть турбувати?",
+                    "zh-cn": "所有东方居民都想感到不安?"
+                },
+                "type": "boolean",
+                "role": "indicator.residents.dndAll",
+                "read": true,
+                "write": false,
+                "def": false,
+                "desc": {
+                    "en": "Have all residents enabled do-not-disturb mode?",
+                    "de": "Möchten alle Bewohner gerade nicht gestört werden?",
+                    "ru": "Включены ли все резиденты режим do-not-disturb?",
+                    "pt": "Todos os residentes permitiram o modo do-not-disturb?",
+                    "nl": "Zijn alle bewoners in staat om niet-disturb modus te doen?",
+                    "fr": "Est-ce que tous les résidents ont activé le mode do-not-disturb?",
+                    "it": "Tutti i residenti hanno abilitato la modalità do-not-disturb?",
+                    "es": "¿Todos los residentes han habilitado el modo no perturbador?",
+                    "pl": "Czy wszyscy mieszkańcy mogą służyć do niedyscyplinacji?",
+                    "uk": "У всіх жителів ввімкнено режим?",
+                    "zh-cn": "是否有所有居民能够不带任何干扰?"
+                }
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.dndCount",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Number of residents with do-not-disturb enabled",
+                    "de": "Anzahl der nicht zu störenden Bewohner",
+                    "ru": "Количество резидентов с неуправляемым городом",
+                    "pt": "Número de moradores com do-not-disturb habilitado",
+                    "nl": "Nummer van bewoners met niet-disturb in staat",
+                    "fr": "Nombre de résidents atteints de do-not-disturb activé",
+                    "it": "Numero di residenti con do-not-disturb abilitato",
+                    "es": "Número de residentes con do-not-disturb habilitado",
+                    "pl": "Liczba mieszkańców z do-not-disturbem umożliwiała mieszkańcom dostęp do nieistnień",
+                    "uk": "Кількість жителів з до-не-розбірною включеною",
+                    "zh-cn": "无干扰的居民人数"
+                },
+                "type": "number",
+                "role": "value.residents.dndCount",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.dndFirst",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "First resident who enabled do-not-disturb",
+                    "de": "Bewohner, welcher zuerst nicht gestört werden wollte",
+                    "ru": "Первый резидент, который позволил не-управляемым",
+                    "pt": "Primeiro residente que habilitado do-not-disturb",
+                    "nl": "Eerste bewoner die in staat was om te doen-niet-disturb",
+                    "fr": "First resident who enabled do-not-disturb",
+                    "it": "Primo residente che ha abilitato do-not-disturb",
+                    "es": "Primer residente que permitió no perturbar",
+                    "pl": "Pierwszym mieszkańcem, który umożliwiał do-not-disturbans",
+                    "uk": "Перший резидент, який встановив",
+                    "zh-cn": "第一次居民能够不受干扰。"
+                },
+                "type": "string",
+                "role": "text.residents.dndFirst",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.dndLast",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "Last resident who enabled do-not-disturb",
+                    "de": "Bewohner, welcher zuletzt nicht gestört werden wollte",
+                    "ru": "Последний резидент, который позволил не-управлять",
+                    "pt": "Último residente que habilitado do-not-disturb",
+                    "nl": "Laatste bewoner die in staat was om niet-disturb te doen",
+                    "fr": "Dernier résident qui a permis de ne pas perturber",
+                    "it": "Ultimo residente che ha abilitato do-not-disturb",
+                    "es": "Último residente que permitió no perturbar",
+                    "pl": "Ostatni rezydent, który umożliwiał do-not-disturbans",
+                    "uk": "Останній резидент, який ввімкнув",
+                    "zh-cn": "最后一个居民能够不受干扰"
+                },
+                "type": "string",
+                "role": "text.residents.dndLast",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.activity.dndList",
+            "type": "state",
+            "common": {
+                "name": {
+                    "en": "List of residents who enabled do-not-disturb",
+                    "de": "Liste der nicht zu störenden Bewohner",
+                    "ru": "Список резидентов, которые включили do-not-disturb",
+                    "pt": "Lista de residentes que permitiram do-not-disturb",
+                    "nl": "List van bewoners die in staat waren om niet te rijden",
+                    "fr": "Liste des résidents qui ont permis de ne pas perturber",
+                    "it": "Elenco dei residenti che hanno permesso do-not-disturb",
+                    "es": "List of residents who enabled do-not-disturb",
+                    "pl": "Lista osób, które umożliwiały mieszkańcom niespokojność",
+                    "uk": "Список мешканців, які ввімкнули",
+                    "zh-cn": "A. 能够无干扰的居民名单"
+                },
+                "type": "array",
+                "role": "list.residents.dndList",
+                "read": true,
+                "write": false,
+                "def": "[]"
+            },
+            "native": {}
+        },
+
         {
             "_id": "info.activity.overnight",
             "type": "state",
@@ -1804,6 +2351,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.activity.wakeup",
             "type": "state",
@@ -1980,6 +2528,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "info.activity.wayhome",
             "type": "state",
@@ -2156,6 +2705,7 @@
             },
             "native": {}
         },
+
         {
             "_id": "control",
             "type": "folder",

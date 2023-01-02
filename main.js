@@ -357,7 +357,7 @@ class Residents extends utils.Adapter {
                         2020: 'Night: Back to Sleep',
 
                         // 2100-2199: SLEEPING TIME at home: While I should get up
-                        2100: 'Night: Awakening by Wake-up Call',
+                        2100: 'Night: Awakening by Wake-up Alarm',
                         2101: 'Wake Up: Snoozing',
                         2102: 'Wake Up: Snoozing',
                         2103: 'Wake Up: Extended Snoozing',
@@ -365,8 +365,8 @@ class Residents extends utils.Adapter {
                         2105: 'Wake Up: Extensive Snoozing',
 
                         // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                        2200: 'Wake Up: Awake after Wake-up Call',
-                        2210: 'Wake Up: Implicit awakening by presence',
+                        2200: 'Got Up: Awake after Wake-up Alarm',
+                        2210: 'Got Up: Implicit awakening by presence',
                     };
 
                     const activityStates = {
@@ -697,11 +697,11 @@ class Residents extends utils.Adapter {
                             type: 'state',
                             common: {
                                 name: {
-                                    en: name + ' has a wake-up call running?',
+                                    en: name + ' has a wake-up alarm running?',
                                     de: name + ' hat einen laufenden Weckruf?',
                                     ru: 'У ' + name + ' работает пробуждение?',
                                     pt: 'A ' + name + ' tem uma chamada a acordar?',
-                                    nl: 'Heeft ' + name + ' een wake-up call?',
+                                    nl: 'Heeft ' + name + ' een wake-up alarm?',
                                     fr: name + ' a un réveil en cours ?',
                                     it: name + ' ha una sveglia in funzione?',
                                     es: '¿' + name + ' tiene una llamada de atención?',
@@ -743,11 +743,11 @@ class Residents extends utils.Adapter {
                             type: 'state',
                             common: {
                                 name: {
-                                    en: name + ' has snoozed the wake-up call?',
+                                    en: name + ' has snoozed the wake-up alarm?',
                                     de: name + ' hat den Weckruf pausiert?',
                                     ru: name + ' разбил звонок?',
                                     pt: 'A ' + name + ' deu cabo da chamada de despertar?',
-                                    nl: name + ' heeft de wake-up call doorzocht?',
+                                    nl: name + ' heeft de wake-up alarm doorzocht?',
                                     fr: name + ' a sauté le réveil ?',
                                     it: name + ' ha snoozed la sveglia?',
                                     es: name + ' ha snoozed la llamada de atención?',
@@ -761,11 +761,11 @@ class Residents extends utils.Adapter {
                                 write: true,
                                 def: true,
                                 desc: {
-                                    en: 'Has this resident currently snoozed a wake-up call?',
+                                    en: 'Has this resident currently snoozed a wake-up alarm?',
                                     de: 'Hat dieser Bewohner gerade einen Weckruf pausiert?',
                                     ru: 'В настоящее время этот резидент разбил звонок?',
                                     pt: 'Este residente já fez uma chamada de despertar?',
-                                    nl: 'Heeft deze inwoner momenteel een wake-up call gedaan?',
+                                    nl: 'Heeft deze inwoner momenteel een wake-up alarm gedaan?',
                                     fr: 'Est-ce que ce résident a fait un rappel ?',
                                     it: 'Questo residente ha attualmente snoozed una chiamata di sveglia?',
                                     es: '¿Este residente ha snoozed una llamada de atención?',
@@ -1365,8 +1365,8 @@ class Residents extends utils.Adapter {
                                 write: true,
                                 def: 0,
                                 desc: {
-                                    en: 'Resident presence state',
-                                    de: 'Bewohner Anwesenheitsstatus',
+                                    en: 'Resident presence state\n0 = Away\n1 = Home',
+                                    de: 'Bewohner Anwesenheitsstatus\n0 = Abwesend\n1 = Zu Hause',
                                     ru: 'Состояние присутствия',
                                     pt: 'Estado de presença residente',
                                     nl: 'Verblijfsvergunning staat',
@@ -1466,8 +1466,8 @@ class Residents extends utils.Adapter {
                                 write: true,
                                 def: 0,
                                 desc: {
-                                    en: 'Resident presence state',
-                                    de: 'Bewohner Anwesenheitsstatus',
+                                    en: 'Resident presence state\n0 = Away\n1 = Home\n2 = Night',
+                                    de: 'Bewohner Anwesenheitsstatus\n0 = Abwesend\n1 = Zu Hause\n2 = Nacht',
                                     ru: 'Состояние присутствия',
                                     pt: 'Estado de presença residente',
                                     nl: 'Verblijfsvergunning staat',
@@ -2570,7 +2570,7 @@ class Residents extends utils.Adapter {
                         activityState,
                     );
                 } else {
-                    this.log.warn(device + ': Presence at home is required to start bed time process');
+                    this.log.warn(device + ': Presence at home is required to start bedtime process');
                     state.val = 0;
                     state.q = 0x40;
                     await this.setStateAsync(device + '.activity.bedtime', state);
@@ -2650,7 +2650,7 @@ class Residents extends utils.Adapter {
                     );
                 } else {
                     if (state.val == true) {
-                        this.log.warn(device + ': A wake-up call can only be triggered during night time at home');
+                        this.log.warn(device + ': A wake-up alarm can only be triggered during night time at home');
                         state.val = false;
                         state.q = 0x40;
                     }
@@ -2672,7 +2672,7 @@ class Residents extends utils.Adapter {
                         activityState,
                     );
                 } else {
-                    this.log.warn(device + ' has no wake-up call running that could be snoozed');
+                    this.log.warn(device + ' has no wake-up alarm running that can be snoozed');
                     state.val = true;
                     state.q = 0x41;
                 }
@@ -3086,119 +3086,144 @@ class Residents extends utils.Adapter {
             return;
         }
 
-        const homeList = [];
-        const petHomeList = [];
-        const nightList = [];
-        const awayList = [];
-        const disabledList = [];
-        const wayhomeList = [];
-        const overnightList = [];
-        const awakeList = [];
+        const disabledSum = [];
+        const awaySum = [];
+        const petHomeSum = [];
+        const wayhomeSum = [];
+        const homeSum = [];
+        const winddownSum = [];
+        const bedtimeSum = [];
+        const gotupSum = [];
+        const nightwalkSum = [];
+        const wakeupSum = [];
+        const nightSum = [];
+        const dndSum = [];
+        const overnightSum = [];
 
-        let homeCount = 0;
-        let petHomeCount = 0;
-        let nightCount = 0;
-        let awayCount = 0;
-        let disabledCount = 0;
-        let wayhomeCount = 0;
-        let overnightCount = 0;
-        let awakeCount = 0;
         let totalResidentsCount = 0;
         let totalPetCount = 0;
         let moodCount = 0;
-
-        let homeBool = false;
-        let petHomeBool = false;
-        let nightBool = false;
-        let awayBool = false;
-        let disabledBool = false;
-        let wayhomeBool = false;
-        let overnightBool = false;
-        let awakeBool = false;
 
         this.log.debug('  Looping through residents list:');
 
         for (const resident of this.residents) {
             const name = resident['name'];
             const residentType = (await this.getObjectAsync(resident['id']))?.native.type;
-            const enabled = await this.getStateAsync(resident['id'] + '.enabled');
-            // const activity = await this.getStateAsync(resident['id'] + '.activity.state');
-            const awake = await this.getStateAsync(resident['id'] + '.activity.awake');
-            const overnight = await this.getStateAsync(resident['id'] + '.activity.overnight');
-            const wayhome = await this.getStateAsync(resident['id'] + '.activity.wayhome');
-            const away = await this.getStateAsync(resident['id'] + '.presence.away');
-            const home = await this.getStateAsync(resident['id'] + '.presence.home');
-            const presence = await this.getStateAsync(resident['id'] + '.presence.state');
-            const mood = await this.getStateAsync(resident['id'] + '.mood.state');
+            const enabledState = await this.getStateAsync(resident['id'] + '.enabled');
+            const awayState = await this.getStateAsync(resident['id'] + '.presence.away');
+            const homeState = await this.getStateAsync(resident['id'] + '.presence.home');
+            const activityState = await this.getStateAsync(resident['id'] + '.activity.state');
+            if (activityState != undefined && typeof activityState.val == 'number' && activityState.val >= 10000)
+                activityState.val -= 10000;
+            const overnightState = await this.getStateAsync(resident['id'] + '.activity.overnight');
+            const presenceState = await this.getStateAsync(resident['id'] + '.presence.state');
+            const moodState = await this.getStateAsync(resident['id'] + '.mood.state');
+            const dndState = await this.getStateAsync(resident['id'] + '.activity.dnd');
 
-            if (presence == undefined || presence == null || typeof presence.val != 'number') continue;
+            if (
+                enabledState == undefined ||
+                typeof enabledState.val != 'boolean' ||
+                presenceState == undefined ||
+                typeof presenceState.val != 'number' ||
+                homeState == undefined ||
+                typeof homeState.val != 'boolean' ||
+                awayState == undefined ||
+                typeof awayState.val != 'boolean'
+            )
+                continue;
 
             this.log.debug('  Checking on ' + name + ' ...');
 
-            if (awake != undefined && awake != null && typeof awake.val == 'boolean' && awake.val == true) {
-                this.log.debug('    - is awake');
-                awakeBool = true;
-                awakeCount++;
-                awakeList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: awake.lc });
-            }
-
-            if (
-                overnight != undefined &&
-                overnight != null &&
-                typeof overnight.val == 'boolean' &&
-                overnight.val == true
-            ) {
+            if (overnightState != undefined && typeof overnightState.val == 'boolean' && overnightState.val == true) {
                 this.log.debug('    - does overnight');
-                overnightBool = true;
-                overnightCount++;
-                overnightList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: overnight.lc });
+                overnightSum.push({
+                    name: name,
+                    id: this.namespace + '.' + resident['id'],
+                    tc: overnightState.lc,
+                });
             }
 
             // When present at home
-            if (presence.val >= 1) {
+            if (presenceState.val >= 1) {
                 this.log.debug('    - is at home');
 
                 if (residentType == 'pet') {
                     totalPetCount++;
+                    petHomeSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: homeState.lc });
                 } else {
                     totalResidentsCount++;
-                    if (mood != undefined && mood != null && typeof mood.val == 'number') {
-                        moodCount += mood.val;
-                    }
+                    homeSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: homeState.lc });
                 }
 
-                if (home != undefined && home != null && typeof home.val == 'boolean') {
-                    if (residentType == 'pet') {
-                        petHomeBool = true;
-                        petHomeCount++;
-                        petHomeList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: home.lc });
-                    } else {
-                        homeBool = true;
-                        homeCount++;
-                        homeList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: home.lc });
-                    }
+                if (moodState != undefined && typeof moodState.val == 'number') moodCount += moodState.val;
+
+                if (dndState != undefined && dndState.val == true) {
+                    this.log.debug('    - does not want to be disturbed');
+                    dndSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: dndState.lc });
                 }
 
                 // When at sleep
-                if (presence.val == 2) {
-                    nightBool = true;
-                    nightCount++;
-                    nightList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: presence.lc });
+                if (presenceState.val == 2) {
+                    this.log.debug('    - is at sleep');
+                    nightSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: presenceState.lc });
                 }
-            } else if (
-                presence.val == 0 &&
-                enabled != undefined &&
-                enabled != null &&
-                typeof enabled.val == 'boolean' &&
-                away != undefined &&
-                away != null &&
-                typeof away.val == 'boolean'
-            ) {
+
+                // Activity mapping
+                if (activityState != undefined) {
+                    switch (activityState.val) {
+                        case 1900:
+                            winddownSum.push({
+                                name: name,
+                                id: this.namespace + '.' + resident['id'],
+                                tc: activityState.lc,
+                            });
+                            break;
+
+                        case 1901:
+                        case 1902:
+                            bedtimeSum.push({
+                                name: name,
+                                id: this.namespace + '.' + resident['id'],
+                                tc: activityState.lc,
+                            });
+                            break;
+
+                        case 2010:
+                            nightwalkSum.push({
+                                name: name,
+                                id: this.namespace + '.' + resident['id'],
+                                tc: activityState.lc,
+                            });
+                            break;
+
+                        case 2100:
+                        case 2101:
+                        case 2102:
+                        case 2103:
+                        case 2104:
+                        case 2105:
+                            wakeupSum.push({
+                                name: name,
+                                id: this.namespace + '.' + resident['id'],
+                                tc: activityState.lc,
+                            });
+                            break;
+
+                        case 2200:
+                        case 2210:
+                            gotupSum.push({
+                                name: name,
+                                id: this.namespace + '.' + resident['id'],
+                                tc: activityState.lc,
+                            });
+                            break;
+                    }
+                }
+            } else if (presenceState.val == 0) {
                 this.log.debug('    - is away from home');
-                awayBool = true;
 
                 // When away from home
-                if (enabled.val == true) {
+                if (enabledState.val == true) {
                     this.log.debug('    - is enabled');
 
                     if (residentType == 'pet') {
@@ -3206,242 +3231,313 @@ class Residents extends utils.Adapter {
                     } else {
                         totalResidentsCount++;
                     }
-                    awayCount++;
-                    awayList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: away.lc });
+                    awaySum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: awayState.lc });
 
                     // When on way home
-                    if (
-                        wayhome != undefined &&
-                        wayhome != null &&
-                        typeof wayhome.val == 'boolean' &&
-                        wayhome.val == true
-                    ) {
-                        wayhomeBool = true;
-                        wayhomeCount++;
-                        wayhomeList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: wayhome.lc });
+                    if (activityState != undefined && activityState.val == 2) {
+                        wayhomeSum.push({
+                            name: name,
+                            id: this.namespace + '.' + resident['id'],
+                            tc: activityState.lc,
+                        });
                     }
                 }
 
                 // When absent from home for longer period
                 else {
                     this.log.debug('    - is disabled');
-                    disabledBool = true;
-                    disabledCount++;
-                    disabledList.push({ name: name, id: this.namespace + '.' + resident['id'], tc: enabled.lc });
+                    disabledSum.push({
+                        name: name,
+                        id: this.namespace + '.' + resident['id'],
+                        tc: enabledState.lc,
+                    });
                 }
             }
         }
 
         this.log.debug(
             '  Completed loop-through of ' +
-                (totalResidentsCount + totalPetCount + disabledCount) +
+                (totalResidentsCount + totalPetCount + disabledSum.length) +
                 ' resident devices.',
         );
 
         // Sort Lists + Write First/Last datapoints
-        disabledList.sort(this.reverseSortResidentsListByTimecode);
-        if (disabledList.length > 0) {
-            await this.setStateAsync('info.state.disabledFirst', {
-                val: disabledList[disabledList.length - 1]['name'],
+        disabledSum.sort(this.reverseSortResidentsListByTimecode);
+        if (disabledSum.length > 0) {
+            await this.setStateChangedAsync('info.state.disabledFirst', {
+                val: disabledSum[disabledSum.length - 1]['name'],
                 ack: true,
             });
-            await this.setStateAsync('info.state.disabledLast', {
-                val: disabledList[0]['name'],
-                ack: true,
-            });
-        }
-
-        wayhomeList.sort(this.reverseSortResidentsListByTimecode);
-        if (wayhomeList.length > 0) {
-            await this.setStateAsync('info.activity.wayhomeFirst', {
-                val: wayhomeList[wayhomeList.length - 1]['name'],
-                ack: true,
-            });
-            await this.setStateAsync('info.activity.wayhomeLast', {
-                val: wayhomeList[0]['name'],
+            await this.setStateChangedAsync('info.state.disabledLast', {
+                val: disabledSum[0]['name'],
                 ack: true,
             });
         }
 
-        overnightList.sort(this.reverseSortResidentsListByTimecode);
-        if (overnightList.length > 0) {
-            await this.setStateAsync('info.activity.overnightFirst', {
-                val: overnightList[overnightList.length - 1]['name'],
+        awaySum.sort(this.reverseSortResidentsListByTimecode);
+        if (awaySum.length > 0) {
+            await this.setStateChangedAsync('info.presence.awayFirst', {
+                val: awaySum[awaySum.length - 1]['name'],
                 ack: true,
             });
-            await this.setStateAsync('info.activity.overnightLast', {
-                val: overnightList[0]['name'],
-                ack: true,
-            });
-        }
-
-        awakeList.sort(this.reverseSortResidentsListByTimecode);
-        if (awakeList.length > 0) {
-            await this.setStateAsync('info.activity.awakeFirst', {
-                val: awakeList[awakeList.length - 1]['name'],
-                ack: true,
-            });
-            await this.setStateAsync('info.activity.awakeLast', {
-                val: awakeList[0]['name'],
+            await this.setStateChangedAsync('info.presence.awayLast', {
+                val: awaySum[0]['name'],
                 ack: true,
             });
         }
 
-        awayList.sort(this.reverseSortResidentsListByTimecode);
-        if (awayList.length > 0) {
-            await this.setStateAsync('info.presence.awayFirst', {
-                val: awayList[awayList.length - 1]['name'],
+        petHomeSum.sort(this.reverseSortResidentsListByTimecode);
+        if (petHomeSum.length > 0) {
+            await this.setStateChangedAsync('info.presence.petsHomeFirst', {
+                val: petHomeSum[petHomeSum.length - 1]['name'],
                 ack: true,
             });
-            await this.setStateAsync('info.presence.awayLast', {
-                val: awayList[0]['name'],
-                ack: true,
-            });
-        }
-
-        nightList.sort(this.reverseSortResidentsListByTimecode);
-        if (nightList.length > 0) {
-            await this.setStateAsync('info.presence.nightFirst', {
-                val: nightList[nightList.length - 1]['name'],
-                ack: true,
-            });
-            await this.setStateAsync('info.presence.nightLast', {
-                val: nightList[0]['name'],
+            await this.setStateChangedAsync('info.presence.petsHomeLast', {
+                val: petHomeSum[0]['name'],
                 ack: true,
             });
         }
 
-        petHomeList.sort(this.reverseSortResidentsListByTimecode);
-        if (petHomeList.length > 0) {
-            await this.setStateAsync('info.presence.petsHomeFirst', {
-                val: petHomeList[petHomeList.length - 1]['name'],
+        wayhomeSum.sort(this.reverseSortResidentsListByTimecode);
+        if (wayhomeSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.wayhomeFirst', {
+                val: wayhomeSum[wayhomeSum.length - 1]['name'],
                 ack: true,
             });
-            await this.setStateAsync('info.presence.petsHomeLast', {
-                val: petHomeList[0]['name'],
+            await this.setStateChangedAsync('info.activity.wayhomeLast', {
+                val: wayhomeSum[0]['name'],
                 ack: true,
             });
         }
 
-        homeList.sort(this.reverseSortResidentsListByTimecode);
-        if (homeList.length > 0) {
-            await this.setStateAsync('info.presence.homeFirst', {
-                val: homeList[homeList.length - 1]['name'],
+        homeSum.sort(this.reverseSortResidentsListByTimecode);
+        if (homeSum.length > 0) {
+            await this.setStateChangedAsync('info.presence.homeFirst', {
+                val: homeSum[homeSum.length - 1]['name'],
                 ack: true,
             });
-            await this.setStateAsync('info.presence.homeLast', {
-                val: homeList[0]['name'],
+            await this.setStateChangedAsync('info.presence.homeLast', {
+                val: homeSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        winddownSum.sort(this.reverseSortResidentsListByTimecode);
+        if (winddownSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.winddownFirst', {
+                val: winddownSum[winddownSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.winddownLast', {
+                val: winddownSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        bedtimeSum.sort(this.reverseSortResidentsListByTimecode);
+        if (bedtimeSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.bedtimeFirst', {
+                val: bedtimeSum[bedtimeSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.bedtimeLast', {
+                val: bedtimeSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        gotupSum.sort(this.reverseSortResidentsListByTimecode);
+        if (gotupSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.gotupFirst', {
+                val: gotupSum[gotupSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.gotupLast', {
+                val: gotupSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        nightwalkSum.sort(this.reverseSortResidentsListByTimecode);
+        if (nightwalkSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.nightwalkFirst', {
+                val: nightwalkSum[nightwalkSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.nightwalkLast', {
+                val: nightwalkSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        wakeupSum.sort(this.reverseSortResidentsListByTimecode);
+        if (wakeupSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.wakeupFirst', {
+                val: wakeupSum[wakeupSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.wakeupLast', {
+                val: wakeupSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        nightSum.sort(this.reverseSortResidentsListByTimecode);
+        if (nightSum.length > 0) {
+            await this.setStateChangedAsync('info.presence.nightFirst', {
+                val: nightSum[nightSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.presence.nightLast', {
+                val: nightSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        dndSum.sort(this.reverseSortResidentsListByTimecode);
+        if (dndSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.dndFirst', {
+                val: dndSum[dndSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.dndLast', {
+                val: dndSum[0]['name'],
+                ack: true,
+            });
+        }
+
+        overnightSum.sort(this.reverseSortResidentsListByTimecode);
+        if (overnightSum.length > 0) {
+            await this.setStateChangedAsync('info.activity.overnightFirst', {
+                val: overnightSum[overnightSum.length - 1]['name'],
+                ack: true,
+            });
+            await this.setStateChangedAsync('info.activity.overnightLast', {
+                val: overnightSum[0]['name'],
                 ack: true,
             });
         }
 
         // Write Lists
-        await this.setStateAsync('info.state.disabledList', { val: JSON.stringify(disabledList), ack: true });
-        await this.setStateAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeList), ack: true });
-        await this.setStateAsync('info.activity.overnightList', { val: JSON.stringify(overnightList), ack: true });
-        await this.setStateAsync('info.activity.awakeList', { val: JSON.stringify(awakeList), ack: true });
-        await this.setStateAsync('info.presence.awayList', { val: JSON.stringify(awayList), ack: true });
-        await this.setStateAsync('info.presence.nightList', { val: JSON.stringify(nightList), ack: true });
-        await this.setStateAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeList), ack: true });
-        await this.setStateAsync('info.presence.homeList', { val: JSON.stringify(homeList), ack: true });
+        await this.setStateAsync('info.state.disabledList', { val: JSON.stringify(disabledSum), ack: true });
+        await this.setStateAsync('info.presence.awayList', { val: JSON.stringify(awaySum), ack: true });
+        await this.setStateAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeSum), ack: true });
+        await this.setStateAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeSum), ack: true });
+        await this.setStateAsync('info.presence.homeList', { val: JSON.stringify(homeSum), ack: true });
+        await this.setStateAsync('info.activity.winddownList', { val: JSON.stringify(winddownSum), ack: true });
+        await this.setStateAsync('info.activity.bedtimeList', { val: JSON.stringify(bedtimeSum), ack: true });
+        await this.setStateAsync('info.activity.gotupList', { val: JSON.stringify(gotupSum), ack: true });
+        await this.setStateAsync('info.activity.nightwalkList', { val: JSON.stringify(nightwalkSum), ack: true });
+        await this.setStateAsync('info.activity.wakeupList', { val: JSON.stringify(wakeupSum), ack: true });
+        await this.setStateAsync('info.presence.nightList', { val: JSON.stringify(nightSum), ack: true });
+        await this.setStateAsync('info.activity.dndList', { val: JSON.stringify(dndSum), ack: true });
+        await this.setStateAsync('info.activity.overnightList', { val: JSON.stringify(overnightSum), ack: true });
 
         // Write Counter
-        await this.setStateAsync('info.state.disabledCount', { val: disabledCount, ack: true });
+        await this.setStateAsync('info.state.disabledCount', { val: disabledSum.length, ack: true });
+        await this.setStateAsync('info.presence.awayCount', { val: awaySum.length, ack: true });
+        await this.setStateAsync('info.presence.petsHomeCount', { val: petHomeSum.length, ack: true });
+        await this.setStateAsync('info.activity.wayhomeCount', { val: wayhomeSum.length, ack: true });
+        await this.setStateAsync('info.presence.homeCount', { val: homeSum.length, ack: true });
+        await this.setStateAsync('info.activity.winddownCount', { val: winddownSum.length, ack: true });
+        await this.setStateAsync('info.activity.bedtimeCount', { val: bedtimeSum.length, ack: true });
+        await this.setStateAsync('info.activity.gotupCount', { val: gotupSum.length, ack: true });
+        await this.setStateAsync('info.activity.nightwalkCount', { val: nightwalkSum.length, ack: true });
+        await this.setStateAsync('info.activity.wakeupCount', { val: wakeupSum.length, ack: true });
+        await this.setStateAsync('info.presence.nightCount', { val: nightSum.length, ack: true });
+        await this.setStateAsync('info.activity.dndCount', { val: dndSum.length, ack: true });
+        await this.setStateAsync('info.activity.overnightCount', { val: overnightSum.length, ack: true });
         await this.setStateAsync('info.state.totalPetsCount', { val: totalPetCount, ack: true });
         await this.setStateAsync('info.state.totalResidentsCount', { val: totalResidentsCount, ack: true });
         await this.setStateAsync('info.state.totalCount', { val: totalResidentsCount + totalPetCount, ack: true });
-        await this.setStateAsync('info.activity.wayhomeCount', { val: wayhomeCount, ack: true });
-        await this.setStateAsync('info.activity.overnightCount', { val: overnightCount, ack: true });
-        await this.setStateAsync('info.activity.awakeCount', { val: awakeCount, ack: true });
-        await this.setStateAsync('info.presence.awayCount', { val: awayCount, ack: true });
-        await this.setStateAsync('info.presence.nightCount', { val: nightCount, ack: true });
-        await this.setStateAsync('info.presence.petsHomeCount', { val: petHomeCount, ack: true });
-        await this.setStateAsync('info.presence.homeCount', { val: homeCount, ack: true });
 
         // Write Indicators
-        await this.setStateAsync('info.state.disabled', { val: disabledBool, ack: true });
+        await this.setStateAsync('info.reachable', { val: totalResidentsCount > 0, ack: true });
+        await this.setStateAsync('info.state.disabled', { val: disabledSum.length > 0, ack: true });
+        await this.setStateAsync('info.state.disabledAll', { val: totalResidentsCount == 0, ack: true });
+        await this.setStateAsync('info.presence.away', { val: awaySum.length > 0, ack: true });
+        await this.setStateAsync('info.presence.awayAll', {
+            val: totalResidentsCount == 0 || (awaySum.length > 0 && awaySum.length >= totalResidentsCount),
+            ack: true,
+        });
+        await this.setStateAsync('info.presence.petsHome', { val: petHomeSum.length > 0, ack: true });
+        await this.setStateAsync('info.presence.petsHomeAlone', {
+            val: petHomeSum.length > 0 && homeSum.length == 0,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.wayhome', { val: wayhomeSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.wayhomeAll', {
+            val: wayhomeSum.length > 0 && wayhomeSum.length == awaySum.length,
+            ack: true,
+        });
+        await this.setStateAsync('info.presence.home', { val: homeSum.length > 0, ack: true });
+        await this.setStateAsync('info.presence.homeAll', {
+            val: homeSum.length > 0 && homeSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.winddown', { val: winddownSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.winddownAll', {
+            val: winddownSum.length > 0 && winddownSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.bedtime', { val: bedtimeSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.bedtimeAll', {
+            val: bedtimeSum.length > 0 && bedtimeSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.gotup', { val: gotupSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.gotupAll', {
+            val: gotupSum.length > 0 && gotupSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.nightwalk', { val: nightwalkSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.nightwalkAll', {
+            val: nightwalkSum.length > 0 && nightwalkSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.wakeup', { val: wakeupSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.wakeupAll', {
+            val: wakeupSum.length > 0 && wakeupSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.presence.night', { val: nightSum.length > 0, ack: true });
+        await this.setStateAsync('info.presence.nightAll', {
+            val: nightSum.length > 0 && nightSum.length == homeSum.length,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.dnd', { val: dndSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.dndAll', {
+            val: dndSum.length > 0 && dndSum.length == totalResidentsCount,
+            ack: true,
+        });
+        await this.setStateAsync('info.activity.overnight', { val: overnightSum.length > 0, ack: true });
+        await this.setStateAsync('info.activity.overnightAll', {
+            val: overnightSum.length > 0 && overnightSum.length == totalResidentsCount,
+            ack: true,
+        });
 
+        // Calculate overall residential state
+        let residentsStateVal = 0;
+        if (petHomeSum.length > 0) residentsStateVal = 2;
         if (totalResidentsCount > 0) {
-            await this.setStateAsync('info.reachable', { val: true, ack: true });
-            await this.setStateAsync('info.state.disabledAll', { val: false, ack: true });
-        } else {
-            await this.setStateAsync('info.reachable', { val: false, ack: true });
-            await this.setStateAsync('info.state.disabledAll', { val: true, ack: true });
-        }
-
-        await this.setStateAsync('info.activity.wayhome', { val: wayhomeBool, ack: true });
-        await this.setStateAsync('info.activity.overnight', { val: overnightBool, ack: true });
-        await this.setStateAsync('info.activity.awake', { val: awakeBool, ack: true });
-
-        if (wayhomeCount > 0 && wayhomeCount == awayCount) {
-            await this.setStateAsync('info.activity.wayhomeAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.activity.wayhomeAll', { val: false, ack: true });
-        }
-        if (overnightCount > 0 && overnightCount == totalResidentsCount) {
-            await this.setStateAsync('info.activity.overnightAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.activity.overnightAll', { val: false, ack: true });
-        }
-        if (awakeCount > 0 && awakeCount == homeCount) {
-            await this.setStateAsync('info.activity.awakeAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.activity.awakeAll', { val: false, ack: true });
-        }
-
-        await this.setStateAsync('info.presence.away', { val: awayBool, ack: true });
-        await this.setStateAsync('info.presence.night', { val: nightBool, ack: true });
-        await this.setStateAsync('info.presence.petsHome', { val: petHomeBool, ack: true });
-        await this.setStateAsync('info.presence.home', { val: homeBool, ack: true });
-
-        if (petHomeBool && !homeBool) {
-            await this.setStateAsync('info.presence.petsHomeAlone', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.presence.petsHomeAlone', { val: false, ack: true });
-        }
-        if (homeCount > 0 && homeCount == totalResidentsCount) {
-            await this.setStateAsync('info.presence.homeAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.presence.homeAll', { val: false, ack: true });
-        }
-        if (nightCount > 0 && nightCount == homeCount) {
-            await this.setStateAsync('info.presence.nightAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.presence.nightAll', { val: false, ack: true });
-        }
-        if (totalResidentsCount == 0 || (awayCount > 0 && awayCount >= totalResidentsCount)) {
-            await this.setStateAsync('info.presence.awayAll', { val: true, ack: true });
-        } else {
-            await this.setStateAsync('info.presence.awayAll', { val: false, ack: true });
-        }
-
-        let residentsStateVal = -1;
-        if (petHomeCount > 0) {
             residentsStateVal = 1;
-        }
-        if (totalResidentsCount > 0) {
-            residentsStateVal = 0;
-            if (petHomeCount > 0) {
-                residentsStateVal = 1;
-            }
-            if (wayhomeCount > 0) {
-                residentsStateVal = 2;
-            }
-            if (homeCount > 0) {
-                residentsStateVal = 3;
-                if (nightCount > 0 && nightCount == homeCount) {
-                    residentsStateVal = 7;
-                }
-                if (awakeCount > 0 && awakeCount == homeCount) {
-                    residentsStateVal = 5;
-                }
+            if (petHomeSum.length > 0) residentsStateVal = 2;
+            if (wayhomeSum.length > 0) residentsStateVal = 3;
+            if (homeSum.length > 0) {
+                residentsStateVal = 4;
+                if (nightSum.length > 0 && nightSum.length == homeSum.length) residentsStateVal = 10;
+                if (wakeupSum.length > 0) residentsStateVal = 9;
+                if (nightwalkSum.length > 0) residentsStateVal = 8;
+                if (gotupSum.length > 0) residentsStateVal = 7;
+                if (bedtimeSum.length > 0 && bedtimeSum.length == bedtimeSum.length) residentsStateVal = 6;
+                if (winddownSum.length > 0) residentsStateVal = 5;
             }
         }
 
-        this.log.debug('  Calculated residents state: ' + residentsStateVal);
+        this.log.debug('  Calculated residential state: ' + residentsStateVal);
         await this.setStateAsync('state', { val: residentsStateVal, ack: true });
 
-        const moodAverage = homeCount > 0 ? moodCount / homeCount : 0;
+        const moodAverage = homeSum.length > 0 ? moodCount / homeSum.length : 0;
         await this.setStateAsync('mood', {
             // Strive for the golden middle
             val: moodAverage > 0 ? Math.floor(moodAverage) : Math.ceil(moodAverage),
@@ -3462,7 +3558,7 @@ class Residents extends utils.Adapter {
                 if (!parentState || parentState.val == undefined) continue;
 
                 // For presence at home, aim for the lower (= more awake) number
-                if (groupStateVal >= 3 && parentState.val >= 3) {
+                if (groupStateVal >= 4 && parentState.val >= 4) {
                     if (parentState.val < groupStateVal) {
                         leadingInstance = parentInstance;
                         this.log.debug(
