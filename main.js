@@ -2381,6 +2381,10 @@ class Residents extends utils.Adapter {
                 break;
             }
 
+            case 'presenceFollowing': {
+                break;
+            }
+
             default: {
                 this.log.error(this.namespace + ": Received unknown ack'ed update of " + id + ': ' + state.val);
                 break;
@@ -3455,7 +3459,10 @@ class Residents extends utils.Adapter {
         await this.setStateAsync('info.reachable', { val: totalResidentsCount > 0, ack: true });
         await this.setStateAsync('info.state.disabled', { val: disabledSum.length > 0, ack: true });
         await this.setStateAsync('info.state.disabledAll', { val: totalResidentsCount == 0, ack: true });
-        await this.setStateAsync('info.presence.away', { val: awaySum.length > 0, ack: true });
+        await this.setStateAsync('info.presence.away', {
+            val: totalResidentsCount == 0 || awaySum.length > 0,
+            ack: true,
+        });
         await this.setStateAsync('info.presence.awayAll', {
             val: totalResidentsCount == 0 || (awaySum.length > 0 && awaySum.length >= totalResidentsCount),
             ack: true,
