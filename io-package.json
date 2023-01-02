@@ -103,13 +103,13 @@
                 "type": "number",
                 "role": "value.resident.mode",
                 "min": 0,
-                "max": 10,
+                "max": 11,
                 "read": true,
                 "write": false,
                 "def": 0,
                 "desc": {
-                    "en": "Cumulative overall presence state\n0 = Disabled\n1 = Away\n2 = Pet Home\n3 = Way Home\n4 = Home\n5 = Wind Down\n6 = Bedtime\n7 = Got Up\n8 = Night Walk\n9 = Wake Up\n10 = Night",
-                    "de": "Kummulierter Gesamtstatus für die Bewohner Anwesenheit\n0 = Deaktiviert\n1 = Abwesend\n2 = Haustier zu Hause\n3 = Nachhauseweg\n4 = Zuhause\n5 = Entspannen\n6 = Schlafenszeit\n7 = Aufgestanden\n8 = Nachtgang\n9 = Aufwachen\n10 = Nacht",
+                    "en": "Cumulative overall presence state\n0 = Disabled\n1 = Away\n2 = Pet Home\n3 = Way Home\n4 = Home\n5 = Do Not Disturb\n6 = Wind Down\n7 = Bedtime\n8 = Got Up\n9 = Night Walk\n10 = Wake Up\n11 = Night",
+                    "de": "Kummulierter Gesamtstatus für die Bewohner Anwesenheit\n0 = Deaktiviert\n1 = Abwesend\n2 = Haustier zu Hause\n3 = Nachhauseweg\n4 = Zuhause\n5 = Nicht Stören\n6 = Entspannen\n7 = Schlafenszeit\n8 = Aufgestanden\n9 = Nachtgang\n10 = Aufwachen\n11 = Nacht",
                     "ru": "Совокупное общее состояние присутствия",
                     "pt": "Estado de presença global cumulativo",
                     "nl": "Cumulatief over alle aanwezigheid staat",
@@ -126,12 +126,13 @@
                     "2": "Pet Home",
                     "3": "Way Home",
                     "4": "Home",
-                    "5": "Wind Down",
-                    "6": "Bedtime",
-                    "7": "Got Up",
-                    "8": "Night Walk",
-                    "9": "Wake Up",
-                    "10": "Night"
+                    "5": "Do Not Disturb",
+                    "6": "Wind Down",
+                    "7": "Bedtime",
+                    "8": "Got Up",
+                    "9": "Night Walk",
+                    "10": "Wake Up",
+                    "11": "Night"
                 }
             },
             "native": {}

@@ -3525,12 +3525,14 @@ class Residents extends utils.Adapter {
             if (wayhomeSum.length > 0) residentsStateVal = 3;
             if (homeSum.length > 0) {
                 residentsStateVal = 4;
-                if (nightSum.length > 0 && nightSum.length == homeSum.length) residentsStateVal = 10;
-                if (wakeupSum.length > 0) residentsStateVal = 9;
-                if (nightwalkSum.length > 0) residentsStateVal = 8;
-                if (gotupSum.length > 0) residentsStateVal = 7;
-                if (bedtimeSum.length > 0 && bedtimeSum.length == bedtimeSum.length) residentsStateVal = 6;
-                if (winddownSum.length > 0) residentsStateVal = 5;
+                if (dndSum.length > 0 && dndSum.length == dndSum.length) residentsStateVal = 5;
+
+                if (nightSum.length > 0 && nightSum.length == homeSum.length) residentsStateVal = 11;
+                if (wakeupSum.length > 0) residentsStateVal = 10;
+                if (nightwalkSum.length > 0) residentsStateVal = 9;
+                if (gotupSum.length > 0) residentsStateVal = 8;
+                if (bedtimeSum.length > 0 && bedtimeSum.length == bedtimeSum.length) residentsStateVal = 7;
+                if (winddownSum.length > 0) residentsStateVal = 6;
             }
         }
 
