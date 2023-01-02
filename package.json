@@ -1,6 +1,6 @@
 {
   "name": "iobroker.residents",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.0",
   "description": "The ioBroker Residents adapter helps to map the presence and activity status of the individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home.",
   "author": {
     "name": "Julian Pawlowski",
