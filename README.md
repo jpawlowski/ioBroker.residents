@@ -27,7 +27,7 @@ The adapter helps to map the presence and activity status of the individual resi
     ### **WORK IN PROGRESS**
 -->
 
-### 0.0.1
+### **WORK IN PROGRESS**
 
 -   (Julian Pawlowski) initial release
 
