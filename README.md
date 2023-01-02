@@ -15,6 +15,11 @@
 
 The adapter helps to map the presence and activity status of the individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home. Several resident instances can be combined with each other, so that, for example, adults and children are registered in their own instance and both instances form the overall status for all residents in a third instance.
 
+## Documentation
+
+-   [Documentation (English)](docs/en/residents.md)
+-   [Dokumentation (Deutsch)](docs/de/residents.md)
+
 ## Changelog
 
 <!--
@@ -22,7 +27,7 @@ The adapter helps to map the presence and activity status of the individual resi
     ### **WORK IN PROGRESS**
 -->
 
-### **WORK IN PROGRESS**
+### 0.0.1
 
 -   (Julian Pawlowski) initial release
 
