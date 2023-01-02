@@ -2411,12 +2411,13 @@ class Residents extends utils.Adapter {
             presenceState.val == undefined ||
             !activityState ||
             activityState.val == undefined ||
+            typeof activityState.val != 'number' ||
             !dndState
         )
             return;
 
         if (!oldState) oldState = state;
-        if (activityState.val >= 10000) activityState.val = Number(activityState.val) - 10000;
+        if (activityState.val >= 10000) activityState.val -= 10000;
         if (command == 'dnd') dndState.val = oldState.val;
 
         let stateAwake = false;
@@ -2426,8 +2427,8 @@ class Residents extends utils.Adapter {
 
         switch (command) {
             case 'state': {
-                if (typeof state.val != 'number' || oldState.val == undefined) return;
-                if (oldState.val >= 10000) oldState.val = Number(oldState.val) - 10000;
+                if (typeof state.val != 'number' || oldState.val == null || typeof oldState.val != 'number') return;
+                if (oldState.val >= 10000) oldState.val -= 10000;
                 let changePresenceToHome = false;
                 let changePresenceToAway = false;
 
@@ -2747,8 +2748,13 @@ class Residents extends utils.Adapter {
         const residentType = (await this.getObjectAsync(device))?.native.type;
         if (!enabledState || !presenceState || presenceState.val == undefined) return;
 
-        if (activityState && activityState.val != undefined && activityState.val >= 10000)
-            activityState.val = Number(activityState.val) - 10000;
+        if (
+            activityState &&
+            activityState.val != null &&
+            typeof activityState.val == 'number' &&
+            activityState.val >= 10000
+        )
+            activityState.val -= 10000;
         if (!oldState) oldState = state;
 
         let stateNight = false;
@@ -3176,6 +3182,7 @@ class Residents extends utils.Adapter {
                 if (activityState != undefined) {
                     switch (activityState.val) {
                         case 1900:
+                            this.log.debug('    - is winding down');
                             winddownSum.push({
                                 name: name,
                                 id: this.namespace + '.' + resident['id'],
@@ -3185,6 +3192,7 @@ class Residents extends utils.Adapter {
 
                         case 1901:
                         case 1902:
+                            this.log.debug('    - is going to bed');
                             bedtimeSum.push({
                                 name: name,
                                 id: this.namespace + '.' + resident['id'],
@@ -3193,6 +3201,7 @@ class Residents extends utils.Adapter {
                             break;
 
                         case 2010:
+                            this.log.debug('    - is walking at night');
                             nightwalkSum.push({
                                 name: name,
                                 id: this.namespace + '.' + resident['id'],
@@ -3206,6 +3215,7 @@ class Residents extends utils.Adapter {
                         case 2103:
                         case 2104:
                         case 2105:
+                            this.log.debug('    - has a wake up alarm');
                             wakeupSum.push({
                                 name: name,
                                 id: this.namespace + '.' + resident['id'],
@@ -3215,6 +3225,7 @@ class Residents extends utils.Adapter {
 
                         case 2200:
                         case 2210:
+                            this.log.debug('    - just got up from sleep');
                             gotupSum.push({
                                 name: name,
                                 id: this.namespace + '.' + resident['id'],
@@ -3538,8 +3549,9 @@ class Residents extends utils.Adapter {
                 if (wakeupSum.length > 0) residentsStateVal = 10;
                 if (nightwalkSum.length > 0) residentsStateVal = 9;
                 if (gotupSum.length > 0) residentsStateVal = 8;
-                if (bedtimeSum.length > 0 && bedtimeSum.length == bedtimeSum.length) residentsStateVal = 7;
-                if (winddownSum.length > 0) residentsStateVal = 6;
+                if (bedtimeSum.length > 0 && bedtimeSum.length == homeSum.length) residentsStateVal = 7;
+                if (winddownSum.length > 0 || (bedtimeSum.length > 0 && bedtimeSum.length != homeSum.length))
+                    residentsStateVal = 6;
             }
         }
 
@@ -3577,9 +3589,9 @@ class Residents extends utils.Adapter {
                     }
 
                     const moodState = await this.getForeignStateAsync(parentInstance + '.mood');
-                    if (moodState) {
+                    if (moodState && typeof moodState.val == 'number') {
                         moodFoundCounter++;
-                        groupMood += Number(moodState.val);
+                        groupMood += moodState.val;
                     }
                 }
 
@@ -3789,6 +3801,10 @@ class Residents extends utils.Adapter {
                 .replace(/^_+/g, '') // Remove underscores beginning
                 .replace(/_+/g, '_') // Replace multiple underscores with one
                 .toLowerCase()
+                .replace(/ä/g, 'ae') // Replace a Umlaut
+                .replace(/ö/g, 'oe') // Replace o Umlaut
+                .replace(/ü/g, 'ue') // Replace u Umlaut
+                .replace(/ß/g, 'ss') // Replace Eszett
                 // @ts-ignore
                 .replace(/_([a-z])/g, (m, w) => {
                     return w.toUpperCase();
