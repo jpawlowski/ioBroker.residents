@@ -26,6 +26,11 @@ The adapter helps to map the presence and activity status of the individual resi
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+-   (Julian Pawlowski) Sync foreign presence state during startup
+
 ### 0.0.2-beta.0 (2023-01-02)
 
 -   (Julian Pawlowski) initial release
