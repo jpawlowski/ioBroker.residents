@@ -2754,6 +2754,16 @@ class Residents extends utils.Adapter {
             }
 
             case 'wayhome': {
+                const away = await this.getStateAsync(device + '.presence.away');
+                if (away && away.val == false) {
+                    this.log.warn(device + ': Wayhome state can only be controlled during absence');
+                    state.ack = true;
+                    state.val = oldState.val;
+                    state.q = 0x40;
+                    await this.setStateAsync(device + '.activity.wayhome', state);
+                    break;
+                }
+
                 let newActivityVal = 0;
                 if (state.val == true) {
                     if (enabledState.val == false)
