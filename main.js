@@ -3163,9 +3163,9 @@ class Residents extends utils.Adapter {
         this.clearTimeout(this.calculationTimeout);
         if (!_run) {
             const runtimeMilliseconds = 1000;
-            this.log.silly(`Creating residents summary re-calcuation timeout in ${runtimeMilliseconds}ms`);
+            this.log.silly(`Creating residents summary re-calculation timeout in ${runtimeMilliseconds}ms`);
             this.calculationTimeout = this.setTimeout(() => {
-                this.log.debug('Started residents summary re-calcuation');
+                this.log.debug('Started residents summary re-calculation');
                 this.calculationTimeout = null;
                 this.setResidentsSummary(true);
             }, runtimeMilliseconds);
