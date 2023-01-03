@@ -1523,13 +1523,14 @@ class Residents extends utils.Adapter {
                         this.log.info(
                             id + ': Monitoring foreign presence datapoint ' + resident.foreignPresenceObjectId,
                         );
-                        if (foreignPresenceState.ack != true)
-                            this.log.warn(
-                                id +
-                                    ': ' +
-                                    resident.foreignPresenceObjectId +
-                                    ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
-                            );
+                        // // Cannot be checked due to a bug in js-controller that will always return states with ack=false
+                        // if (foreignPresenceState.ack != true)
+                        //     this.log.warn(
+                        //         id +
+                        //             ': ' +
+                        //             resident.foreignPresenceObjectId +
+                        //             ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
+                        //     );
                         this.foreignSubscriptions.push(resident.foreignPresenceObjectId);
                     } else {
                         this.presenceSubscriptionMapping[resident.foreignPresenceObjectId].shift();
@@ -1566,13 +1567,14 @@ class Residents extends utils.Adapter {
                         this.log.info(
                             id + ': Monitoring foreign way home datapoint ' + resident.foreignWayhomeObjectId,
                         );
-                        if (foreignWayhomeState.ack != true)
-                            this.log.warn(
-                                id +
-                                    ': ' +
-                                    resident.foreignWayhomeObjectId +
-                                    ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
-                            );
+                        // // Cannot be checked due to a bug in js-controller that will always return states with ack=false
+                        // if (foreignWayhomeState.ack != true)
+                        //     this.log.warn(
+                        //         id +
+                        //             ': ' +
+                        //             resident.foreignWayhomeObjectId +
+                        //             ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
+                        //     );
                         this.foreignSubscriptions.push(resident.foreignWayhomeObjectId);
                     } else {
                         this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId].shift();
@@ -3005,7 +3007,11 @@ class Residents extends utils.Adapter {
         }
 
         if (type == 'mixed' || type == 'string') {
-            type = this.getDatatypeFromString(state.val);
+            if (stateObj.common.role == 'json') {
+                type = 'json';
+            } else {
+                type = this.getDatatypeFromString(state.val);
+            }
             if (type == null) {
                 this.log.error(id + ': Monitored presence datapoint seems inapproproate due to unknown string format');
                 return false;
