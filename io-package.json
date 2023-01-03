@@ -15,19 +15,6 @@
                 "pl": "Państwo zagraniczne w czasie startu",
                 "uk": "Синхронізація стану зовнішньої присутності при запуску",
                 "zh-cn": "外国在开办期间的存在"
-            },
-            "0.0.2-beta.0": {
-                "en": "initial release",
-                "de": "erstausstrahlung",
-                "ru": "начальный выпуск",
-                "pt": "lançamento inicial",
-                "nl": "niet",
-                "fr": "initial release",
-                "it": "rilascio iniziale",
-                "es": "liberación inicial",
-                "pl": "pierwsze wydanie",
-                "uk": "початковий реліз",
-                "zh-cn": "初步释放"
             }
         },
         "titleLang": {
@@ -44,17 +31,17 @@
             "zh-cn": "居民"
         },
         "desc": {
-            "en": "The adapter helps to map the presence and activity status of the individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home.",
-            "de": "Dieser Adapter hilft dabei, den Anwesenheits- und Aktivitätsstatus der einzelnen Mitbewohner abzubilden. Daraus wird ein logischer Gesamtstatus über alle Mitbewohner und deren Anwesenheit bzw. momentane Aktivität zu Hause gebildet.",
-            "ru": "Адаптер помогает картировать состояние присутствия и активности отдельных жителей. Это используется для создания логического общего статуса всех жителей и их присутствия или текущей деятельности дома.",
-            "pt": "O adaptador ajuda a mapear a presença e o estado de atividade dos residentes individuais. Isso é usado para criar um status geral lógico de todos os moradores e sua presença ou atividade atual em casa.",
-            "nl": "De adapter helpt de aanwezigheid en activiteitsstatus van de individuele bewoners in kaart te brengen. Dit wordt gebruikt om een logische status te creëren van alle bewoners en hun aanwezigheid of huidige activiteiten thuis.",
-            "fr": "L'adaptateur permet de cartographier la présence et l'état d'activité des résidents. Ceci est utilisé pour créer un statut global logique de tous les résidents et leur présence ou activité actuelle à la maison.",
-            "it": "L'adattatore aiuta a mappare la presenza e lo stato di attività dei singoli residenti. Questo viene utilizzato per creare uno stato complessivo logico di tutti i residenti e la loro presenza o attività corrente a casa.",
-            "es": "El adaptador ayuda a mapear la presencia y el estado de actividad de los residentes individuales. Esto se utiliza para crear un estado general lógico de todos los residentes y su presencia o actividad actual en casa.",
-            "pl": "Adaptator pomaga mapować obecność i status aktywności poszczególnych mieszkańców. Używa się tego do stworzenia logicznego ogólnego statusu wszystkich mieszkańców i ich obecności lub aktualnej aktywności w domu.",
-            "uk": "Перехідник допомагає на карті стану присутності та активності окремих мешканців. Це використовується для створення логічного загального стану всіх мешканців та їх наявності або поточної діяльності будинку.",
-            "zh-cn": "适应者帮助绘制个人居民的存在和活动情况。 这是为了创造所有居民的合理总体地位及其在家里的存在或目前的活动。."
+            "en": "The adapter helps to map the presence and activity status of individual residents. This is used to create a logical overall status of all residents and their presence or current activity at home. Residents are represented by dedicated virtual devices with different types of roomie, guest, or pet.",
+            "de": "Dieser Adapter hilft dabei, den Anwesenheits- und Aktivitätsstatus der einzelnen Mitbewohner abzubilden. Daraus wird ein logischer Gesamtstatus über alle Mitbewohner und deren Anwesenheit bzw. momentane Aktivität zu Hause gebildet. Die Bewohner werden durch eigene virtuelle Geräte vom Typ Mitbewohner, Gast, oder Haustier repräsentiert.",
+            "ru": "Адаптер помогает картировать состояние присутствия и активности отдельных жителей. Это используется для создания логического общего статуса всех жителей и их присутствия или текущей деятельности дома. Резиденты представлены специализированными виртуальными устройствами с разными типами roomie, гостя или питомца.",
+            "pt": "O adaptador ajuda a mapear a presença e o estado de atividade de residentes individuais. Isso é usado para criar um status geral lógico de todos os moradores e sua presença ou atividade atual em casa. Os moradores são representados por dispositivos virtuais dedicados com diferentes tipos de quarto, hóspede ou animal de estimação.",
+            "nl": "De adapter helpt de aanwezigheid en activiteitsstatus van individuele bewoners in kaart te brengen. Dit wordt gebruikt om een logische status te creëren van alle bewoners en hun aanwezigheid of huidige activiteiten thuis. Huizen worden vertegenwoordigd door toegewijde virtuele apparaten met verschillende soorten kamergenoot, gast, of huisdier.",
+            "fr": "L'adaptateur permet de cartographier la présence et l'état d'activité des résidents individuels. Ceci est utilisé pour créer un statut global logique de tous les résidents et leur présence ou activité actuelle à la maison. Les résidents sont représentés par des appareils virtuels dédiés avec différents types de roomie, d'invité ou d'animaux.",
+            "it": "L'adattatore aiuta a mappare la presenza e lo stato di attività dei singoli residenti. Questo viene utilizzato per creare uno stato complessivo logico di tutti i residenti e la loro presenza o attività corrente a casa. I residenti sono rappresentati da dispositivi virtuali dedicati con diversi tipi di roomie, guest o animale domestico.",
+            "es": "El adaptador ayuda a mapear la presencia y el estado de actividad de los residentes individuales. Esto se utiliza para crear un estado general lógico de todos los residentes y su presencia o actividad actual en casa. Los residentes están representados por dispositivos virtuales dedicados con diferentes tipos de roomie, huésped o mascota.",
+            "pl": "Adaptator pomaga mapować obecność i status aktywności poszczególnych mieszkańców. Używa się tego do stworzenia logicznego ogólnego statusu wszystkich mieszkańców i ich obecności lub aktualnej aktywności w domu. Mieszkańcy są reprezentowani przez specjalne urządzenia z różnymi rodzajami pomieszczeń, gośćmi lub zwierzętami domowymi.",
+            "uk": "Перехідник допомагає на карті стану присутності та активності окремих мешканців. Це використовується для створення логічного загального стану всіх мешканців та їх наявності або поточної діяльності будинку. Жителі представлені спеціальними віртуальними пристроями з різними типами номерів, гостьовими або домашніми тваринами.",
+            "zh-cn": "适应者帮助绘制个人居民的存在和活动情况。 这是为了创造所有居民的合理总体地位及其在家里的存在或目前的活动。 驻地代表的是专门的虚拟设备,有不同的房间、客机或头寸。."
         },
         "docs": {
             "en": "docs/en/residents.md",
