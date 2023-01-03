@@ -12,6 +12,8 @@ class Residents extends utils.Adapter {
             name: 'residents',
         });
 
+        this.initialized = false;
+
         this.residents = [];
         this.roomies = [];
         this.pets = [];
@@ -1505,10 +1507,36 @@ class Residents extends utils.Adapter {
                     typeof resident.foreignPresenceObjectId == 'string' &&
                     resident.foreignPresenceObjectId != ''
                 ) {
-                    this.foreignSubscriptions.push(resident.foreignPresenceObjectId);
+                    const foreignPresenceState = await this.getForeignStateAsync(resident.foreignPresenceObjectId);
                     if (this.presenceSubscriptionMapping[resident.foreignPresenceObjectId] == undefined)
                         this.presenceSubscriptionMapping[resident.foreignPresenceObjectId] = [];
                     this.presenceSubscriptionMapping[resident.foreignPresenceObjectId].push(id);
+
+                    if (
+                        foreignPresenceState != undefined &&
+                        foreignPresenceState.val != null &&
+                        (await this.setResidentDevicePresenceFromEvent(
+                            resident.foreignPresenceObjectId,
+                            foreignPresenceState,
+                        )) != false
+                    ) {
+                        this.log.info(
+                            id + ': Monitoring foreign presence datapoint ' + resident.foreignPresenceObjectId,
+                        );
+                        if (foreignPresenceState.ack != true)
+                            this.log.warn(
+                                id +
+                                    ': ' +
+                                    resident.foreignPresenceObjectId +
+                                    ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
+                            );
+                        this.foreignSubscriptions.push(resident.foreignPresenceObjectId);
+                    } else {
+                        this.presenceSubscriptionMapping[resident.foreignPresenceObjectId].shift();
+                        this.log.error(
+                            id + ': Foreign presence datapoint ' + resident.foreignPresenceObjectId + ' is invalid',
+                        );
+                    }
                 }
 
                 if (
@@ -1516,16 +1544,41 @@ class Residents extends utils.Adapter {
                     typeof resident.foreignWayhomeObjectId == 'string' &&
                     resident.foreignWayhomeObjectId != ''
                 ) {
+                    const foreignWayhomeState = await this.getForeignStateAsync(resident.foreignWayhomeObjectId);
+                    if (this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId] == undefined)
+                        this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId] = [];
+                    this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId].push(id);
+
                     if (this.presenceSubscriptionMapping[resident.foreignWayhomeObjectId] != undefined) {
+                        this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId].shift();
                         this.log.error(
                             resident.foreignWayhomeObjectId +
-                                ' is already in use for presence entry/exit events, it can not be used for wayhome events in that case.',
+                                ' is already in use for presence entry/exit events, it can not be used for way home events in that case.',
                         );
-                    } else {
+                    } else if (
+                        foreignWayhomeState != undefined &&
+                        foreignWayhomeState.val != null &&
+                        (await this.setResidentDevicePresenceFromEvent(
+                            resident.foreignWayhomeObjectId,
+                            foreignWayhomeState,
+                        )) != false
+                    ) {
+                        this.log.info(
+                            id + ': Monitoring foreign way home datapoint ' + resident.foreignWayhomeObjectId,
+                        );
+                        if (foreignWayhomeState.ack != true)
+                            this.log.warn(
+                                id +
+                                    ': ' +
+                                    resident.foreignWayhomeObjectId +
+                                    ": ACK state is false. Future events will need to have a confirmed (=ACK'ed) status update!",
+                            );
                         this.foreignSubscriptions.push(resident.foreignWayhomeObjectId);
-                        if (this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId] == undefined)
-                            this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId] = [];
-                        this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId].push(id);
+                    } else {
+                        this.wayhomeSubscriptionMapping[resident.foreignWayhomeObjectId].shift();
+                        this.log.error(
+                            id + ': Foreign way home datapoint ' + resident.foreignWayhomeObjectId + ' is invalid',
+                        );
                     }
                 }
 
@@ -1743,6 +1796,7 @@ class Residents extends utils.Adapter {
 
         this.timeoutDisableAbsentResidents(true);
         this.timeoutResetOvernight(true);
+        this.initialized = true;
     }
 
     /**
@@ -1816,7 +1870,16 @@ class Residents extends utils.Adapter {
         else {
             // The state was controlled (ack=false)
             if (!state.ack) {
-                //
+                if (this.presenceSubscriptionMapping[id] != undefined)
+                    this.log.debug(
+                        id +
+                            ": Received non-ack'ed presence control event. Waiting for ack'ed event to process presence change.",
+                    );
+                if (this.wayhomeSubscriptionMapping[id] != undefined)
+                    this.log.debug(
+                        id +
+                            ": Received non-ack'ed way home control event. Waiting for ack'ed event to process way home change.",
+                    );
             }
 
             // The state was updated (ack=true)
@@ -2213,7 +2276,7 @@ class Residents extends utils.Adapter {
 
                     if (resident['type'] == 'pet') {
                         this.log.debug(
-                            allLevels + ': ' + resident['id'] + ' is a pet without wayhome state - ignoring.',
+                            allLevels + ': ' + resident['id'] + ' is a pet without way home state - ignoring.',
                         );
                     } else if (wayhome.val == true) {
                         this.log.debug(
@@ -2241,7 +2304,7 @@ class Residents extends utils.Adapter {
 
                     if (resident['type'] == 'pet') {
                         this.log.debug(
-                            allLevels + ': ' + resident['id'] + ' is a pet without wayhome state - ignoring.',
+                            allLevels + ': ' + resident['id'] + ' is a pet without way home state - ignoring.',
                         );
                     } else if (wayhome.val == false) {
                         this.log.debug(
@@ -2398,7 +2461,7 @@ class Residents extends utils.Adapter {
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
-     * @param {ioBroker.State} oldState
+     * @param {ioBroker.State} [oldState]
      */
     async setResidentDeviceActivity(device, command, state, oldState) {
         const enabledState = await this.getStateAsync(device + '.enabled');
@@ -2715,7 +2778,7 @@ class Residents extends utils.Adapter {
      *
      * @param {string} device
      * @param {ioBroker.State} state
-     * @param {ioBroker.State} oldState
+     * @param {ioBroker.State} [oldState]
      */
     async setResidentDeviceMood(device, state, oldState) {
         const presenceState = await this.getStateAsync(device + '.presence.state');
@@ -2738,7 +2801,7 @@ class Residents extends utils.Adapter {
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
-     * @param {ioBroker.State} oldState
+     * @param {ioBroker.State} [oldState]
      */
     async setResidentDevicePresence(device, command, state, oldState) {
         const enabledState = await this.getStateAsync(device + '.enabled');
@@ -2866,7 +2929,11 @@ class Residents extends utils.Adapter {
 
             case 'home': {
                 state.val = state.val == true ? 1 : 0;
-                await this.setStateAsync(device + '.presence.state', state);
+                if (this.initialized) {
+                    await this.setStateAsync(device + '.presence.state', state);
+                } else {
+                    this.setResidentDevicePresence(device, 'state', state);
+                }
                 break;
             }
 
@@ -2899,16 +2966,12 @@ class Residents extends utils.Adapter {
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
-     * @param {ioBroker.State} oldState
+     * @param {ioBroker.State} [oldState]
      */
     async setResidentDevicePresenceFollowing(device, command, state, oldState) {
-        // eslint-disable-next-line no-unused-vars
-        const oldValue = oldState.val;
-        await this.setStateChangedAsync(device + '.presenceFollowing.' + command, {
-            val: state.val,
-            ack: true,
-            from: state.from,
-        });
+        if (!oldState) oldState = state;
+        state.ack = true;
+        await this.setStateChangedAsync(device + '.presenceFollowing.' + command, state);
     }
 
     /**
@@ -2920,7 +2983,7 @@ class Residents extends utils.Adapter {
      */
     async setResidentDevicePresenceFromEvent(id, state, _stateObj) {
         const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
-        if (!stateObj) return;
+        if (!stateObj) return false;
         let type = stateObj.common.type;
         let presence = null;
 
@@ -2999,7 +3062,7 @@ class Residents extends utils.Adapter {
                     return false;
                 }
                 state.val = jsonPresenceVal;
-                this.setResidentDevicePresenceFromEvent(id, state, {
+                return this.setResidentDevicePresenceFromEvent(id, state, {
                     _id: stateObj._id,
                     type: 'state',
                     common: {
@@ -3011,7 +3074,6 @@ class Residents extends utils.Adapter {
                     },
                     native: {},
                 });
-                return;
             }
         }
 
@@ -3022,36 +3084,41 @@ class Residents extends utils.Adapter {
         // Presence update
         else if (this.presenceSubscriptionMapping[id]) {
             for (const device in this.presenceSubscriptionMapping[id]) {
-                this.log.info(
-                    id +
-                        ': Detected presence update for ' +
-                        this.presenceSubscriptionMapping[id][device] +
-                        ': ' +
-                        presence,
-                );
-                await this.setStateChangedAsync(this.presenceSubscriptionMapping[id][device] + '.presence.home', {
-                    val: presence,
-                    ack: false,
-                });
+                if (this.initialized)
+                    this.log.info(
+                        id +
+                            ': Detected presence update for ' +
+                            this.presenceSubscriptionMapping[id][device] +
+                            ': ' +
+                            presence,
+                    );
+                state.val = presence;
+                state.ack = false;
+                await this.setResidentDevicePresence(this.presenceSubscriptionMapping[id][device], 'home', state);
             }
         }
 
         // Way Home activity update
         else if (this.wayhomeSubscriptionMapping[id]) {
             for (const device in this.wayhomeSubscriptionMapping[id]) {
-                this.log.info(
-                    id +
-                        ': Detected way home update for ' +
-                        this.wayhomeSubscriptionMapping[id][device] +
-                        ': ' +
-                        presence,
-                );
-                await this.setStateChangedAsync(this.wayhomeSubscriptionMapping[id][device] + '.activity.wayhome', {
-                    val: presence,
-                    ack: false,
-                });
+                if (this.initialized)
+                    this.log.info(
+                        id +
+                            ': Detected way home update for ' +
+                            this.wayhomeSubscriptionMapping[id][device] +
+                            ': ' +
+                            presence,
+                    );
+                state.val = presence;
+                state.ack = false;
+                await this.setResidentDeviceActivity(this.wayhomeSubscriptionMapping[id][device], 'wayhome', state);
             }
+        } else {
+            this.log.error(id + ': Presence update event has no matching device');
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -3144,7 +3211,12 @@ class Residents extends utils.Adapter {
 
             this.log.debug('  Checking on ' + name + ' ...');
 
-            if (overnightState != undefined && typeof overnightState.val == 'boolean' && overnightState.val == true) {
+            if (
+                enabledState.val == true &&
+                overnightState != undefined &&
+                typeof overnightState.val == 'boolean' &&
+                overnightState.val == true
+            ) {
                 this.log.debug('    - does overnight');
                 overnightSum.push({
                     name: name,
@@ -3543,15 +3615,18 @@ class Residents extends utils.Adapter {
             if (wayhomeSum.length > 0) residentsStateVal = 3;
             if (homeSum.length > 0) {
                 residentsStateVal = 4;
-                if (dndSum.length > 0 && dndSum.length == dndSum.length) residentsStateVal = 5;
+                if (dndSum.length > 0 && dndSum.length == homeSum.length) residentsStateVal = 5;
+                if (winddownSum.length > 0) residentsStateVal = 6;
+
+                // TODO: Only in the evening, not after wakeup?
+                if (nightSum.length > 0 && nightSum.length != homeSum.length) residentsStateVal = 6;
+                if (bedtimeSum.length > 0 && bedtimeSum.length == homeSum.length) residentsStateVal = 7;
 
                 if (nightSum.length > 0 && nightSum.length == homeSum.length) residentsStateVal = 11;
                 if (wakeupSum.length > 0) residentsStateVal = 10;
                 if (nightwalkSum.length > 0) residentsStateVal = 9;
                 if (gotupSum.length > 0) residentsStateVal = 8;
-                if (bedtimeSum.length > 0 && bedtimeSum.length == homeSum.length) residentsStateVal = 7;
-                if (winddownSum.length > 0 || (bedtimeSum.length > 0 && bedtimeSum.length != homeSum.length))
-                    residentsStateVal = 6;
+                if (bedtimeSum.length > 0 && winddownSum.length == 0 && nightSum.length > 0) residentsStateVal = 7;
             }
         }
 

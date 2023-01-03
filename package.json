@@ -15,10 +15,20 @@
     "roomie",
     "guest",
     "pet",
+    "family",
+    "presence",
+    "activity",
+    "bedtime",
+    "wakeup",
     "Bewohner",
     "Mitbewohner",
     "Gast",
-    "Haustier"
+    "Haustier",
+    "Familie",
+    "Anwesenheit",
+    "Aktivität",
+    "Schlafenszeit",
+    "Weckruf"
   ],
   "repository": {
     "type": "git",
