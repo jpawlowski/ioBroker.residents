@@ -2015,7 +2015,7 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is 'disabled', therefore is is excluded from group control.",
+                                " is 'disabled', therefore it is excluded from group control.",
                         );
                     }
                 });
@@ -2044,7 +2044,7 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is 'disabled', therefore is is excluded from group control.",
+                                " is 'disabled', therefore it is excluded from group control.",
                         );
                     }
                 });
@@ -2069,7 +2069,7 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is not 'home', therefore is is excluded from group control.",
+                                " is not 'home', therefore it is excluded from group control.",
                         );
                     } else {
                         this.log.info(allLevels + ': Changing ' + resident['id'] + " to 'night'.");
@@ -2100,7 +2100,7 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is not 'home', therefore is is excluded from group control.",
+                                " is not 'home', therefore it is excluded from group control.",
                         );
                     } else {
                         this.log.info(allLevels + ': Changing ' + resident['id'] + " to not 'night'.");
@@ -2179,11 +2179,11 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is 'disabled', therefore is is excluded from group control.",
+                                " is 'disabled', therefore it is excluded from group control.",
                         );
                     } else {
                         this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'overnight'.");
-                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
                             val: true,
                             ack: false,
                         });
@@ -2213,11 +2213,11 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is 'disabled', therefore is is excluded from group control.",
+                                " is 'disabled', therefore it is excluded from group control.",
                         );
                     } else {
                         this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'overnight'.");
-                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
                             val: false,
                             ack: false,
                         });
@@ -2250,7 +2250,7 @@ class Residents extends utils.Adapter {
                             allLevels +
                                 ': ' +
                                 resident['id'] +
-                                " is 'disabled', therefore is is excluded from group control.",
+                                " is 'disabled', therefore it is excluded from group control.",
                         );
                     } else {
                         this.log.info(
@@ -2261,7 +2261,7 @@ class Residents extends utils.Adapter {
                                 overnightObj.common.def +
                                 '.',
                         );
-                        await this.setStateChangedAsync(resident['id'] + '.activity.overnight', {
+                        await this.setStateAsync(resident['id'] + '.activity.overnight', {
                             val: overnightObj.common.def,
                             ack: false,
                         });
@@ -2273,13 +2273,16 @@ class Residents extends utils.Adapter {
             case 'activity.setWayhomeAll': {
                 this.residents.forEach(async (resident) => {
                     const wayhome = await this.getStateAsync(resident['id'] + '.activity.wayhome');
+                    const away = await this.getStateAsync(resident['id'] + '.presence.away');
 
-                    if (!wayhome) return;
+                    if (!wayhome || !away) return;
 
                     if (resident['type'] == 'pet') {
                         this.log.debug(
                             allLevels + ': ' + resident['id'] + ' is a pet without way home state - ignoring.',
                         );
+                    } else if (away.val == false) {
+                        this.log.debug(allLevels + ': ' + resident['id'] + ' is already at home - ignoring.');
                     } else if (wayhome.val == true) {
                         this.log.debug(
                             allLevels +
@@ -2288,8 +2291,8 @@ class Residents extends utils.Adapter {
                                 " activity 'wayhome' is already active, therefore it is not changed.",
                         );
                     } else {
-                        this.log.info(allLevels + ': Enabling ' + resident['id'] + "for 'wayhome'.");
-                        await this.setStateChangedAsync(resident['id'] + '.activity.wayhome', {
+                        this.log.info(allLevels + ': Enabling ' + resident['id'] + " for 'wayhome'.");
+                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
                             val: true,
                             ack: false,
                         });
@@ -2317,7 +2320,7 @@ class Residents extends utils.Adapter {
                         );
                     } else {
                         this.log.info(allLevels + ': Disabling ' + resident['id'] + "for 'wayhome'.");
-                        await this.setStateChangedAsync(resident['id'] + '.activity.wayhome', {
+                        await this.setStateAsync(resident['id'] + '.activity.wayhome', {
                             val: false,
                             ack: false,
                         });

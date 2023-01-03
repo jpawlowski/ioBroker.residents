@@ -2726,17 +2726,17 @@
             "type": "folder",
             "common": {
                 "name": {
-                    "en": "Control many resident objects together",
-                    "de": "Mehrere Bewohnerobjekte zusammen bedienen",
-                    "ru": "Контролировать многие объекты резидентов вместе",
-                    "pt": "Controlar muitos objetos residentes juntos",
-                    "nl": "Controleer veel inwonende objecten samen",
-                    "fr": "Contrôler plusieurs objets résidents ensemble",
-                    "it": "Controllare molti oggetti residenti insieme",
-                    "es": "Controlar muchos objetos residentes juntos",
-                    "pl": "Kontrolować wiele obiektów mieszkalnych",
-                    "uk": "Контроль об'єктів резидента разом",
-                    "zh-cn": "控制许多居民目标"
+                    "en": "Control many resident devices together",
+                    "de": "Mehrere Bewohnergeräte zusammen bedienen",
+                    "ru": "Контролируйте много устройств резидентов вместе",
+                    "pt": "Controlar muitos dispositivos residentes juntos",
+                    "nl": "Controleer veel bewoner apparaten samen",
+                    "fr": "Contrôler plusieurs dispositifs résidents ensemble",
+                    "it": "Controllare molti dispositivi residenti insieme",
+                    "es": "Controlar muchos dispositivos residentes juntos",
+                    "pl": "Kontrolować wiele urządzeń mieszkalnych",
+                    "uk": "Контроль багатьох пристроїв резидента разом",
+                    "zh-cn": "控制许多驻地设施"
                 }
             },
             "native": {}
@@ -2746,17 +2746,17 @@
             "type": "channel",
             "common": {
                 "name": {
-                    "en": "Control activation of many resident objects together",
-                    "de": "Die Aktivierung von mehreren Bewohnerobjekten zusammen bedienen",
-                    "ru": "Контролировать активацию многих объектов резидентов вместе",
-                    "pt": "Controle de ativação de muitos objetos residentes juntos",
-                    "nl": "Controleactivatie van vele inwoners objecten samen",
-                    "fr": "Activation de contrôle de nombreux objets résidents ensemble",
-                    "it": "Attivazione di controllo di molti oggetti residenti insieme",
-                    "es": "Control de activación de muchos objetos residentes juntos",
-                    "pl": "Kontrola aktywacji wielu obiektów mieszkalnych razem",
-                    "uk": "Управління активацією багатьох об'єктів резидента разом",
-                    "zh-cn": "控制许多居民物品的启动"
+                    "en": "Control activation of many resident devices together",
+                    "de": "Die Aktivierung von mehreren Bewohnergeräte zusammen bedienen",
+                    "ru": "Контролируйте активацию множества резидентных устройств вместе",
+                    "pt": "Controle a ativação de muitos dispositivos residentes juntos",
+                    "nl": "Controleactivatie van vele bewoners samen",
+                    "fr": "Activation de contrôle de nombreux dispositifs résidents ensemble",
+                    "it": "Attivazione di controllo di molti dispositivi residenti insieme",
+                    "es": "Control de activación de muchos dispositivos residentes juntos",
+                    "pl": "Kontrola aktywacji wielu urządzeń rezygnacyjnych wraz ze sobą",
+                    "uk": "Управління активацією багатьох пристроїв резидента разом",
+                    "zh-cn": "控制许多驻地设施的启动"
                 }
             },
             "native": {}
@@ -2842,17 +2842,17 @@
             "type": "channel",
             "common": {
                 "name": {
-                    "en": "Control presence of many resident objects together",
-                    "de": "Anwesenheit von Bewohnerobjekten zusammenm bedienen",
-                    "ru": "Контролируйте наличие множества объектов резидентов вместе",
-                    "pt": "Controlar a presença de muitos objetos residentes juntos",
-                    "nl": "Controle aanwezigheid van vele inwonende objecten samen",
-                    "fr": "Contrôle de la présence de nombreux objets résidents ensemble",
-                    "it": "Presenza di controllo di molti oggetti residenti insieme",
-                    "es": "Control de la presencia de muchos objetos residentes juntos",
-                    "pl": "Przestrzenie wielu obiektów mieszkalnych",
-                    "uk": "Контроль наявності багатьох об'єктів резидента",
-                    "zh-cn": "控制许多居民物品的存在"
+                    "en": "Control presence of many resident devices together",
+                    "de": "Anwesenheit von Bewohnergeräte zusammenm bedienen",
+                    "ru": "Контролируйте наличие множества резидентных устройств вместе",
+                    "pt": "Controlar a presença de muitos dispositivos residentes juntos",
+                    "nl": "Controle aanwezigheid van vele bewoners samen",
+                    "fr": "Présence de contrôle de nombreux dispositifs résidents ensemble",
+                    "it": "Presenza di controllo di molti dispositivi residenti insieme",
+                    "es": "Control de la presencia de muchos dispositivos residentes juntos",
+                    "pl": "Kontrola na wielu urządzeniach mieszkalnych wraz ze sobą",
+                    "uk": "Контроль наявності багатьох резидентів",
+                    "zh-cn": "控制许多驻地设施的存在"
                 }
             },
             "native": {}
@@ -3090,17 +3090,17 @@
             "type": "channel",
             "common": {
                 "name": {
-                    "en": "Control activity of many resident objects together",
-                    "de": "Aktivität von Bewohnerobjekten zusammenm bedienen",
-                    "ru": "Контроль активности многих объектов резидентов вместе",
-                    "pt": "Atividade de controle de muitos objetos residentes juntos",
-                    "nl": "Controle activiteiten van vele inwonende objecten samen",
-                    "fr": "Activité de contrôle de nombreux objets résidents ensemble",
-                    "it": "Controllo dell'attività di molti oggetti residenti insieme",
-                    "es": "Actividad de control de muchos objetos residentes juntos",
-                    "pl": "Zajmowanie wielu obiektów mieszkalnych",
-                    "uk": "Контрольна активність багатьох об’єктів резидента",
-                    "zh-cn": "许多居民物品的控制活动"
+                    "en": "Control activity of many resident devices together",
+                    "de": "Aktivität von Bewohnergeräten zusammenm bedienen",
+                    "ru": "Контроль активности многих резидентных устройств вместе",
+                    "pt": "Controlar a atividade de muitos dispositivos residentes juntos",
+                    "nl": "Controleactiviteit van vele bewoners samen",
+                    "fr": "Activité de contrôle de nombreux dispositifs résidents ensemble",
+                    "it": "Attività di controllo di molti dispositivi residenti insieme",
+                    "es": "Actividad de control de muchos dispositivos residentes juntos",
+                    "pl": "Zajmuje się wieloma urządzeniami mieszkalnymi",
+                    "uk": "Контрольна активність багатьох резидентів",
+                    "zh-cn": "许多驻地设施的控制活动"
                 }
             },
             "native": {}
@@ -3110,8 +3110,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "",
-                    "de": ""
+                    "en": "Enable overnight for all active residents",
+                    "de": "Übernachtung für alle aktiven Bewohner einschalten",
+                    "ru": "Включите ночь для всех активных жителей",
+                    "pt": "Permitir durante a noite para todos os residentes ativos",
+                    "nl": "In staat voor alle actieve bewoners",
+                    "fr": "Permettre la nuit pour tous les résidents actifs",
+                    "it": "Abilitare la notte per tutti i residenti attivi",
+                    "es": "Habilitar durante la noche para todos los residentes activos",
+                    "pl": "W nocy dla wszystkich aktywnych mieszkańców",
+                    "uk": "Увімкнути ніч для всіх активних мешканців",
+                    "zh-cn": "在所有积极居民的夜间居住"
                 },
                 "type": "boolean",
                 "role": "button.mode.residents.overnight",
@@ -3119,8 +3128,17 @@
                 "write": true,
                 "def": true,
                 "desc": {
-                    "en": "",
-                    "de": ""
+                    "en": "Enables overnight for all active residents.",
+                    "de": "Schaltet die Übernachtung für alle Bewohner ein, die momentan aktiviert sind.",
+                    "ru": "Включает ночь для всех активных жителей.",
+                    "pt": "Permite durante a noite para todos os residentes ativos.",
+                    "nl": "In staat voor alle actieve bewoners.",
+                    "fr": "Permet la nuit pour tous les résidents actifs.",
+                    "it": "Consente di pernottamento per tutti i residenti attivi.",
+                    "es": "Permite durante la noche a todos los residentes activos.",
+                    "pl": "Czasem na noc dla wszystkich aktywnych mieszkańców.",
+                    "uk": "Включає ніч для всіх активних мешканців.",
+                    "zh-cn": "在所有积极居民的夜间都可居住。."
                 }
             },
             "native": {}
@@ -3130,8 +3148,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "",
-                    "de": ""
+                    "en": "Disable overnight for all active residents",
+                    "de": "Übernachtung für alle aktiven Bewohner ausschalten",
+                    "ru": "Отключить ночь для всех активных жителей",
+                    "pt": "Desativar durante a noite para todos os residentes ativos",
+                    "nl": "Invalshoek voor alle actieve bewoners",
+                    "fr": "Désactiver la nuit pour tous les résidents actifs",
+                    "it": "Disabilitare la notte per tutti i residenti attivi",
+                    "es": "Desactivar durante la noche para todos los residentes activos",
+                    "pl": "Odpowiednik dla wszystkich aktywnych mieszkańców",
+                    "uk": "Вимкніть ніч для всіх активних мешканців",
+                    "zh-cn": "在所有活跃的居民中,一夜间都受到严重伤害"
                 },
                 "type": "boolean",
                 "role": "button.mode.residents.overnight",
@@ -3139,8 +3166,17 @@
                 "write": true,
                 "def": true,
                 "desc": {
-                    "en": "",
-                    "de": ""
+                    "en": "Disables overnight for all active residents.",
+                    "de": "Schaltet die Übernachtung für alle Bewohner aus, die momentan aktiviert sind.",
+                    "ru": "Отключает ночь для всех активных жителей.",
+                    "pt": "Desativa durante a noite para todos os residentes ativos.",
+                    "nl": "Inval voor alle actieve bewoners.",
+                    "fr": "Désactive la nuit pour tous les résidents actifs.",
+                    "it": "Disabilita la notte per tutti i residenti attivi.",
+                    "es": "Desactiva durante la noche para todos los residentes activos.",
+                    "pl": "Odbywa się noc dla wszystkich aktywnych mieszkańców.",
+                    "uk": "Вимкнено протягом всього дня для всіх активних мешканців.",
+                    "zh-cn": "对所有积极居民来说,一夜间都感到不满。."
                 }
             },
             "native": {}
@@ -3150,8 +3186,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "",
-                    "de": ""
+                    "en": "Reset overnight for all active residents",
+                    "de": "Übernachtung für alle aktiven Bewohner zurücksetzen",
+                    "ru": "Сбросить ночь для всех активных жителей",
+                    "pt": "Repor durante a noite para todos os residentes ativos",
+                    "nl": "Overnachten voor alle actieve bewoners",
+                    "fr": "Réinitialiser la nuit pour tous les résidents actifs",
+                    "it": "Ripristinare la notte per tutti i residenti attivi",
+                    "es": "Reiniciar durante la noche para todos los residentes activos",
+                    "pl": "Odbywa się noc dla wszystkich aktywnych mieszkańców",
+                    "uk": "Знижку на всі активні мешканці",
+                    "zh-cn": "三. 在所有积极居民的夜间重新定居"
                 },
                 "type": "boolean",
                 "role": "button.mode.residents.overnight",
@@ -3159,8 +3204,17 @@
                 "write": true,
                 "def": true,
                 "desc": {
-                    "en": "",
-                    "de": ""
+                    "en": "Resets overnight for all active residents to its default value. Roomies default is enabled, guests default is disabled.",
+                    "de": "Setzt die Übernachtung für alle Bewohner zurück, die momentan aktiviert sind. Standard für Mitbewohner ist eingeschaltet, Standard für Gäste ist auscheschaltet.",
+                    "ru": "Сбросы ночевки для всех активных жителей до его значения по умолчанию. По умолчанию номеров включен, по умолчанию гостей отключены.",
+                    "pt": "Retira durante a noite para todos os residentes ativos para seu valor padrão. O padrão de quarto está ativado, os hóspedes padrão está desativado.",
+                    "nl": "Resettes in de nacht voor alle actieve bewoners naar zijn fatale waarde. De kamers zijn in staat, de gasten zijn gehandicapt.",
+                    "fr": "Réinitialise la nuit pour tous les résidents actifs à sa valeur par défaut. Roomies default is enabled, guests default is disabled.",
+                    "it": "Ripristina la notte per tutti i residenti attivi al suo valore predefinito. Il default delle camere è abilitato, il default degli ospiti è disattivato.",
+                    "es": "Se reinicia durante la noche para todos los residentes activos a su valor predeterminado. Las habitaciones por defecto están habilitadas, los huéspedes por defecto están deshabilitados.",
+                    "pl": "Odpowiada noc dla wszystkich aktywnych mieszkańców do swojej domyślnej wartości. Pokój domyślny jest domyślny, goście domyślnie są niepełnosprawni.",
+                    "uk": "Сприяє скороченню всіх активних мешканців до його значення за замовчуванням. Номери за замовчуванням включені, гості за замовчуванням вимкнено.",
+                    "zh-cn": "所有积极居民一夜间重新出现其拖欠值。 停车场被允许,客人违约是残疾人。."
                 }
             },
             "native": {}
@@ -3170,8 +3224,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "",
-                    "de": ""
+                    "en": "Enable way home for all absent residents",
+                    "de": "Nachhauseweg für alle abwesenden Bewohner einschalten",
+                    "ru": "Способный дом для всех отсутствующих жителей",
+                    "pt": "Habilitar caminho para casa para todos os residentes ausentes",
+                    "nl": "In staat om naar huis te gaan voor alle afwezige bewoners",
+                    "fr": "Permettre de rentrer chez soi pour tous les résidents absents",
+                    "it": "Abilitare il modo di casa per tutti i residenti assenti",
+                    "es": "Cómo llegar a casa para todos los residentes ausentes",
+                    "pl": "W domu dla wszystkich nieobecnych mieszkańców",
+                    "uk": "Увімкнути будинок для всіх нерезидентів",
+                    "zh-cn": "无居民的住房"
                 },
                 "type": "boolean",
                 "role": "button.mode.residents.wayhome",
@@ -3179,8 +3242,17 @@
                 "write": true,
                 "def": true,
                 "desc": {
-                    "en": "",
-                    "de": ""
+                    "en": "Enables way home for every absent resident. Deactivated resident devices are thus implicitly reactivated.",
+                    "de": "Schaltet den Nachhauseweg für alle abwesenden Bewohner ein. Deaktivierte Bewohnergeräte werden damit implizit reaktiviert.",
+                    "ru": "Включает путь домой для каждого отсутствующего резидента. Деактивированные устройства резидента, таким образом, неявно переактивированы.",
+                    "pt": "Permite chegar a casa para cada residente ausente. Dispositivos residentes desativados são, portanto, implicitamente reativados.",
+                    "nl": "In staat om naar huis te gaan voor elke afwezige bewoner. Gedeactiveerde bewoner apparaten zijn zo geactiveerd.",
+                    "fr": "Permet de rentrer chez soi pour chaque résident absent. Les dispositifs résidents désactivés sont donc implicitement réactivés.",
+                    "it": "Consente di tornare a casa per ogni residente assente. I dispositivi residenti disattivati sono quindi implicitamente riattivati.",
+                    "es": "Permite llegar a casa para cada residente ausente. Los dispositivos residentes desactivados se reactivan implícitamente.",
+                    "pl": "Na każdej nieobecnej miejscowości znajduje się dom. Zdezaktywowane urządzenia reaktywowane są w sposób niejawny.",
+                    "uk": "Увімкнути будинок для кожного нерезидента. Відреаговано деактивовані пристрої резидента.",
+                    "zh-cn": "每个无人居住的居民都可以居住。 因此,被动的驻地装置被暗中反应。."
                 }
             },
             "native": {}
@@ -3190,8 +3262,17 @@
             "type": "state",
             "common": {
                 "name": {
-                    "en": "",
-                    "de": ""
+                    "en": "Disable way home for all residents",
+                    "de": "Nachhauseweg für alle Bewohner ausschalten",
+                    "ru": "Отключить дом для всех жителей",
+                    "pt": "Desativar caminho para casa para todos os moradores",
+                    "nl": "De weg naar huis voor alle bewoners",
+                    "fr": "Désactiver la maison pour tous les résidents",
+                    "it": "Disattivare il modo di casa per tutti i residenti",
+                    "es": "Deshabilitar el hogar para todos los residentes",
+                    "pl": "Dystrybucja dla wszystkich mieszkańców",
+                    "uk": "Вимкнути будинок для всіх мешканців",
+                    "zh-cn": "所有居民的住房"
                 },
                 "type": "boolean",
                 "role": "button.mode.residents.wayhome",
@@ -3199,8 +3280,17 @@
                 "write": true,
                 "def": true,
                 "desc": {
-                    "en": "",
-                    "de": ""
+                    "en": "Disables way home for every resident.",
+                    "de": "Schaltet den Nachhauseweg für alle Bewohner aus.",
+                    "ru": "Отключает путь домой для каждого резидента.",
+                    "pt": "Desabilita caminho para casa para cada residente.",
+                    "nl": "Het is een weg naar huis voor elke bewoner.",
+                    "fr": "Ça rend la maison pour chaque résident.",
+                    "it": "Disabilita la casa per ogni residente.",
+                    "es": "Deshabilita el camino a casa para cada residente.",
+                    "pl": "Nie jest w stanie pomieścić wszystkich mieszkańców.",
+                    "uk": "Вимкнено будинок для кожного резидента.",
+                    "zh-cn": "每个居民都享有住房。."
                 }
             },
             "native": {}
