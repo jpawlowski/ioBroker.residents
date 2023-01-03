@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.2-beta.0",
+        "version": "0.0.2-beta.1",
         "news": {
+            "0.0.2-beta.1": {
+                "en": "Sync foreign presence state during startup",
+                "de": "Synchronisiere fremde Anwesenheitsstatus während des Starts",
+                "ru": "Синхронное состояние присутствия во время стартапа",
+                "pt": "Sincronizar estado de presença estrangeira durante a inicialização",
+                "nl": "Vertaling:",
+                "fr": "État de présence étrangère synchronisée pendant le démarrage",
+                "it": "Sync stato di presenza estera durante l'avvio",
+                "es": "Estado de presencia extranjera sincronizado durante la puesta en marcha",
+                "pl": "Państwo zagraniczne w czasie startu",
+                "uk": "Синхронізація стану зовнішньої присутності при запуску",
+                "zh-cn": "外国在开办期间的存在"
+            },
             "0.0.2-beta.0": {
                 "en": "initial release",
                 "de": "erstausstrahlung",
