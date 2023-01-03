@@ -35,11 +35,11 @@ The adapter is also designed to support a sophisticated notification routing sys
     ### **WORK IN PROGRESS**
 -->
 
-### **WORK IN PROGRESS**
+### 0.0.2-beta.2 (2023-01-03)
 
 -   (Julian Pawlowski) Remove warnings for foreign presence states
 -   (Julian Pawlowski) Add missing object descriptions
--   (Julian Pawlowski) Add extended adapter description to explain the purpose of existence
+-   (Julian Pawlowski) Add extended adapter description to better explain the purpose of existence
 
 ### 0.0.2-beta.1 (2023-01-03)
 

@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.2-beta.1",
+        "version": "0.0.2-beta.2",
         "news": {
+            "0.0.2-beta.2": {
+                "en": "Remove warnings for foreign presence states\nAdd missing object descriptions\nAdd extended adapter description to better explain the purpose of existence",
+                "de": "Warnungen bei fremden Anwesenheitsdatenpunkten entfernt\nFehlende Objektbeschreibungen hinzugefügt\nErweiterte Adapter-Beschreibung hinzugefügt, um den Existenzweck besser zu erklären",
+                "ru": "Удалить предупреждения для иностранных государств присутствия\nДобавить недостающие описания объектов\nДобавьте расширенное описание адаптера, чтобы объяснить цель существования",
+                "pt": "Remover avisos para estados de presença estrangeira\nAdicionar descrições de objetos ausentes\nAdicionar descrição estendida do adaptador para explicar a finalidade da existência",
+                "nl": "Verwijder waarschuwingen voor buitenlandse aanwezigheid\nVermiste beschrijvingen\nVerlengde adapter beschrijving om het doel van het bestaan te verklaren",
+                "fr": "Supprimer les avertissements pour les États de présence étrangère\nAjouter les descriptions d'objet manquantes\nAjouter une description d'adaptateur étendue pour expliquer le but de l'existence",
+                "it": "Rimuovere gli avvisi per gli stati di presenza straniera\nAggiungi descrizioni degli oggetti mancanti\nAggiungi la descrizione dell'adattatore estesa per spiegare lo scopo dell'esistenza",
+                "es": "Eliminar advertencias para estados de presencia extranjeros\nAñadir descripciones de objetos desaparecidos\nAñadir una descripción ampliada del adaptador para explicar el propósito de la existencia",
+                "pl": "Remove ostrzega przed obcymi państwami  obecności\nNiezapomniany opis obiektów\nAddd extended adapter description to wyjaśnienie celu istnienia",
+                "uk": "Видалення попереджень про наявність іноземних держав\nДодати відсутні описи об'єктів\nДодайте розширений опис адаптера, щоб пояснити мету існування",
+                "zh-cn": "向外国存在国发出警告\n增加缺失的物体说明\n增加较长的适应说明,解释存在的目的"
+            },
             "0.0.2-beta.1": {
                 "en": "Sync foreign presence state during startup",
                 "de": "Synchronisiere fremde Anwesenheitsstatus während des Starts",
