@@ -53,39 +53,182 @@ class Residents extends utils.Adapter {
         this.language = systemConfig && systemConfig.common.language ? systemConfig.common.language : 'en';
         if (this.config.language != '') this.language = this.config.language;
 
-        const residentialStates = {
+        const residentialIcons = {
+            0: '🛫',
+            1: '⏸️',
+            2: '🐶',
+            3: '⏱️',
+            4: '🏠',
+            5: '🚫',
+            6: '🧘',
+            7: '🛌',
+            8: '🛏️',
+            9: '🥱',
+            10: '⏰',
+            11: '💤',
+        };
+        const residentialStateTexts = {
             en: {
-                0: '🛫 Extended Absence',
-                1: '⏸️ Away',
-                2: '🐕 Pet Home',
-                3: '⏱️ Way Home',
-                4: '🏠 Home',
-                5: '🚫 Do Not Disturb',
-                6: '🧘 Wind Down',
-                7: '🛌 Bedtime',
-                8: '🛏️ Got Up',
-                9: '🥱 Night Walk',
-                10: '⏰ Wake Up',
-                11: '💤 Night',
+                0: 'Extended Absence',
+                1: 'Away',
+                2: 'Pet Care',
+                3: 'Way Home',
+                4: 'Home',
+                5: 'Do Not Disturb',
+                6: 'Wind Down',
+                7: 'Bedtime',
+                8: 'Got Up',
+                9: 'Night Walk',
+                10: 'Wake Up',
+                11: 'Night',
             },
             de: {
-                0: '🛫 Längere Abwesenheit',
-                1: '⏸️ Abwesend',
-                2: '🐕 Haustier zu Hause',
-                3: '⏱️ Nachhauseweg',
-                4: '🏠 zu Hause',
-                5: '🚫 Nicht stören',
-                6: '🧘 Entspannen',
-                7: '🛌 Schlafenszeit',
-                8: '🛏️ Aufgestanden',
-                9: '🥱 Nachtwanderung',
-                10: '⏰ Aufwecken',
-                11: '💤 Nacht',
+                0: 'Längere Abwesenheit',
+                1: 'Abwesend',
+                2: 'Haustierpflege',
+                3: 'Nachhauseweg',
+                4: 'zu Hause',
+                5: 'Nicht stören',
+                6: 'Entspannen',
+                7: 'Schlafenszeit',
+                8: 'Aufgestanden',
+                9: 'Nachtwanderung',
+                10: 'Aufwecken',
+                11: 'Nacht',
+            },
+            ru: {
+                0: 'Расширенное отсутствие',
+                1: 'Вдали',
+                2: 'Уход за домашними животными',
+                3: 'Путь домой',
+                4: 'дома',
+                5: 'Не беспокоить',
+                6: 'Расслабьтесь',
+                7: 'Время сна',
+                8: 'Запущен и работает',
+                9: 'Ночной поход',
+                10: 'Проснись',
+                11: 'Ночь',
+            },
+            pt: {
+                0: 'Ausência estendida',
+                1: 'A caminho',
+                2: 'Pet Care',
+                3: 'Caminho',
+                4: 'Em casa',
+                5: 'Não Perturbar',
+                6: 'Relaxe',
+                7: 'Hora de dormir',
+                8: 'Em funcionamento',
+                9: 'Caminhada nocturna',
+                10: 'Acorda',
+                11: 'Noite',
+            },
+            nl: {
+                0: 'Verlengde Absence',
+                1: 'Weg',
+                2: 'Huisdier thuis',
+                3: 'Naar huis',
+                4: 'Thuis',
+                5: 'Niet Storen',
+                6: 'Relax',
+                7: 'Bedtijd',
+                8: 'Op',
+                9: 'Nachtwandeling',
+                10: 'Wakker worden',
+                11: 'Nacht',
+            },
+            fr: {
+                0: 'Absence prolongée',
+                1: 'Absent',
+                2: 'Soins pour animaux',
+                3: 'Chemin de retour',
+                4: 'Chez soi',
+                5: 'Ne pas déranger',
+                6: 'Détendre',
+                7: 'Heure du coucher',
+                8: 'Levé',
+                9: 'Marche de nuit',
+                10: 'Réveil',
+                11: 'Nuit',
+            },
+            it: {
+                0: 'Assenza estesa',
+                1: 'Via',
+                2: 'Cura degli animali',
+                3: 'Via di casa',
+                4: 'A casa',
+                5: 'Non disturbare',
+                6: 'Rilassarsi',
+                7: 'Ora di dormire',
+                8: 'Alzati',
+                9: 'Passeggiata notturna',
+                10: 'Svegliarsi',
+                11: 'Notte',
+            },
+            es: {
+                0: 'Ausencia ampliada',
+                1: 'Fuera de casa',
+                2: 'Cuidado de mascotas',
+                3: 'Camino a casa',
+                4: 'En casa',
+                5: 'No molestar',
+                6: 'Relax',
+                7: 'Hora de dormir',
+                8: 'Levantó',
+                9: 'Paseo nocturno',
+                10: 'Despierta',
+                11: 'Noche',
+            },
+            pl: {
+                0: 'Długość nieobecności',
+                1: 'Away',
+                2: 'Pet Care',
+                3: 'Strona domowa',
+                4: 'W domu',
+                5: 'Nie przeszkadzać',
+                6: 'Relaks',
+                7: 'Dobranoc',
+                8: 'W górę',
+                9: 'Nocny spacer',
+                10: 'Obudź się',
+                11: 'Noc',
+            },
+            uk: {
+                0: 'Розширена абсенція',
+                1: 'Проживання',
+                2: 'Сімейний догляд за домашніми тваринами',
+                3: 'Головна',
+                4: 'вдома',
+                5: 'Не турбувати',
+                6: 'розслабитися',
+                7: 'Час спати',
+                8: 'Встала',
+                9: 'Нічна прогулянка',
+                10: 'Прокинься.',
+                11: 'Ніч',
+            },
+            'zh-cn': {
+                0: '缺点',
+                1: 'A. 公路',
+                2: '家庭护理',
+                3: 'B. 家庭办法',
+                4: '在家',
+                5: '请勿打扰',
+                6: '缩减',
+                7: '就寝时间',
+                8: '起床了',
+                9: '夜行',
+                10: '唤醒',
+                11: '夜间',
             },
         };
-        const residentialLang = residentialStates[this.language]
-            ? residentialStates[this.language]
-            : residentialStates['en'];
+        const residentialLang = residentialStateTexts[this.language]
+            ? residentialStateTexts[this.language]
+            : residentialStateTexts['en'];
+        for (const i in residentialLang) {
+            residentialLang[i] = residentialIcons[i] + ' ' + residentialLang[i];
+        }
         // Update common.states
         let currentObject = await this.getObjectAsync('state');
         if (currentObject) {
@@ -99,9 +242,9 @@ class Residents extends utils.Adapter {
                 '-4': '🔺🔺🔺🔺 Extraordinary Bad',
                 '-3': '🔺🔺🔺 Extremely Bad',
                 '-2': '🔸🔸 Pretty Bad',
-                '-1': '🔸 Somewhat Bad',
+                '-1': '🔸 Somewhat Not Good',
                 0: '☯️ Balanced',
-                1: '⭐️ Somewhat Good',
+                1: '⭐️ Somewhat Okay',
                 2: '⭐️⭐️ Pretty Good',
                 3: '⭐️⭐️⭐️ Extremely Good',
                 4: '🌟🌟🌟🌟 Extraordinary Good',
@@ -112,9 +255,9 @@ class Residents extends utils.Adapter {
                 '-4': '🔺🔺🔺🔺 Außerordentlich schlecht',
                 '-3': '🔺🔺🔺 Äußerst schlecht',
                 '-2': '🔸🔸 Ziemlich schlecht',
-                '-1': '🔸 Einigermaßen schlecht',
+                '-1': '🔸 Nicht so gut',
                 0: '☯️ Ausgeglichen',
-                1: '⭐️ Einigermaßen gut',
+                1: '⭐️ Einigermaßen okay',
                 2: '⭐️⭐️ Ziemlich gut',
                 3: '⭐️⭐️⭐️ Äußerst gut',
                 4: '🌟🌟🌟🌟 Außerordentlich gut',
@@ -380,125 +523,173 @@ class Residents extends utils.Adapter {
                         native: {},
                     });
 
-                    const activityStatesObj = {
+                    const activityIcons = {
+                        0: residentialIcons[0],
+                        1: residentialIcons[1],
+                        2: residentialIcons[3],
+                        100: '👤',
+                        101: '💼',
+                        102: '🧘',
+                        103: '💪',
+                        104: '📙',
+                        105: '🚀',
+                        106: '🚘',
+                        107: '🛒',
+                        1000: residentialIcons[4],
+                        1900: residentialIcons[6],
+                        1901: '🪥',
+                        1902: residentialIcons[7],
+                        2000: '😴',
+                        2010: residentialIcons[9],
+                        2100: residentialIcons[10],
+                        2200: residentialIcons[8],
+                    };
+                    activityIcons[1100] = activityIcons[100];
+                    activityIcons[1101] = activityIcons[101];
+                    activityIcons[1102] = activityIcons[102];
+                    activityIcons[1103] = activityIcons[103];
+                    activityIcons[1104] = activityIcons[104];
+                    activityIcons[1105] = activityIcons[105];
+                    activityIcons[1106] = activityIcons[106];
+
+                    activityIcons[2101] = activityIcons[2100];
+                    activityIcons[2102] = activityIcons[2100];
+                    activityIcons[2103] = activityIcons[2100];
+                    activityIcons[2104] = activityIcons[2100];
+                    activityIcons[2105] = activityIcons[2100];
+
+                    activityIcons[2020] = activityIcons[2000];
+
+                    activityIcons[2210] = activityIcons[2200];
+
+                    const snoozeIcon = '💤';
+                    const activityStateTexts = {
                         en: {
                             // 000-0999: Not present at home / Away
-                            0: '🛫 Away: Extended Absence',
-                            1: '⏸️ Away: On the Road for Today',
-                            2: '⏱️ Away: Way Home',
+                            0: 'Away: Extended Absence',
+                            1: 'Away: On the Road for Today',
+                            2: 'Away: Way Home',
 
                             // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            100: '👤 Away: Personal',
-                            101: '💼 Away: Work',
-                            102: '🧘 Away: Mindfullness',
-                            103: '💪 Away: Fitness',
-                            104: '📙 Away: Reading',
-                            105: '🚀 Away: Gaming',
-                            106: '🚘 Away: Driving',
-                            107: '🛒 Away: Shopping',
+                            100: 'Away: Personal',
+                            101: 'Away: Work',
+                            102: 'Away: Mindfullness',
+                            103: 'Away: Fitness',
+                            104: 'Away: Reading',
+                            105: 'Away: Gaming',
+                            106: 'Away: Driving',
+                            107: 'Away: Shopping',
 
                             // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-                            1000: '🏠 Home',
+                            1000: 'Home',
 
                             // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            1100: '👤 Focus: Personal',
-                            1101: '💼 Focus: Work',
-                            1102: '🧘 Focus: Mindfullness',
-                            1103: '💪 Focus: Fitness',
-                            1104: '📙 Focus: Reading',
-                            1105: '🚀 Focus: Gaming',
+                            1100: 'Focus: Personal',
+                            1101: 'Focus: Work',
+                            1102: 'Focus: Mindfullness',
+                            1103: 'Focus: Fitness',
+                            1104: 'Focus: Reading',
+                            1105: 'Focus: Gaming',
 
                             // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                            1900: '🧘 Wind Down: Preparing Bedtime',
-                            1901: '🪥 Bedtime: Getting to Bed',
-                            1902: '🛌 Night: In Bed',
+                            1900: 'Wind Down: Preparing Bedtime',
+                            1901: 'Bedtime: Getting to Bed',
+                            1902: 'Night: In Bed',
 
                             // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-                            2000: '😴 Night: Sleeping',
+                            2000: 'Night: Sleeping',
 
                             // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                            2010: '🥱 Night: Awake during Night Time',
-                            2020: '😴 Night: Asleep again',
+                            2010: 'Night: Awake during Night Time',
+                            2020: 'Night: Asleep again',
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
-                            2100: '⏰ Night: Wake-up Alarm',
-                            2101: '⏰ Wake Up: 💤 Alarm Snooze',
-                            2102: '⏰ Wake Up: 💤 Alarm Snooze',
-                            2103: '⏰ Wake Up: 💤💤 Alarm Snooze',
-                            2104: '⏰ Wake Up: 💤💤 Alarm Snooze',
-                            2105: '⏰ Wake Up: 💤💤💤 Alarm Snooze',
+                            2100: 'Night: Wake-up Alarm',
+                            2101: 'Wake Up: ' + snoozeIcon + ' Alarm Snooze',
+                            2102: 'Wake Up: ' + snoozeIcon + ' Alarm Snooze',
+                            2103: 'Wake Up: ' + snoozeIcon + snoozeIcon + ' Alarm Snooze',
+                            2104: 'Wake Up: ' + snoozeIcon + snoozeIcon + ' Alarm Snooze',
+                            2105: 'Wake Up: ' + snoozeIcon + snoozeIcon + snoozeIcon + ' Alarm Snooze',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                            2200: '🛏️ Got Up: Awakening after Wake-up Alarm',
-                            2210: '🛏️ Got Up: Awakening',
+                            2200: 'Got Up: Awakening after Wake-up Alarm',
+                            2210: 'Got Up: Awakening',
                         },
                         de: {
                             // 000-0999: Not present at home / Away
-                            0: '🛫 Abwesend: Längere Abwesenheit',
-                            1: '⏸️ Abwesend: Unterwegs für heute',
-                            2: '⏱️ Abwesend: Nachhauseweg',
+                            0: 'Abwesend: Längere Abwesenheit',
+                            1: 'Abwesend: Unterwegs für heute',
+                            2: 'Abwesend: Nachhauseweg',
 
                             // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            100: '👤 Abwesend: Zeit für mich',
-                            101: '💼 Abwesend: Arbeiten',
-                            102: '🧘 Abwesend: Achtsamkeit',
-                            103: '💪 Abwesend: Fitness',
-                            104: '📙 Abwesend: Lesen',
-                            105: '🚀 Abwesend: Spielen',
-                            106: '🚘 Abwesend: Fahren',
-                            107: '🛒 Abwesend: Shopping',
+                            100: 'Abwesend: Zeit für mich',
+                            101: 'Abwesend: Arbeiten',
+                            102: 'Abwesend: Achtsamkeit',
+                            103: 'Abwesend: Fitness',
+                            104: 'Abwesend: Lesen',
+                            105: 'Abwesend: Spielen',
+                            106: 'Abwesend: Fahren',
+                            107: 'Abwesend: Shopping',
 
                             // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-                            1000: '🏠 zu Hause',
+                            1000: 'zu Hause',
 
                             // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            1100: '👤 Fokus: Zeit für mich',
-                            1101: '💼 Fokus: Arbeiten',
-                            1102: '🧘 Fokus: Achtsamkeit',
-                            1103: '💪 Fokus: Fitness',
-                            1104: '📙 Fokus: Lesen',
-                            1105: '🚀 Fokus: Spielen',
+                            1100: 'Fokus: Zeit für mich',
+                            1101: 'Fokus: Arbeiten',
+                            1102: 'Fokus: Achtsamkeit',
+                            1103: 'Fokus: Fitness',
+                            1104: 'Fokus: Lesen',
+                            1105: 'Fokus: Spielen',
 
                             // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                            1900: '🧘 Entspannen: Auf Schlaf vorbereiten',
-                            1901: '🪥 Schlafenszeit: Bettfertig machen',
-                            1902: '🛌 Nacht: Im Bett',
+                            1900: 'Entspannen: Auf Schlaf einstellen',
+                            1901: 'Schlafenszeit: Bettfertig machen',
+                            1902: 'Nacht: Im Bett',
 
                             // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-                            2000: '😴 Nacht: Schlafen',
+                            2000: 'Nacht: Schlafen',
 
                             // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                            2010: '🥱 Nacht: Wach während der Nacht',
-                            2020: '😴 Nacht: Wieder eingeschlafen',
+                            2010: 'Nacht: Wach während der Nacht',
+                            2020: 'Nacht: Wieder eingeschlafen',
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
-                            2100: '⏰ Nacht: Weckalarm',
-                            2101: '⏰ Wecker: 💤 Schlummern',
-                            2102: '⏰ Wecker: 💤 Schlummern',
-                            2103: '⏰ Wecker: 💤💤 Schlummern',
-                            2104: '⏰ Wecker: 💤💤 Schlummern',
-                            2105: '⏰ Wecker: 💤💤💤 Schlummern',
+                            2100: 'Nacht: Weckalarm',
+                            2101: 'Wecker: ' + snoozeIcon + ' Schlummern',
+                            2102: 'Wecker: ' + snoozeIcon + ' Schlummern',
+                            2103: 'Wecker: ' + snoozeIcon + snoozeIcon + ' Schlummern',
+                            2104: 'Wecker: ' + snoozeIcon + snoozeIcon + ' Schlummern',
+                            2105: 'Wecker: ' + snoozeIcon + snoozeIcon + snoozeIcon + ' Schlummern',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                            2200: '🛏️ Aufgestanden: Aufwachen nach Weckruf',
-                            2210: '🛏️ Aufgestanden: Aufwachen',
+                            2200: 'Aufgestanden: Aufwachen nach Weckruf',
+                            2210: 'Aufgestanden: Aufwachen',
                         },
                     };
 
-                    const dndStatesObjs = {
-                        en: 'Do Not Disturb',
-                        de: 'Nicht stören',
-                    };
-                    const offStatesObjs = {
-                        en: 'Off',
-                        de: 'Aus',
+                    const offIcon = '🔲';
+                    const offStates = {
+                        en: offIcon + ' Off',
+                        de: offIcon + ' Aus',
+                        ru: offIcon + 'С сайта',
+                        pt: offIcon + ' Desligado',
+                        nl: offIcon + ' Uit',
+                        fr: offIcon + ' Désactivé',
+                        it: offIcon + ' Spento',
+                        es: offIcon + ' Apagado',
+                        pl: offIcon + ' Wył.',
+                        uk: offIcon + ' Вимкнено',
+                        'zh-cn': offIcon + '关掉了',
                     };
 
-                    const activityLang = activityStatesObj[this.language]
-                        ? activityStatesObj[this.language]
-                        : activityStatesObj['en'];
-                    const dndLang = dndStatesObjs[this.language] ? dndStatesObjs[this.language] : dndStatesObjs['en'];
-                    const offLang = offStatesObjs[this.language] ? offStatesObjs[this.language] : offStatesObjs['en'];
+                    const activityLang = activityStateTexts[this.language]
+                        ? activityStateTexts[this.language]
+                        : activityStateTexts['en'];
+                    for (const i in activityLang) {
+                        activityLang[i] = activityIcons[i] + ' ' + activityLang[i];
+                    }
+                    const offLang = offStates[this.language] ? offStates[this.language] : offStates['en'];
 
                     const activityStates = {
                         0: '',
@@ -535,9 +726,9 @@ class Residents extends utils.Adapter {
                                 /^((?:\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])+\s)\s*(.+):\s+(.+)$/,
                                 '$2 ($1$3)',
                             );
-                            newVal = '🚫 ' + dndLang + ': ' + newVal;
+                            newVal = residentialLang[5] + ': ' + newVal;
                         } else {
-                            newVal = '🚫 ' + dndLang;
+                            newVal = residentialLang[5];
                         }
                         activityStates[newKey] = newVal;
                     }
