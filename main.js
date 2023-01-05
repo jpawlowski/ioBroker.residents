@@ -13,6 +13,7 @@ class Residents extends utils.Adapter {
         });
 
         this.initialized = false;
+        this.language = '';
 
         this.residents = [];
         this.roomies = [];
@@ -47,6 +48,86 @@ class Residents extends utils.Adapter {
         this.residents = this.residents.concat(this.pets);
         this.residents = this.residents.concat(this.guests);
         const objectTemplates = await this.getForeignObjectAsync('system.adapter.' + this.namespace);
+
+        const systemConfig = await this.getForeignObjectAsync('system.config');
+        this.language = systemConfig && systemConfig.common.language ? systemConfig.common.language : 'en';
+        if (this.config.language != '') this.language = this.config.language;
+
+        const residentialStates = {
+            en: {
+                0: '🛫 Extended Absence',
+                1: '⏸️ Away',
+                2: '🐕 Pet Home',
+                3: '⏱️ Way Home',
+                4: '🏠 Home',
+                5: '🚫 Do Not Disturb',
+                6: '🧘 Wind Down',
+                7: '🛌 Bedtime',
+                8: '🛏️ Got Up',
+                9: '🥱 Night Walk',
+                10: '⏰ Wake Up',
+                11: '💤 Night',
+            },
+            de: {
+                0: '🛫 Längere Abwesenheit',
+                1: '⏸️ Abwesend',
+                2: '🐕 Haustier zu Hause',
+                3: '⏱️ Nachhauseweg',
+                4: '🏠 zu Hause',
+                5: '🚫 Nicht stören',
+                6: '🧘 Entspannen',
+                7: '🛌 Schlafenszeit',
+                8: '🛏️ Aufgestanden',
+                9: '🥱 Nachtwanderung',
+                10: '⏰ Aufwecken',
+                11: '💤 Nacht',
+            },
+        };
+        const residentialLang = residentialStates[this.language]
+            ? residentialStates[this.language]
+            : residentialStates['en'];
+        // Update common.states
+        let currentObject = await this.getObjectAsync('state');
+        if (currentObject) {
+            currentObject.common.states = residentialLang;
+            await this.setObjectAsync('state', currentObject);
+        }
+
+        const moodStates = {
+            en: {
+                '-5': "🔺🔺🔺🔺🔺 Couldn't Get Worse",
+                '-4': '🔺🔺🔺🔺 Extraordinary Bad',
+                '-3': '🔺🔺🔺 Extremely Bad',
+                '-2': '🔸🔸 Pretty Bad',
+                '-1': '🔸 Somewhat Bad',
+                0: '☯️ Balanced',
+                1: '⭐️ Somewhat Good',
+                2: '⭐️⭐️ Pretty Good',
+                3: '⭐️⭐️⭐️ Extremely Good',
+                4: '🌟🌟🌟🌟 Extraordinary Good',
+                5: "🌟🌟🌟🌟🌟 Couldn't Be Better",
+            },
+            de: {
+                '-5': '🔺🔺🔺🔺🔺 Könnte nicht schlimmer werden',
+                '-4': '🔺🔺🔺🔺 Außerordentlich schlecht',
+                '-3': '🔺🔺🔺 Äußerst schlecht',
+                '-2': '🔸🔸 Ziemlich schlecht',
+                '-1': '🔸 Einigermaßen schlecht',
+                0: '☯️ Ausgeglichen',
+                1: '⭐️ Einigermaßen gut',
+                2: '⭐️⭐️ Ziemlich gut',
+                3: '⭐️⭐️⭐️ Äußerst gut',
+                4: '🌟🌟🌟🌟 Außerordentlich gut',
+                5: '🌟🌟🌟🌟🌟 Könnte nicht besser sein',
+            },
+        };
+        const moodLang = moodStates[this.language] ? moodStates[this.language] : moodStates['en'];
+        // Update common.states
+        currentObject = await this.getObjectAsync('mood');
+        if (currentObject) {
+            currentObject.common.states = moodLang;
+            await this.setObjectAsync('mood', currentObject);
+        }
 
         // Group mode
         if (
@@ -175,7 +256,7 @@ class Residents extends utils.Adapter {
                     }
                 });
 
-                await this.setObjectAsync(id, {
+                await this.setObjectNotExistsAsync(id, {
                     type: 'device',
                     common: {
                         name: name,
@@ -186,7 +267,7 @@ class Residents extends utils.Adapter {
                     },
                 });
 
-                await this.setObjectAsync(
+                await this.setObjectNotExistsAsync(
                     id + '.enabled',
                     {
                         type: 'state',
@@ -232,7 +313,7 @@ class Residents extends utils.Adapter {
                     },
                 );
 
-                await this.setObjectAsync(id + '.info', {
+                await this.setObjectNotExistsAsync(id + '.info', {
                     type: 'channel',
                     common: {
                         name: {
@@ -252,7 +333,7 @@ class Residents extends utils.Adapter {
                     native: {},
                 });
 
-                await this.setObjectAsync(id + '.info.name', {
+                await this.setObjectNotExistsAsync(id + '.info.name', {
                     type: 'state',
                     common: {
                         name: {
@@ -279,7 +360,7 @@ class Residents extends utils.Adapter {
 
                 // Activity support not for pets
                 if (residentType != 'pet') {
-                    await this.setObjectAsync(id + '.activity', {
+                    await this.setObjectNotExistsAsync(id + '.activity', {
                         type: 'channel',
                         common: {
                             name: {
@@ -300,86 +381,134 @@ class Residents extends utils.Adapter {
                     });
 
                     const activityStatesObj = {
-                        // 000-0999: Not present at home / Away
-                        0: 'Away: Extended Absence',
-                        1: 'Away: On the Road for Today',
-                        2: 'Away: Way Home',
+                        en: {
+                            // 000-0999: Not present at home / Away
+                            0: '🛫 Away: Extended Absence',
+                            1: '⏸️ Away: On the Road for Today',
+                            2: '⏱️ Away: Way Home',
 
-                        // 1000-1999: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-                        1000: 'Home',
+                            // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+                            100: '👤 Away: Personal',
+                            101: '💼 Away: Work',
+                            102: '🧘 Away: Mindfullness',
+                            103: '💪 Away: Fitness',
+                            104: '📙 Away: Reading',
+                            105: '🚀 Away: Gaming',
+                            106: '🚘 Away: Driving',
+                            107: '🛒 Away: Shopping',
 
-                        // 1100-1199: WAKING TIME at home: Food
-                        1100: 'Food: Cooking',
-                        1110: 'Food: Eating',
-                        1120: 'Food: Feeding',
+                            // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+                            1000: '🏠 Home',
 
-                        // 1200-1299: WAKING TIME at home: Housework
-                        1200: 'Housework: General',
-                        1210: 'Housework: Laundry',
-                        1220: 'Housework: Cleaning',
-                        1230: 'Housework: Repairing',
+                            // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+                            1100: '👤 Focus: Personal',
+                            1101: '💼 Focus: Work',
+                            1102: '🧘 Focus: Mindfullness',
+                            1103: '💪 Focus: Fitness',
+                            1104: '📙 Focus: Reading',
+                            1105: '🚀 Focus: Gaming',
 
-                        // 1300-1399: WAKING TIME at home: Working / Educating / Earning Money
-                        1300: 'Job: Working',
-                        1310: 'Job: Break from Working',
-                        1350: 'Job: Learning',
-                        1360: 'Job: Break from Learning',
+                            // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+                            1900: '🧘 Wind Down: Preparing Bedtime',
+                            1901: '🪥 Bedtime: Getting to Bed',
+                            1902: '🛌 Night: In Bed',
 
-                        // 1400-1499: WAKING TIME at home: Free Time / Being Mentally Active
-                        1400: 'Mental: General Relaxing',
-                        1410: 'Mental: Reading',
+                            // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+                            2000: '😴 Night: Sleeping',
 
-                        // 1500-1599: WAKING TIME at home: Free Time / Being also Physically Active / A Little Louder
-                        1500: 'Fun: Gaming',
-                        1510: 'Fun: Making Music',
+                            // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+                            2010: '🥱 Night: Awake during Night Time',
+                            2020: '😴 Night: Asleep again',
 
-                        // 1600-1699: WAKING TIME at home: Free Time / Passive Consuming / Relatively Quiet Activity
-                        1600: 'Fun: Listening to Music',
-                        1610: 'Fun: Watching Video',
+                            // 2100-2199: SLEEPING TIME at home: While I should get up
+                            2100: '⏰ Night: Wake-up Alarm',
+                            2101: '⏰ Wake Up: 💤 Alarm Snooze',
+                            2102: '⏰ Wake Up: 💤 Alarm Snooze',
+                            2103: '⏰ Wake Up: 💤💤 Alarm Snooze',
+                            2104: '⏰ Wake Up: 💤💤 Alarm Snooze',
+                            2105: '⏰ Wake Up: 💤💤💤 Alarm Snooze',
 
-                        // 1700-1799: WAKING TIME at home: Body care
-                        1700: 'Body: Sporting',
-                        1750: 'Body: Bathing',
-                        1760: 'Body: Showering',
+                            // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+                            2200: '🛏️ Got Up: Awakening after Wake-up Alarm',
+                            2210: '🛏️ Got Up: Awakening',
+                        },
+                        de: {
+                            // 000-0999: Not present at home / Away
+                            0: '🛫 Abwesend: Längere Abwesenheit',
+                            1: '⏸️ Abwesend: Unterwegs für heute',
+                            2: '⏱️ Abwesend: Nachhauseweg',
 
-                        // 1800-1899: WAKING TIME at home: Self care
-                        1800: 'Self: Meditating',
-                        1810: 'Self: Thinking',
+                            // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+                            100: '👤 Abwesend: Zeit für mich',
+                            101: '💼 Abwesend: Arbeiten',
+                            102: '🧘 Abwesend: Achtsamkeit',
+                            103: '💪 Abwesend: Fitness',
+                            104: '📙 Abwesend: Lesen',
+                            105: '🚀 Abwesend: Spielen',
+                            106: '🚘 Abwesend: Fahren',
+                            107: '🛒 Abwesend: Shopping',
 
-                        // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                        1900: 'Wind Down: Preparing Bedtime',
-                        1901: 'Bedtime: Getting to Bed',
-                        1902: 'Night: In Bed',
+                            // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+                            1000: '🏠 zu Hause',
 
-                        // 2000-2999: SLEEPING TIME at home /////////////////////////////////////////////////////////////////////
-                        2000: 'Night: Sleeping',
+                            // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+                            1100: '👤 Fokus: Zeit für mich',
+                            1101: '💼 Fokus: Arbeiten',
+                            1102: '🧘 Fokus: Achtsamkeit',
+                            1103: '💪 Fokus: Fitness',
+                            1104: '📙 Fokus: Lesen',
+                            1105: '🚀 Fokus: Spielen',
 
-                        // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                        2010: 'Night: Awake during Night Time',
-                        2020: 'Night: Back to Sleep',
+                            // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+                            1900: '🧘 Entspannen: Auf Schlaf vorbereiten',
+                            1901: '🪥 Schlafenszeit: Bettfertig machen',
+                            1902: '🛌 Nacht: Im Bett',
 
-                        // 2100-2199: SLEEPING TIME at home: While I should get up
-                        2100: 'Night: Awakening by Wake-up Alarm',
-                        2101: 'Wake Up: Snoozing',
-                        2102: 'Wake Up: Snoozing',
-                        2103: 'Wake Up: Extended Snoozing',
-                        2104: 'Wake Up: Extended Snoozing',
-                        2105: 'Wake Up: Extensive Snoozing',
+                            // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+                            2000: '😴 Nacht: Schlafen',
 
-                        // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                        2200: 'Got Up: Awake after Wake-up Alarm',
-                        2210: 'Got Up: Implicit awakening by presence',
+                            // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+                            2010: '🥱 Nacht: Wach während der Nacht',
+                            2020: '😴 Nacht: Wieder eingeschlafen',
+
+                            // 2100-2199: SLEEPING TIME at home: While I should get up
+                            2100: '⏰ Nacht: Weckalarm',
+                            2101: '⏰ Wecker: 💤 Schlummern',
+                            2102: '⏰ Wecker: 💤 Schlummern',
+                            2103: '⏰ Wecker: 💤💤 Schlummern',
+                            2104: '⏰ Wecker: 💤💤 Schlummern',
+                            2105: '⏰ Wecker: 💤💤💤 Schlummern',
+
+                            // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+                            2200: '🛏️ Aufgestanden: Aufwachen nach Weckruf',
+                            2210: '🛏️ Aufgestanden: Aufwachen',
+                        },
                     };
+
+                    const dndStatesObjs = {
+                        en: 'Do Not Disturb',
+                        de: 'Nicht stören',
+                    };
+                    const offStatesObjs = {
+                        en: 'Off',
+                        de: 'Aus',
+                    };
+
+                    const activityLang = activityStatesObj[this.language]
+                        ? activityStatesObj[this.language]
+                        : activityStatesObj['en'];
+                    const dndLang = dndStatesObjs[this.language] ? dndStatesObjs[this.language] : dndStatesObjs['en'];
+                    const offLang = offStatesObjs[this.language] ? offStatesObjs[this.language] : offStatesObjs['en'];
 
                     const activityStates = {
                         0: '',
                     };
-                    const taskStates = {
-                        1000: '',
+                    const focusStates = {
+                        0: '',
                     };
 
-                    for (const key in activityStatesObj) {
-                        activityStates[key] = activityStatesObj[key];
+                    for (const key in activityLang) {
+                        activityStates[key] = activityLang[key];
 
                         // Numbers below 1000 only for activity.state
                         // Numbers from 2000 onwards only for night time
@@ -387,23 +516,33 @@ class Residents extends utils.Adapter {
                             continue;
                         }
 
-                        // Only numbers below 1900 for activity.task
+                        // Consider no active focus as Off and
+                        // map as 0 to comply with boolean standards
+                        else if (Number(key) == 1000) {
+                            focusStates[0] = offLang;
+                        }
+
+                        // Only numbers below 1900 for activity.focus
                         else if (Number(key) < 1900) {
-                            taskStates[key] = activityStatesObj[key];
+                            focusStates[key] = activityLang[key];
                         }
 
                         // DND variants for activity.state
                         const newKey = Number(key) + 10000;
-                        let newVal = activityStatesObj[key];
+                        let newVal = activityLang[key];
                         if (newVal.includes(':')) {
-                            newVal = newVal.replace(/:\s+/g, ': Do Not Disturb (') + ')';
+                            newVal = newVal.replace(
+                                /^((?:\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])+\s)\s*(.+):\s+(.+)$/,
+                                '$2 ($1$3)',
+                            );
+                            newVal = '🚫 ' + dndLang + ': ' + newVal;
                         } else {
-                            newVal = 'Do Not Disturb';
+                            newVal = '🚫 ' + dndLang;
                         }
                         activityStates[newKey] = newVal;
                     }
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.state',
                         {
                             type: 'state',
@@ -451,46 +590,52 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    let currentObject = await this.getObjectAsync(id + '.activity.state');
+                    if (currentObject) {
+                        currentObject.common.states = activityStates;
+                        await this.setObjectAsync(id + '.activity.state', currentObject);
+                    }
 
-                    await this.setObjectAsync(
-                        id + '.activity.task',
+                    await this.setObjectNotExistsAsync(
+                        id + '.activity.focus',
                         {
                             type: 'state',
                             common: {
                                 name: {
-                                    en: name + ' is going after this task',
-                                    de: name + ' geht dieser Aufgabe nach',
-                                    ru: name + ' XYZ идет после этой задачи',
-                                    pt: name + ' vai atrás desta tarefa',
-                                    nl: name + ' gaat achter deze taak aan',
-                                    fr: name + ' va après cette tâche',
-                                    it: name + ' sta andando dopo questo compito',
-                                    es: name + ' va tras esta tarea',
-                                    pl: name + ' po tym wydarzeniu się z tego zadania',
-                                    uk: name + ' йде після цього завдання',
-                                    'zh-cn': name + ' 任务结束后',
+                                    en: name + ' has set this focus',
+                                    de: name + ' hat diesen Fokus gesetzt',
+                                    ru: name + ' установил этот фокус',
+                                    pt: name + ' definiu este foco',
+                                    nl: name + ' heeft deze focus',
+                                    fr: name + ' a défini cet objectif',
+                                    it: name + ' ha impostato questo focus',
+                                    es: name + ' ha establecido este enfoque',
+                                    pl: name + ' zakładało to skupienie się na ten temat',
+                                    uk: name + ' встановити цей фокус',
+                                    'zh-cn': '十国已经确定了这一重点。',
                                 },
                                 type: 'number',
-                                role: 'level.mode.resident.task',
-                                min: 1000,
-                                max: 1899,
+                                role: 'level.mode.resident.focus',
+                                min: 0,
+                                max: 19999,
                                 read: true,
                                 write: true,
                                 def: 1000,
                                 desc: {
-                                    en: 'The task the resident is going after right now.',
-                                    de: 'Die Aufgabe, der der Bewohner gerade nachgeht.',
-                                    ru: 'Задача резидента продолжается прямо сейчас.',
-                                    pt: 'A tarefa que o residente vai fazer agora.',
-                                    nl: 'De taak die de bewoner nu gaat doen.',
-                                    fr: 'La tâche que le résident poursuit maintenant.',
-                                    it: 'Il compito che il residente sta seguendo in questo momento.',
-                                    es: 'La tarea que el residente va tras ahora.',
-                                    pl: 'Zadaniem rezydenta jest teraz.',
-                                    uk: 'Завдання життєрадісника йде прямо зараз.',
-                                    'zh-cn': '居民现在正处于权利之后。.',
+                                    en: 'The focus the resident has set from themself.',
+                                    de: 'Der Fokus, den der Bewohner für sich gesetzt hat.',
+                                    ru: 'Сосредоточьтесь на том, что резидент поставил от себя.',
+                                    pt: 'O foco que o residente estabeleceu deles.',
+                                    nl: 'De concentratie die de bewoner van henzelf heeft gemaakt.',
+                                    fr: "L'accent que le résident a mis de lui-même.",
+                                    it: 'Il focus che il residente ha impostato da loro stessi.',
+                                    es: 'El enfoque que el residente ha establecido de ellos mismo.',
+                                    pl: 'Skoncentrował się na tym, że rezydent od nich sam.',
+                                    uk: 'У фокусі резидента встановлено від себе.',
+                                    'zh-cn': '居民的焦点来自他们自己。.',
                                 },
-                                states: taskStates,
+                                states: focusStates,
                             },
                             native: {},
                         },
@@ -500,8 +645,14 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    currentObject = await this.getObjectAsync(id + '.activity.focus');
+                    if (currentObject) {
+                        currentObject.common.states = focusStates;
+                        await this.setObjectAsync(id + '.activity.focus', currentObject);
+                    }
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.awake',
                         {
                             type: 'state',
@@ -547,7 +698,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.bedtime',
                         {
                             type: 'state',
@@ -586,10 +737,10 @@ class Residents extends utils.Adapter {
                                     'zh-cn': '现在该居民是否愿意获得权利?',
                                 },
                                 states: {
-                                    0: 'Off',
-                                    1: 'Wind Down: Preparing Bedtime',
-                                    2: 'Bedtime: Getting to Bed',
-                                    3: 'Night: In Bed',
+                                    0: offLang,
+                                    1: activityLang[1900],
+                                    2: activityLang[1901],
+                                    3: activityLang[1902],
                                 },
                             },
                             native: {},
@@ -600,8 +751,19 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    currentObject = await this.getObjectAsync(id + '.activity.bedtime');
+                    if (currentObject) {
+                        currentObject.common.states = {
+                            0: offLang,
+                            1: activityLang[1900],
+                            2: activityLang[1901],
+                            3: activityLang[1902],
+                        };
+                        await this.setObjectAsync(id + '.activity.bedtime', currentObject);
+                    }
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.dnd',
                         {
                             type: 'state',
@@ -647,7 +809,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.overnight',
                         {
                             type: 'state',
@@ -693,7 +855,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.wakeup',
                         {
                             type: 'state',
@@ -739,7 +901,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.wakeupSnooze',
                         {
                             type: 'state',
@@ -785,7 +947,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.activity.wayhome',
                         {
                             type: 'state',
@@ -834,7 +996,7 @@ class Residents extends utils.Adapter {
 
                 // Mood support not for pets
                 if (residentType != 'pet') {
-                    await this.setObjectAsync(id + '.mood', {
+                    await this.setObjectNotExistsAsync(id + '.mood', {
                         type: 'channel',
                         common: {
                             name: {
@@ -854,7 +1016,7 @@ class Residents extends utils.Adapter {
                         native: {},
                     });
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.mood.state',
                         {
                             type: 'state',
@@ -892,19 +1054,7 @@ class Residents extends utils.Adapter {
                                     uk: 'Примушені резидента з негативною або позитивною тенденцією',
                                     'zh-cn': '居民的情绪有消极或积极的倾向',
                                 },
-                                states: {
-                                    '-5': "-5: Couldn't Get Worse",
-                                    '-4': '-4: Extraordinary Bad',
-                                    '-3': '-3: Extremely Bad',
-                                    '-2': '-2: Pretty Bad',
-                                    '-1': '-1: Somewhat Bad',
-                                    0: '0: Neutral',
-                                    1: '+1: Somewhat Good',
-                                    2: '+2: Pretty Good',
-                                    3: '+3: Extremely Good',
-                                    4: '+4: Extraordinary Good',
-                                    5: "+5: Couldn't Be Better",
-                                },
+                                states: moodLang,
                             },
                             native: {},
                         },
@@ -914,9 +1064,15 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    const currentObject = await this.getObjectAsync(id + '.mood.state');
+                    if (currentObject) {
+                        currentObject.common.states = moodLang;
+                        await this.setObjectAsync(id + '.mood.state', currentObject);
+                    }
                 }
 
-                await this.setObjectAsync(id + '.presenceFollowing', {
+                await this.setObjectNotExistsAsync(id + '.presenceFollowing', {
                     type: 'channel',
                     common: {
                         name: {
@@ -936,7 +1092,7 @@ class Residents extends utils.Adapter {
                     native: {},
                 });
 
-                await this.setObjectAsync(
+                await this.setObjectNotExistsAsync(
                     id + '.presenceFollowing.homeEnabled',
                     {
                         type: 'state',
@@ -983,7 +1139,7 @@ class Residents extends utils.Adapter {
                 );
 
                 //TODO: use foreignResidents for states
-                await this.setObjectAsync(
+                await this.setObjectNotExistsAsync(
                     id + '.presenceFollowing.homePerson',
                     {
                         type: 'state',
@@ -1029,7 +1185,22 @@ class Residents extends utils.Adapter {
                     },
                 );
 
-                await this.setObjectAsync(
+                const homeModeStates = {
+                    en: {
+                        0: 'Coming & Leaving Home',
+                        1: 'Coming Home only',
+                        2: 'Leaving Home only',
+                    },
+                    de: {
+                        0: 'Ankommen und verlassen',
+                        1: 'Nur ankommen',
+                        2: 'Nur verlassen',
+                    },
+                };
+                const homeModeLang = homeModeStates[this.language]
+                    ? homeModeStates[this.language]
+                    : homeModeStates['en'];
+                await this.setObjectNotExistsAsync(
                     id + '.presenceFollowing.homeMode',
                     {
                         type: 'state',
@@ -1052,11 +1223,7 @@ class Residents extends utils.Adapter {
                             read: true,
                             write: true,
                             def: 0,
-                            states: {
-                                0: 'Coming & Leaving Home',
-                                1: 'Coming Home only',
-                                2: 'Leaving Home only',
-                            },
+                            states: homeModeLang,
                             desc: {
                                 en: 'Which presence states is this person following?',
                                 de: 'Welchem Anwesenheitsstatus folgt diese Person?',
@@ -1079,10 +1246,16 @@ class Residents extends utils.Adapter {
                         },
                     },
                 );
+                // Update common.states
+                const currentObject = await this.getObjectAsync(id + '.presenceFollowing.homeMode');
+                if (currentObject) {
+                    currentObject.common.states = homeModeLang;
+                    await this.setObjectAsync(id + '.presenceFollowing.homeMode', currentObject);
+                }
 
                 // Follow-them for Night state not for pets
                 if (residentType != 'pet') {
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.presenceFollowing.nightEnabled',
                         {
                             type: 'state',
@@ -1129,7 +1302,7 @@ class Residents extends utils.Adapter {
                     );
 
                     //TODO: use foreignResidents variable for dynamic states
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.presenceFollowing.nightPerson',
                         {
                             type: 'state',
@@ -1175,7 +1348,22 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    const nightModeStates = {
+                        en: {
+                            0: 'Fall Asleep & Get Up',
+                            1: 'Fall Asleep only',
+                            2: 'Get Up only',
+                        },
+                        de: {
+                            0: 'Einschlafen & Aufstehen',
+                            1: 'Nur einschlafen',
+                            2: 'Nur aufstehen',
+                        },
+                    };
+                    const nightModeLang = nightModeStates[this.language]
+                        ? nightModeStates[this.language]
+                        : nightModeStates['en'];
+                    await this.setObjectNotExistsAsync(
                         id + '.presenceFollowing.nightMode',
                         {
                             type: 'state',
@@ -1198,11 +1386,7 @@ class Residents extends utils.Adapter {
                                 read: true,
                                 write: true,
                                 def: 0,
-                                states: {
-                                    0: 'Fall Asleep & Get Up',
-                                    1: 'Fall Asleep only',
-                                    2: 'Get Up only',
-                                },
+                                states: nightModeLang,
                                 desc: {
                                     en: 'Which night states is this person following?',
                                     de: 'Welchem Nachtstatus folgt diese Person?',
@@ -1225,9 +1409,15 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    const currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightMode');
+                    if (currentObject) {
+                        currentObject.common.states = nightModeLang;
+                        await this.setObjectAsync(id + '.presenceFollowing.nightMode', currentObject);
+                    }
                 }
 
-                await this.setObjectAsync(id + '.presence', {
+                await this.setObjectNotExistsAsync(id + '.presence', {
                     type: 'channel',
                     common: {
                         name: {
@@ -1247,7 +1437,7 @@ class Residents extends utils.Adapter {
                     native: {},
                 });
 
-                await this.setObjectAsync(
+                await this.setObjectNotExistsAsync(
                     id + '.presence.home',
                     {
                         type: 'state',
@@ -1293,7 +1483,7 @@ class Residents extends utils.Adapter {
                     },
                 );
 
-                await this.setObjectAsync(
+                await this.setObjectNotExistsAsync(
                     id + '.presence.away',
                     {
                         type: 'state',
@@ -1339,9 +1529,17 @@ class Residents extends utils.Adapter {
                     },
                 );
 
+                const presenceLang = {
+                    0: residentialLang[1],
+                    1: residentialLang[4],
+                    2: residentialLang[11],
+                };
                 // Presence state for pets
                 if (residentType == 'pet') {
-                    await this.setObjectAsync(
+                    const petPresenceLang = presenceLang;
+                    delete petPresenceLang[2];
+
+                    await this.setObjectNotExistsAsync(
                         id + '.presence.state',
                         {
                             type: 'state',
@@ -1379,10 +1577,7 @@ class Residents extends utils.Adapter {
                                     uk: 'Стан присутності резидента',
                                     'zh-cn': '驻地存在',
                                 },
-                                states: {
-                                    0: 'Away',
-                                    1: 'Home',
-                                },
+                                states: petPresenceLang,
                             },
                             native: {},
                         },
@@ -1392,11 +1587,17 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    const currentObject = await this.getObjectAsync(id + '.presence.state');
+                    if (currentObject) {
+                        currentObject.common.states = petPresenceLang;
+                        await this.setObjectAsync(id + '.presence.state', currentObject);
+                    }
                 }
 
                 // Presence state for humans
                 else {
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.presence.night',
                         {
                             type: 'state',
@@ -1442,7 +1643,7 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    await this.setObjectAsync(
+                    await this.setObjectNotExistsAsync(
                         id + '.presence.state',
                         {
                             type: 'state',
@@ -1480,11 +1681,7 @@ class Residents extends utils.Adapter {
                                     uk: 'Стан присутності резидента',
                                     'zh-cn': '驻地存在',
                                 },
-                                states: {
-                                    0: 'Away',
-                                    1: 'Home',
-                                    2: 'Night',
-                                },
+                                states: presenceLang,
                             },
                             native: {},
                         },
@@ -1494,6 +1691,12 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    const currentObject = await this.getObjectAsync(id + '.presence.state');
+                    if (currentObject) {
+                        currentObject.common.states = presenceLang;
+                        await this.setObjectAsync(id + '.presence.state', currentObject);
+                    }
                 }
 
                 this.subscriptions.push(id + '.enabled');
@@ -2574,10 +2777,10 @@ class Residents extends utils.Adapter {
                 state.ack = true;
                 await this.setStateAsync(device + '.activity.state', state);
 
-                // Only take over task value between 1000 and 1900
+                // Only take over focus value between 1000 and 1900
                 if (state.val >= 10000) state.val -= 10000;
                 if (state.val < 1000 || state.val >= 1900) state.val = 1000;
-                await this.setStateAsync(device + '.activity.task', state);
+                await this.setStateAsync(device + '.activity.focus', state);
 
                 if (presenceState.val == 2 && changePresenceToHome) {
                     await this.setStateAsync(device + '.presence.night', { val: false, ack: true });
@@ -2695,15 +2898,15 @@ class Residents extends utils.Adapter {
                 break;
             }
 
-            case 'task': {
+            case 'focus': {
                 state.ack = true;
                 if (presenceState.val == 1) {
                     this.setResidentDeviceActivity(device, 'state', state, activityState);
                 } else {
-                    this.log.warn(device + ': Tasks can only be controlled during waking time at home');
+                    this.log.warn(device + ': Focus can only be controlled during waking time at home');
                     state.val = oldState.val;
                     state.q = 0x40;
-                    await this.setStateAsync(device + '.activity.task', state);
+                    await this.setStateAsync(device + '.activity.focus', state);
                 }
                 break;
             }
