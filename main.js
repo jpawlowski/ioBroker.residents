@@ -376,7 +376,6 @@ class Residents extends utils.Adapter {
 
         ///////////////////////////
         // Create/Update resident objects
-        const residentTypes = ['roomie', 'pet', 'guest'];
         const residentTypeName = {
             roomie: {
                 en: 'Roommate Devices',
@@ -418,6 +417,7 @@ class Residents extends utils.Adapter {
                 'zh-cn': '访客设备',
             },
         };
+        const residentTypes = ['roomie', 'pet', 'guest'];
         for (const i in residentTypes) {
             const residentType = residentTypes[i];
             for (const i2 in this.config[residentType]) {
@@ -453,9 +453,7 @@ class Residents extends utils.Adapter {
                         name: name,
                         icon: residentType + '.svg',
                     },
-                    native: {
-                        type: residentType,
-                    },
+                    native: {},
                 });
 
                 await this.setObjectNotExistsAsync(
@@ -3687,7 +3685,7 @@ class Residents extends utils.Adapter {
 
         for (const resident of this.residents) {
             const name = resident['name'];
-            const residentType = (await this.getObjectAsync(resident['id']))?.native.type;
+            const residentType = resident['id'].split('.')[0];
             const enabledState = await this.getStateAsync(resident['id'] + '.enabled');
             const awayState = await this.getStateAsync(resident['id'] + '.presence.away');
             const homeState = await this.getStateAsync(resident['id'] + '.presence.home');
