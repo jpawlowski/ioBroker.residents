@@ -3583,7 +3583,7 @@ class Residents extends utils.Adapter {
         // Presence update
         else if (this.presenceSubscriptionMapping[id]) {
             for (const deviceId in this.presenceSubscriptionMapping[id]) {
-                const device = this.wayhomeSubscriptionMapping[id][deviceId].split('.');
+                const device = this.presenceSubscriptionMapping[id][deviceId].split('.');
                 if (this.initialized)
                     this.log.info(id + ': Detected presence update for ' + device[1] + ': ' + presence);
                 state.val = presence;
