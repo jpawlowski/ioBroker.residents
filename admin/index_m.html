@@ -400,6 +400,559 @@
                             </li>
                         </ul>
                         <ul class="collapsible">
+                            <!-- Settings for residential states -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Residential Status</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <div class="col s3">
+                                            <label for="residentialStates" class="translate"
+                                                >Adjust residential status icons & texts</label
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s3" id="residentialStates">
+                                            <div class="table-values-div">
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="_index"
+                                                                id="events_col_0"
+                                                                style="
+                                                                    width: 80px;
+                                                                    background: #174475;
+                                                                    text-align: center;
+                                                                "
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                #
+                                                            </th>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_1"
+                                                                data-type="text"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 100%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Custom Text<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Optional overwrite default text</small
+                                                                >
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="collapsible">
+                            <!-- Settings for mood states -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Mood Status</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <div class="col s3">
+                                            <label for="moodStates" class="translate"
+                                                >Adjust mood status icons & texts</label
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s3" id="moodStates">
+                                            <div class="table-values-div">
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_1"
+                                                                data-type="text"
+                                                                style="width: 260px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: right"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 70%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Custom Text<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Optional overwrite default text</small
+                                                                >
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="collapsible">
+                            <!-- Settings for activity states -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Activity Status</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <div class="col s3">
+                                            <label for="activityStates" class="translate"
+                                                >Adjust activity status icons & texts</label
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s4" id="activityStates">
+                                            <div class="table-values-div">
+                                                <div class="row">
+                                                    <div class="col s2 m1 l1 left">
+                                                        <a
+                                                            id="responseOIDDialog"
+                                                            class="btn-floating waves-effect waves-light blue table-button-add"
+                                                            ><i class="material-icons">add</i></a
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="id"
+                                                                id="events_col_1"
+                                                                data-type="number"
+                                                                style="width: 180px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                ID<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Activity Number</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_3"
+                                                                data-type="text"
+                                                                style="width: 100%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Custom Text<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Optional overwrite default text</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-buttons="delete"
+                                                                style="width: 120px; background: #174475"
+                                                            ></th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 class="translate">Activity Number Reference</h6>
+                                    <ul class="collapsible">
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">expand_more</i>
+                                                <h6 class="translate">0-999: Not present at home / Away</h6>
+                                            </div>
+                                            <div class="collapsible-body">
+                                                <div class="row">
+                                                    <div class="input-field col s6 lighten-4">
+                                                        <ul class="collection">
+                                                            <li class="collection-item">0: Extended Away</li>
+                                                            <li class="collection-item">1: Away</li>
+                                                            <li class="collection-item">2: Way Home</li>
+                                                            <li class="collection-item">
+                                                                3-99: [Reserved for other away states]
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                100-199: Default Focus Modes during absence
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                200-299: Custom Focus Modes during absence
+                                                            </li>
+                                                            <li class="collection-item">300-999: [Reserved]</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="collapsible">
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">expand_more</i>
+                                                <h6 class="translate">1.000-1.999: WAKING TIME at home</h6>
+                                            </div>
+                                            <div class="collapsible-body">
+                                                <div class="row">
+                                                    <div class="input-field col s6 lighten-4">
+                                                        <ul class="collection">
+                                                            <li class="collection-item">1000: Home</li>
+                                                            <li class="collection-item">
+                                                                1001-1099: [Reserved for other home states]
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                1100-1199: Default Focus Modes during presence
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                1200-1299: Custom Focus Modes during presence
+                                                            </li>
+                                                            <li class="collection-item">1300-1899: [Reserved]</li>
+                                                            <li class="collection-item">
+                                                                1900-1999: Transitioning to Sleeping Time
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                1900: Wind Down / Preparing Bedtime
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                1901: Bedtime / Getting to Bed
+                                                            </li>
+                                                            <li class="collection-item">1902: Bedtime / In Bed</li>
+                                                            <li class="collection-item">
+                                                                1903-1999: [Reserved for other bedtime states]
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="collapsible">
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">expand_more</i>
+                                                <h6 class="translate">2.000-2.999: SLEEPING TIME at home</h6>
+                                            </div>
+                                            <div class="collapsible-body">
+                                                <div class="row">
+                                                    <div class="input-field col s6 lighten-4">
+                                                        <ul class="collection">
+                                                            <li class="collection-item">2000: Night</li>
+                                                            <li class="collection-item">
+                                                                2010-2099: While I should be sleeping
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2010: Awake during Night Time
+                                                            </li>
+                                                            <li class="collection-item">2020: Asleep again</li>
+                                                            <li class="collection-item">
+                                                                2100-2199: While I should get up
+                                                            </li>
+                                                            <li class="collection-item">2100: Wake-up Alarm</li>
+                                                            <li class="collection-item">
+                                                                2101: Wake-up Alarm - 1 x Snooze
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2102: Wake-up Alarm - 2 x Snooze
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2103: Wake-up Alarm - 3 x Snooze
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2104: Wake-up Alarm - 4 x Snooze
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2105: Wake-up Alarm - 5+ x Snooze
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2200-2299: Transitioning to Waking Time
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2200: Awakening by Wake-up Alarm
+                                                            </li>
+                                                            <li class="collection-item">
+                                                                2210: Awakening by presence state change
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="collapsible">
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">expand_more</i>
+                                                <h6 class="translate">10.000-12.999: Do Not Disturb</h6>
+                                            </div>
+                                            <div class="collapsible-body">
+                                                <div class="row">
+                                                    <div class="input-field col s6 lighten-4">
+                                                        Each number from 0-2999 is added 10000 to represent the same
+                                                        status but with Do Not Disturb enabled.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="collapsible">
+                            <!-- Settings for focus modes -->
+                            <li>
+                                <div class="collapsible-header">
+                                    <i class="material-icons">expand_more</i>
+                                    <h6 class="translate">Focus Modes</h6>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="row">
+                                        <label for="focusStates" class="translate">Add custom focus modes</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s6" id="customFocusStates">
+                                            <div class="row">
+                                                <div class="col s2 m1 l1 left">
+                                                    <a
+                                                        id="responseOIDDialog"
+                                                        class="btn-floating waves-effect waves-light blue table-button-add"
+                                                        ><i class="material-icons">add</i></a
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="table-values-div">
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="_index"
+                                                                id="events_col_0"
+                                                                style="
+                                                                    width: 80px;
+                                                                    background: #174475;
+                                                                    text-align: center;
+                                                                "
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                #
+                                                            </th>
+                                                            <th
+                                                                data-name="enabled"
+                                                                id="events_col_1"
+                                                                data-type="checkbox"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Enable
+                                                            </th>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_3"
+                                                                data-type="text"
+                                                                style="width: 100%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Text
+                                                            </th>
+                                                            <th
+                                                                data-name="dnd"
+                                                                id="events_col_4"
+                                                                data-type="checkbox"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Do Not Disturb
+                                                            </th>
+                                                            <th
+                                                                data-name="home"
+                                                                id="events_col_5"
+                                                                data-type="checkbox"
+                                                                style="width: 120px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Home
+                                                            </th>
+                                                            <th
+                                                                data-name="away"
+                                                                id="events_col_5"
+                                                                data-type="checkbox"
+                                                                style="width: 120px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Away
+                                                            </th>
+                                                            <th
+                                                                data-buttons="delete"
+                                                                style="width: 120px; background: #174475"
+                                                            ></th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row"></div>
+                                    <div class="row">
+                                        <label for="focusStates" class="translate"
+                                            >Adjust default focus mode icons & texts</label
+                                        >
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s5" id="focusStates">
+                                            <div class="table-values-div">
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="_index"
+                                                                id="events_col_0"
+                                                                style="
+                                                                    width: 80px;
+                                                                    background: #174475;
+                                                                    text-align: center;
+                                                                "
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                #
+                                                            </th>
+                                                            <th
+                                                                data-name="enabled"
+                                                                id="events_col_1"
+                                                                data-type="checkbox"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Enable
+                                                            </th>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_3"
+                                                                data-type="text"
+                                                                style="width: 100%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Custom Text<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Optional overwrite default text</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="dnd"
+                                                                id="events_col_4"
+                                                                data-type="checkbox"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Do Not Disturb
+                                                            </th>
+                                                            <th
+                                                                data-name="home"
+                                                                id="events_col_5"
+                                                                data-type="checkbox"
+                                                                style="width: 120px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Home
+                                                            </th>
+                                                            <th
+                                                                data-name="away"
+                                                                id="events_col_5"
+                                                                data-type="checkbox"
+                                                                style="width: 120px; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Away
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="collapsible">
                             <!-- Settings for timers -->
                             <li>
                                 <div class="collapsible-header">
@@ -409,12 +962,20 @@
                                 <div class="collapsible-body">
                                     <div class="row">
                                         <div class="col s6 l2 input-field">
+                                            <p>
+                                                <input
+                                                    type="checkbox"
+                                                    class="value"
+                                                    id="disableAbsentResidentsDailyTimerEnabled"
+                                                />
+                                                <span class="translate">Enable</span>
+                                            </p>
                                             <input
                                                 type="text"
                                                 class="timepicker value"
-                                                id="DisableAbsentResidentsDailyTimer"
+                                                id="disableAbsentResidentsDailyTimer"
                                             />
-                                            <label for="DisableAbsentResidentsDailyTimer" class="translate"
+                                            <label for="disableAbsentResidentsDailyTimer" class="translate"
                                                 >Auto disable</label
                                             >
                                             <span class="translate"
@@ -422,8 +983,16 @@
                                             >
                                         </div>
                                         <div class="col s6 l2 input-field">
-                                            <input type="text" class="timepicker value" id="ResetOvernightDailyTimer" />
-                                            <label for="ResetOvernightDailyTimer" class="translate"
+                                            <p>
+                                                <input
+                                                    type="checkbox"
+                                                    class="value"
+                                                    id="resetOvernightDailyTimerEnabled"
+                                                />
+                                                <span class="translate">Enable</span>
+                                            </p>
+                                            <input type="text" class="timepicker value" id="resetOvernightDailyTimer" />
+                                            <label for="resetOvernightDailyTimer" class="translate"
                                                 >Overnight reset</label
                                             >
                                             <span class="translate"

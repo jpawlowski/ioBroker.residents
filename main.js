@@ -53,20 +53,6 @@ class Residents extends utils.Adapter {
         this.language = systemConfig && systemConfig.common.language ? systemConfig.common.language : 'en';
         if (this.config.language != '') this.language = this.config.language;
 
-        const residentialIcons = {
-            0: '🛫',
-            1: '⏸️',
-            2: '🐶',
-            3: '⏱️',
-            4: '🏠',
-            5: '🚫',
-            6: '🧘',
-            7: '🛌',
-            8: '🛏️',
-            9: '🥱',
-            10: '⏰',
-            11: '💤',
-        };
         const residentialStateTexts = {
             en: {
                 0: 'Extended Absence',
@@ -226,13 +212,26 @@ class Residents extends utils.Adapter {
         const residentialLang = residentialStateTexts[this.language]
             ? residentialStateTexts[this.language]
             : residentialStateTexts['en'];
+        const residentialStates = {};
         for (const i in residentialLang) {
-            residentialLang[i] = residentialIcons[i] + ' ' + residentialLang[i];
+            residentialLang[i] = {
+                text:
+                    this.config.residentialStates[i].text != '' &&
+                    this.config.residentialStates[i].text != residentialStateTexts['en'][i]
+                        ? this.config.residentialStates[i].text
+                        : residentialLang[i],
+            };
+            residentialLang[i]['state'] = residentialLang[i].text;
+            if (this.config.residentialStates[i].icon != '') {
+                residentialLang[i]['icon'] = this.config.residentialStates[i].icon;
+                residentialLang[i]['state'] = this.config.residentialStates[i].icon + ' ' + residentialLang[i].text;
+            }
+            residentialStates[i] = residentialLang[i]['state'];
         }
         // Update common.states
         let currentObject = await this.getObjectAsync('state');
         if (currentObject) {
-            currentObject.common.states = residentialLang;
+            currentObject.common.states = residentialStates;
             await this.setObjectAsync('state', currentObject);
         }
 
@@ -378,13 +377,62 @@ class Residents extends utils.Adapter {
         ///////////////////////////
         // Create/Update resident objects
         const residentTypes = ['roomie', 'pet', 'guest'];
+        const residentTypeName = {
+            roomie: {
+                en: 'Roommate Devices',
+                de: 'Mitbewohner Geräte',
+                ru: 'Устройства для соседей по комнате',
+                pt: 'Dispositivos para companheiros de quarto',
+                nl: 'Apparaten voor huisgenoten',
+                fr: 'Dispositifs de colocation',
+                it: 'Dispositivi per i coinquilini',
+                es: 'Dispositivos para compañeros de piso',
+                pl: 'Urządzenia dla współlokatorów',
+                uk: 'Сусідні пристрої',
+                'zh-cn': '室友设备',
+            },
+            pet: {
+                en: 'Pet Devices',
+                de: 'Haustier Geräte',
+                ru: 'Устройства для домашних животных',
+                pt: 'Dispositivos para animais',
+                nl: 'Apparaten voor huisdieren',
+                fr: 'Dispositifs pour animaux de compagnie',
+                it: 'Dispositivi per animali domestici',
+                es: 'Dispositivos para mascotas',
+                pl: 'Urządzenia dla zwierząt domowych',
+                uk: 'Пристрої для домашніх тварин',
+                'zh-cn': '',
+            },
+            guest: {
+                en: 'Guest Devices',
+                de: 'Gast Geräte',
+                ru: 'Гостевые устройства',
+                pt: 'Dispositivos Convidados',
+                nl: 'Gastapparaten',
+                fr: 'Appareils invités',
+                it: 'Dispositivi per gli ospiti',
+                es: 'Dispositivos para invitados',
+                pl: 'Urządzenia gościnne',
+                uk: 'Гостьові пристрої',
+                'zh-cn': '访客设备',
+            },
+        };
         for (const i in residentTypes) {
             const residentType = residentTypes[i];
-
             for (const i2 in this.config[residentType]) {
+                await this.setObjectNotExistsAsync(residentType, {
+                    type: 'folder',
+                    common: {
+                        name: residentTypeName[residentType],
+                        icon: residentType + '.svg',
+                    },
+                    native: {},
+                });
+
                 const resident = this.config[residentType][i2];
                 const name = resident['name'].trim();
-                const id = this.cleanNamespace(resident['id'] ? resident['id'] : name);
+                const id = residentType + '.' + this.cleanNamespace(resident['id'] ? resident['id'] : name);
                 this.config[residentType][i2]['id'] = id;
                 this.config[residentType][i2]['type'] = residentType;
 
@@ -524,45 +572,55 @@ class Residents extends utils.Adapter {
                     });
 
                     const activityIcons = {
-                        0: residentialIcons[0],
-                        1: residentialIcons[1],
-                        2: residentialIcons[3],
-                        100: '👤',
-                        101: '💼',
-                        102: '🧘',
-                        103: '💪',
-                        104: '📙',
-                        105: '🚀',
-                        106: '🚘',
-                        107: '🛒',
-                        1000: residentialIcons[4],
-                        1900: residentialIcons[6],
-                        1901: '🪥',
-                        1902: residentialIcons[7],
-                        2000: '😴',
-                        2010: residentialIcons[9],
-                        2100: residentialIcons[10],
-                        2200: residentialIcons[8],
+                        // 000-0999: Not present at home / Away
+                        0: residentialLang[0].icon,
+                        1: residentialLang[1].icon,
+                        2: residentialLang[3].icon,
+
+                        // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+                        100: this.config.focusStates[0].icon,
+                        101: this.config.focusStates[1].icon,
+                        102: this.config.focusStates[2].icon,
+                        103: this.config.focusStates[3].icon,
+                        104: this.config.focusStates[4].icon,
+                        105: this.config.focusStates[5].icon,
+                        106: this.config.focusStates[6].icon,
+                        107: this.config.focusStates[7].icon,
+
+                        // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+                        1000: residentialLang[4].icon,
+
+                        // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+                        1100: this.config.focusStates[0].icon,
+                        1101: this.config.focusStates[1].icon,
+                        1102: this.config.focusStates[2].icon,
+                        1103: this.config.focusStates[3].icon,
+                        1104: this.config.focusStates[4].icon,
+                        1105: this.config.focusStates[5].icon,
+                        1106: this.config.focusStates[6].icon,
+                        1107: this.config.focusStates[7].icon,
+
+                        // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+                        1900: residentialLang[6].icon,
+                        1901: residentialLang[6].icon,
+                        1902: residentialLang[7].icon,
+
+                        // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+                        2000: residentialLang[11].icon,
+                        2010: residentialLang[9].icon,
+                        2020: residentialLang[11].icon,
+                        2100: residentialLang[10].icon,
+                        2101: residentialLang[10].icon,
+                        2102: residentialLang[10].icon,
+                        2103: residentialLang[10].icon,
+                        2104: residentialLang[10].icon,
+                        2105: residentialLang[10].icon,
+
+                        // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+                        2200: residentialLang[8].icon,
+                        2210: residentialLang[8].icon,
                     };
-                    activityIcons[1100] = activityIcons[100];
-                    activityIcons[1101] = activityIcons[101];
-                    activityIcons[1102] = activityIcons[102];
-                    activityIcons[1103] = activityIcons[103];
-                    activityIcons[1104] = activityIcons[104];
-                    activityIcons[1105] = activityIcons[105];
-                    activityIcons[1106] = activityIcons[106];
 
-                    activityIcons[2101] = activityIcons[2100];
-                    activityIcons[2102] = activityIcons[2100];
-                    activityIcons[2103] = activityIcons[2100];
-                    activityIcons[2104] = activityIcons[2100];
-                    activityIcons[2105] = activityIcons[2100];
-
-                    activityIcons[2020] = activityIcons[2000];
-
-                    activityIcons[2210] = activityIcons[2200];
-
-                    const snoozeIcon = '💤';
                     const activityStateTexts = {
                         en: {
                             // 000-0999: Not present at home / Away
@@ -573,7 +631,7 @@ class Residents extends utils.Adapter {
                             // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
                             100: 'Away: Personal',
                             101: 'Away: Work',
-                            102: 'Away: Mindfullness',
+                            102: 'Away: Mindfulness',
                             103: 'Away: Fitness',
                             104: 'Away: Reading',
                             105: 'Away: Gaming',
@@ -586,10 +644,12 @@ class Residents extends utils.Adapter {
                             // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
                             1100: 'Focus: Personal',
                             1101: 'Focus: Work',
-                            1102: 'Focus: Mindfullness',
+                            1102: 'Focus: Mindfulness',
                             1103: 'Focus: Fitness',
                             1104: 'Focus: Reading',
                             1105: 'Focus: Gaming',
+                            1106: 'Focus: Driving',
+                            1107: 'Focus: Shopping',
 
                             // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
                             1900: 'Wind Down: Preparing Bedtime',
@@ -605,11 +665,11 @@ class Residents extends utils.Adapter {
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
                             2100: 'Night: Wake-up Alarm',
-                            2101: 'Wake Up: ' + snoozeIcon + ' Alarm Snooze',
-                            2102: 'Wake Up: ' + snoozeIcon + ' Alarm Snooze',
-                            2103: 'Wake Up: ' + snoozeIcon + snoozeIcon + ' Alarm Snooze',
-                            2104: 'Wake Up: ' + snoozeIcon + snoozeIcon + ' Alarm Snooze',
-                            2105: 'Wake Up: ' + snoozeIcon + snoozeIcon + snoozeIcon + ' Alarm Snooze',
+                            2101: 'Wake Up: 💤 Alarm Snooze',
+                            2102: 'Wake Up: 💤 Alarm Snooze',
+                            2103: 'Wake Up: 💤💤 Alarm Snooze',
+                            2104: 'Wake Up: 💤💤 Alarm Snooze',
+                            2105: 'Wake Up: 💤💤💤 Alarm Snooze',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
                             2200: 'Got Up: Awakening after Wake-up Alarm',
@@ -656,11 +716,11 @@ class Residents extends utils.Adapter {
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
                             2100: 'Nacht: Weckalarm',
-                            2101: 'Wecker: ' + snoozeIcon + ' Schlummern',
-                            2102: 'Wecker: ' + snoozeIcon + ' Schlummern',
-                            2103: 'Wecker: ' + snoozeIcon + snoozeIcon + ' Schlummern',
-                            2104: 'Wecker: ' + snoozeIcon + snoozeIcon + ' Schlummern',
-                            2105: 'Wecker: ' + snoozeIcon + snoozeIcon + snoozeIcon + ' Schlummern',
+                            2101: 'Wecker: 💤 Schlummern',
+                            2102: 'Wecker: 💤 Schlummern',
+                            2103: 'Wecker: 💤💤 Schlummern',
+                            2104: 'Wecker: 💤💤 Schlummern',
+                            2105: 'Wecker: 💤💤💤 Schlummern',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
                             2200: 'Aufgestanden: Aufwachen nach Weckruf',
@@ -726,9 +786,9 @@ class Residents extends utils.Adapter {
                                 /^((?:\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])+\s)\s*(.+):\s+(.+)$/,
                                 '$2 ($1$3)',
                             );
-                            newVal = residentialLang[5] + ': ' + newVal;
+                            newVal = residentialStates[5] + ': ' + newVal;
                         } else {
-                            newVal = residentialLang[5];
+                            newVal = residentialStates[5];
                         }
                         activityStates[newKey] = newVal;
                     }
@@ -812,7 +872,7 @@ class Residents extends utils.Adapter {
                                 max: 19999,
                                 read: true,
                                 write: true,
-                                def: 1000,
+                                def: 0,
                                 desc: {
                                     en: 'The focus the resident has set from themself.',
                                     de: 'Der Fokus, den der Bewohner für sich gesetzt hat.',
@@ -1721,9 +1781,9 @@ class Residents extends utils.Adapter {
                 );
 
                 const presenceLang = {
-                    0: residentialLang[1],
-                    1: residentialLang[4],
-                    2: residentialLang[11],
+                    0: residentialStates[1],
+                    1: residentialStates[4],
+                    2: residentialStates[11],
                 };
                 // Presence state for pets
                 if (residentType == 'pet') {
@@ -2190,8 +2250,8 @@ class Residents extends utils.Adapter {
 
         await this.setResidentsSummary();
 
-        this.timeoutDisableAbsentResidents(true);
-        this.timeoutResetOvernight(true);
+        if (this.config.disableAbsentResidentsDailyTimerEnabled) this.timeoutDisableAbsentResidents(true);
+        if (this.config.resetOvernightDailyTimerEnabled) this.timeoutResetOvernight(true);
         this.initialized = true;
     }
 
@@ -2218,14 +2278,27 @@ class Residents extends utils.Adapter {
         if (eventNamespace == this.namespace) {
             // The state was controlled (ack=false)
             if (!state.ack) {
-                // Global residents commands
-                if (level1 == 'control') {
-                    this.processGlobalControlCommand(id, state);
-                }
-
-                // An individual residents device was controlled
-                else {
-                    this.processResidentDeviceControlCommand(id, state);
+                switch (level1) {
+                    // Global residents commands
+                    case 'control': {
+                        this.processGlobalControlCommand(id, state);
+                        break;
+                    }
+                    case 'roomie': {
+                        this.processResidentDeviceControlCommand(id, state);
+                        break;
+                    }
+                    case 'pet': {
+                        this.processResidentDeviceControlCommand(id, state);
+                        break;
+                    }
+                    case 'guest': {
+                        this.processResidentDeviceControlCommand(id, state);
+                        break;
+                    }
+                    default: {
+                        this.log.error(id + ': Unexpected event');
+                    }
                 }
             }
 
@@ -2746,48 +2819,49 @@ class Residents extends utils.Adapter {
         const level1 = a.shift(); // first level ID
         const level2 = a.shift(); // second level ID
         const level3 = a.shift(); // third level ID
+        const level4 = a.shift(); // fourth level ID
 
-        if (typeof level1 != 'string') return;
+        if (typeof level1 != 'string' || typeof level2 != 'string') return;
 
         const oldState = this.states[id];
         this.states[id] = state;
 
-        switch (level2) {
+        switch (level3) {
             case 'enabled': {
-                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
-                this.enableResidentDevice(level1, state, oldState);
+                this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
+                this.enableResidentDevice(level1, level2, state, oldState);
                 break;
             }
 
             case 'activity': {
-                if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDeviceActivity(level1, level3, state, oldState);
+                if (typeof level4 != 'string') return;
+                this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
+                this.setResidentDeviceActivity(level1, level2, level4, state, oldState);
                 break;
             }
 
             case 'mood': {
-                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDeviceMood(level1, state, oldState);
+                this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
+                this.setResidentDeviceMood(level1, level2, state, oldState);
                 break;
             }
 
             case 'presence': {
-                if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDevicePresence(level1, level3, state, oldState);
+                if (typeof level4 != 'string') return;
+                this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
+                this.setResidentDevicePresence(level1, level2, level4, state, oldState);
                 break;
             }
 
             case 'presenceFollowing': {
-                if (typeof level3 != 'string') return;
-                this.log.debug(level1 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDevicePresenceFollowing(level1, level3, state, oldState);
+                if (typeof level4 != 'string') return;
+                this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
+                this.setResidentDevicePresenceFollowing(level1, level2, level4, state, oldState);
                 break;
             }
 
             default: {
-                this.log.error(level1 + ': Controlling unknown channel ' + level2);
+                this.log.error(level2 + ': Controlling unknown channel ' + level3);
                 break;
             }
         }
@@ -2803,16 +2877,17 @@ class Residents extends utils.Adapter {
         const a = id.split('.');
         a.shift(); // adapter name
         a.shift(); // adapter instance
-        const level1 = a.shift(); // first level ID
+        a.shift(); // first level ID
         const level2 = a.shift(); // second level ID
         const level3 = a.shift(); // third level ID
+        const level4 = a.shift(); // fourth level ID
 
         // const oldState = this.states[id];
         this.states[id] = state;
 
-        switch (level2) {
+        switch (level3) {
             case 'activity': {
-                if (level3 == 'state') {
+                if (level4 == 'state') {
                     this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
@@ -2821,14 +2896,14 @@ class Residents extends utils.Adapter {
 
             case 'enabled': {
                 if (state.val == true) {
-                    this.log.debug(this.namespace + ": Received ack'ed enablement of " + level1);
+                    this.log.debug(this.namespace + ": Received ack'ed enablement of " + level2);
                     this.setResidentsSummary();
                 }
                 break;
             }
 
             case 'mood': {
-                if (level3 == 'state') {
+                if (level4 == 'state') {
                     this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
@@ -2836,7 +2911,7 @@ class Residents extends utils.Adapter {
             }
 
             case 'presence': {
-                if (level3 == 'state') {
+                if (level4 == 'state') {
                     this.log.debug(this.namespace + ": Received ack'ed update of " + id + ': ' + state.val);
                     this.setResidentsSummary();
                 }
@@ -2857,16 +2932,18 @@ class Residents extends utils.Adapter {
     /**
      * Update all activity states for a particular residents device
      *
+     * @param {string} residentType
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
      */
-    async setResidentDeviceActivity(device, command, state, oldState) {
-        const enabledState = await this.getStateAsync(device + '.enabled');
-        const presenceState = await this.getStateAsync(device + '.presence.state');
-        const activityState = await this.getStateAsync(device + '.activity.state');
-        const dndState = await this.getStateAsync(device + '.activity.dnd');
+    async setResidentDeviceActivity(residentType, device, command, state, oldState) {
+        const id = residentType + '.' + device;
+        const enabledState = await this.getStateAsync(id + '.enabled');
+        const presenceState = await this.getStateAsync(id + '.presence.state');
+        const activityState = await this.getStateAsync(id + '.activity.state');
+        const dndState = await this.getStateAsync(id + '.activity.dnd');
         if (
             !enabledState ||
             !presenceState ||
@@ -2935,14 +3012,14 @@ class Residents extends utils.Adapter {
                 if (presenceState.val == 2) {
                     if (state.val >= 10000) state.val -= 10000;
                     if (dndState.val == false) {
-                        await this.setStateAsync(device + '.activity.dnd', { val: true, ack: true });
+                        await this.setStateAsync(id + '.activity.dnd', { val: true, ack: true });
                     }
                 }
 
                 // Reflect DND in state value when at home and awake
                 else if (presenceState.val == 1) {
                     if (oldState.val >= 2000) {
-                        await this.setStateAsync(device + '.activity.dnd', { val: false, ack: true });
+                        await this.setStateAsync(id + '.activity.dnd', { val: false, ack: true });
                         dndState.val = false;
                     }
                     if (dndState.val == true && state.val < 10000) {
@@ -2956,31 +3033,31 @@ class Residents extends utils.Adapter {
                 else {
                     if (state.val >= 10000) state.val -= 10000;
                     if (dndState.val == true) {
-                        await this.setStateAsync(device + '.activity.dnd', { val: false, ack: true });
+                        await this.setStateAsync(id + '.activity.dnd', { val: false, ack: true });
                     }
                 }
 
-                await this.setStateAsync(device + '.activity.awake', { val: stateAwake, ack: true });
-                await this.setStateAsync(device + '.activity.bedtime', { val: stateBedtime, ack: true });
-                await this.setStateAsync(device + '.activity.wakeup', { val: stateWakeup, ack: true });
-                await this.setStateAsync(device + '.activity.wayhome', { val: stateWayhome, ack: true });
+                await this.setStateAsync(id + '.activity.awake', { val: stateAwake, ack: true });
+                await this.setStateAsync(id + '.activity.bedtime', { val: stateBedtime, ack: true });
+                await this.setStateAsync(id + '.activity.wakeup', { val: stateWakeup, ack: true });
+                await this.setStateAsync(id + '.activity.wayhome', { val: stateWayhome, ack: true });
 
                 state.ack = true;
-                await this.setStateAsync(device + '.activity.state', state);
+                await this.setStateAsync(id + '.activity.state', state);
 
                 // Only take over focus value between 1000 and 1900
                 if (state.val >= 10000) state.val -= 10000;
                 if (state.val < 1000 || state.val >= 1900) state.val = 1000;
-                await this.setStateAsync(device + '.activity.focus', state);
+                await this.setStateAsync(id + '.activity.focus', state);
 
                 if (presenceState.val == 2 && changePresenceToHome) {
-                    await this.setStateAsync(device + '.presence.night', { val: false, ack: true });
-                    await this.setStateAsync(device + '.presence.state', { val: 1, ack: true });
+                    await this.setStateAsync(id + '.presence.night', { val: false, ack: true });
+                    await this.setStateAsync(id + '.presence.state', { val: 1, ack: true });
                 } else if (presenceState.val > 0 && changePresenceToAway) {
-                    await this.setStateAsync(device + '.presence.night', { val: false, ack: true });
-                    await this.setStateAsync(device + '.presence.home', { val: false, ack: true });
-                    await this.setStateAsync(device + '.presence.away', { val: true, ack: true });
-                    await this.setStateAsync(device + '.presence.state', { val: 0, ack: true });
+                    await this.setStateAsync(id + '.presence.night', { val: false, ack: true });
+                    await this.setStateAsync(id + '.presence.home', { val: false, ack: true });
+                    await this.setStateAsync(id + '.presence.away', { val: true, ack: true });
+                    await this.setStateAsync(id + '.presence.state', { val: 0, ack: true });
                 }
                 break;
             }
@@ -2991,7 +3068,7 @@ class Residents extends utils.Adapter {
                     state.ack = true;
                     state.val = oldState.val;
                     state.q = 0x40;
-                    await this.setStateAsync(device + '.activity.awake', state);
+                    await this.setStateAsync(id + '.activity.awake', state);
                 } else {
                     let newActivityVal = 1000;
                     if (state.val == true) {
@@ -3010,6 +3087,7 @@ class Residents extends utils.Adapter {
                         newActivityVal = 2020;
                     }
                     this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
@@ -3031,6 +3109,7 @@ class Residents extends utils.Adapter {
                         newActivityVal = 1902;
                     }
                     this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
@@ -3040,7 +3119,7 @@ class Residents extends utils.Adapter {
                     this.log.warn(device + ': Presence at home is required to start bedtime process');
                     state.val = 0;
                     state.q = 0x40;
-                    await this.setStateAsync(device + '.activity.bedtime', state);
+                    await this.setStateAsync(id + '.activity.bedtime', state);
                 }
                 break;
             }
@@ -3057,13 +3136,14 @@ class Residents extends utils.Adapter {
                     state.q = 0x40;
                 } else {
                     this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         { val: activityState.val, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
                         activityState,
                     );
                 }
-                await this.setStateAsync(device + '.activity.dnd', state);
+                await this.setStateAsync(id + '.activity.dnd', state);
                 break;
             }
 
@@ -3074,17 +3154,17 @@ class Residents extends utils.Adapter {
                         this.log.info(
                             device + ' opted in to the overnight stay and therefore is automatically re-enabled',
                         );
-                        await this.setStateAsync(device + '.enabled', { val: true, ack: true });
+                        await this.setStateAsync(id + '.enabled', { val: true, ack: true });
                     }
                 } else if (presenceState.val == 0 && enabledState.val == true) {
                     this.log.info(
                         device +
                             ' has logged out of the overnight stay and therefore automatically deactivated because of being away right now',
                     );
-                    await this.setStateAsync(device + '.enabled', { val: false, ack: true });
-                    await this.setStateChangedAsync(device + '.activity.wayhome', { val: false, ack: false });
+                    await this.setStateAsync(id + '.enabled', { val: false, ack: true });
+                    await this.setStateChangedAsync(id + '.activity.wayhome', { val: false, ack: false });
                 }
-                await this.setStateAsync(device + '.activity.overnight', state);
+                await this.setStateAsync(id + '.activity.overnight', state);
                 await this.setResidentsSummary();
                 break;
             }
@@ -3092,12 +3172,12 @@ class Residents extends utils.Adapter {
             case 'focus': {
                 state.ack = true;
                 if (presenceState.val == 1) {
-                    this.setResidentDeviceActivity(device, 'state', state, activityState);
+                    this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
                 } else {
                     this.log.warn(device + ': Focus can only be controlled during waking time at home');
                     state.val = oldState.val;
                     state.q = 0x40;
-                    await this.setStateAsync(device + '.activity.focus', state);
+                    await this.setStateAsync(id + '.activity.focus', state);
                 }
                 break;
             }
@@ -3105,11 +3185,12 @@ class Residents extends utils.Adapter {
             case 'wakeup': {
                 state.ack = true;
                 if (presenceState.val == 2) {
-                    await this.setStateAsync(device + '.activity.wakeup', state);
+                    await this.setStateAsync(id + '.activity.wakeup', state);
                     let newActivityVal = activityState.val >= 2100 ? 2200 : 1000;
                     if (state.val == true)
                         newActivityVal = activityState.val >= 2100 ? Number(activityState.val) : 2100;
                     this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
@@ -3121,7 +3202,7 @@ class Residents extends utils.Adapter {
                         state.val = false;
                         state.q = 0x40;
                     }
-                    await this.setStateAsync(device + '.activity.wakeup', state);
+                    await this.setStateAsync(id + '.activity.wakeup', state);
                 }
                 break;
             }
@@ -3133,6 +3214,7 @@ class Residents extends utils.Adapter {
                     let newActivityVal = Number(activityState.val);
                     if (activityState.val < 2105) newActivityVal++;
                     this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
@@ -3143,7 +3225,7 @@ class Residents extends utils.Adapter {
                     state.val = true;
                     state.q = 0x41;
                 }
-                await this.setStateAsync(device + '.activity.wakeupSnooze', state);
+                await this.setStateAsync(id + '.activity.wakeupSnooze', state);
                 break;
             }
 
@@ -3154,19 +3236,19 @@ class Residents extends utils.Adapter {
                     state.ack = true;
                     state.val = oldState.val;
                     state.q = 0x40;
-                    await this.setStateAsync(device + '.activity.wayhome', state);
+                    await this.setStateAsync(id + '.activity.wayhome', state);
                     break;
                 }
 
                 let newActivityVal = 0;
                 if (state.val == true) {
-                    if (enabledState.val == false)
-                        await this.setStateAsync(device + '.enabled', { val: true, ack: true });
+                    if (enabledState.val == false) await this.setStateAsync(id + '.enabled', { val: true, ack: true });
                     newActivityVal = 2;
                 } else if (enabledState.val == true) {
                     newActivityVal = 1;
                 }
                 this.setResidentDeviceActivity(
+                    residentType,
                     device,
                     'state',
                     { val: newActivityVal, ack: false, ts: state.ts, lc: activityState.lc, from: state.from },
@@ -3185,11 +3267,13 @@ class Residents extends utils.Adapter {
     /**
      * Update all mood states for a particular residents device
      *
+     * @param {string} residentType
      * @param {string} device
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
      */
-    async setResidentDeviceMood(device, state, oldState) {
+    async setResidentDeviceMood(residentType, device, state, oldState) {
+        const id = residentType + '.' + device;
         const presenceState = await this.getStateAsync(device + '.presence.state');
         if (!presenceState || presenceState.val == undefined) return;
         if (!oldState) oldState = state;
@@ -3201,23 +3285,24 @@ class Residents extends utils.Adapter {
         }
 
         state.ack = true;
-        await this.setStateAsync(device + '.mood.state', state);
+        await this.setStateAsync(id + '.mood.state', state);
     }
 
     /**
      * Update all presence states for a particular residents device
      *
+     * @param {string} residentType
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
      */
-    async setResidentDevicePresence(device, command, state, oldState) {
-        const enabledState = await this.getStateAsync(device + '.enabled');
-        const presenceState = await this.getStateAsync(device + '.presence.state');
-        const activityState = await this.getStateAsync(device + '.activity.state');
-        const overnightState = await this.getStateAsync(device + '.activity.overnight');
-        const residentType = (await this.getObjectAsync(device))?.native.type;
+    async setResidentDevicePresence(residentType, device, command, state, oldState) {
+        const id = residentType + '.' + device;
+        const enabledState = await this.getStateAsync(id + '.enabled');
+        const presenceState = await this.getStateAsync(id + '.presence.state');
+        const activityState = await this.getStateAsync(id + '.activity.state');
+        const overnightState = await this.getStateAsync(id + '.activity.overnight');
         if (!enabledState || !presenceState || presenceState.val == undefined) return;
 
         if (
@@ -3240,7 +3325,7 @@ class Residents extends utils.Adapter {
                 // Disable immediately if no overnight stay planned
                 if (overnightState && overnightState.val == false && state.val == 0) {
                     this.log.info(device + ' disabled during away event due to planned absence this night');
-                    await this.setStateChangedAsync(device + '.enabled', { val: false, ack: true });
+                    await this.setStateChangedAsync(id + '.enabled', { val: false, ack: true });
                     enabledState.val = false;
                 }
 
@@ -3250,7 +3335,7 @@ class Residents extends utils.Adapter {
 
                 // Always reset mood if presence state was changed
                 if (residentType != 'pet' && state.val != oldState.val) {
-                    await this.setStateChangedAsync(device + '.mood.state', { val: 0, ack: true });
+                    await this.setStateChangedAsync(id + '.mood.state', { val: 0, ack: true });
                 }
 
                 // When present at home
@@ -3299,7 +3384,7 @@ class Residents extends utils.Adapter {
                         }
                     }
 
-                    await this.setStateChangedAsync(device + '.enabled', { val: true, ack: true });
+                    await this.setStateChangedAsync(id + '.enabled', { val: true, ack: true });
                 } else {
                     // Keep any absence activity
                     if (
@@ -3312,15 +3397,16 @@ class Residents extends utils.Adapter {
                     }
                 }
 
-                await this.setStateAsync(device + '.presence.home', { val: stateHome, ack: true });
-                await this.setStateAsync(device + '.presence.away', { val: !stateHome, ack: true });
+                await this.setStateAsync(id + '.presence.home', { val: stateHome, ack: true });
+                await this.setStateAsync(id + '.presence.away', { val: !stateHome, ack: true });
                 if (residentType != 'pet') {
-                    await this.setStateAsync(device + '.presence.night', { val: stateNight, ack: true });
+                    await this.setStateAsync(id + '.presence.night', { val: stateNight, ack: true });
                 }
                 state.ack = true;
-                await this.setStateAsync(device + '.presence.state', state);
+                await this.setStateAsync(id + '.presence.state', state);
                 if (activityState) {
                     await this.setResidentDeviceActivity(
+                        residentType,
                         device,
                         'state',
                         {
@@ -3339,9 +3425,9 @@ class Residents extends utils.Adapter {
             case 'home': {
                 state.val = state.val == true ? 1 : 0;
                 if (this.initialized) {
-                    await this.setStateAsync(device + '.presence.state', state);
+                    await this.setStateAsync(id + '.presence.state', state);
                 } else {
-                    this.setResidentDevicePresence(device, 'state', state);
+                    this.setResidentDevicePresence(residentType, device, 'state', state);
                 }
                 break;
             }
@@ -3352,18 +3438,18 @@ class Residents extends utils.Adapter {
                 } else {
                     state.val = presenceState.val > 0 ? 1 : 0;
                 }
-                await this.setStateAsync(device + '.presence.state', state);
+                await this.setStateAsync(id + '.presence.state', state);
                 break;
             }
 
             case 'away': {
                 state.val = state.val == true ? 0 : 1;
-                await this.setStateAsync(device + '.presence.state', state);
+                await this.setStateAsync(id + '.presence.state', state);
                 break;
             }
 
             default: {
-                this.log.warn(device + ': Controlling unknown presence ' + command);
+                this.log.warn(id + ': Controlling unknown presence ' + command);
                 break;
             }
         }
@@ -3372,15 +3458,17 @@ class Residents extends utils.Adapter {
     /**
      * Update all follow-them presence states for a particular residents device
      *
+     * @param {string} residentType
      * @param {string} device
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
      */
-    async setResidentDevicePresenceFollowing(device, command, state, oldState) {
+    async setResidentDevicePresenceFollowing(residentType, device, command, state, oldState) {
+        const id = residentType + '.' + device;
         if (!oldState) oldState = state;
         state.ack = true;
-        await this.setStateChangedAsync(device + '.presenceFollowing.' + command, state);
+        await this.setStateChangedAsync(id + '.presenceFollowing.' + command, state);
     }
 
     /**
@@ -3535,26 +3623,27 @@ class Residents extends utils.Adapter {
     }
 
     /**
+     * @param {string} residentType
      * @param {string} device
      * @param {ioBroker.State} state
      * @param {ioBroker.State} oldState
      */
-    async enableResidentDevice(device, state, oldState) {
-        await this.setStateAsync(device + '.enabled', { val: state.val, ack: true, from: state.from });
-        const residentType = (await this.getObjectAsync(device))?.native.type;
+    async enableResidentDevice(residentType, device, state, oldState) {
+        const id = residentType + '.' + device;
+        await this.setStateAsync(id + '.enabled', { val: state.val, ack: true, from: state.from });
         if (oldState.val != state.val) {
             if (state.val == true) {
                 if (residentType != 'pet') {
-                    oldState.val = this.states[device + '.activity.state'];
+                    oldState.val = this.states[id + '.activity.state'];
                     state.val = 1;
-                    this.states[device + '.activity.state'] = state.val;
-                    await this.setResidentDeviceActivity(device, 'state', state, oldState);
+                    this.states[id + '.activity.state'] = state.val;
+                    await this.setResidentDeviceActivity(id, 'state', state, oldState);
                 }
             } else {
-                oldState.val = this.states[device + '.presence.state'];
+                oldState.val = this.states[id + '.presence.state'];
                 state.val = 0;
-                this.states[device + '.presence.state'] = state.val;
-                await this.setResidentDevicePresence(device, 'state', state, oldState);
+                this.states[id + '.presence.state'] = state.val;
+                await this.setResidentDevicePresence(id, 'state', state, oldState);
             }
         }
     }
@@ -4143,7 +4232,7 @@ class Residents extends utils.Adapter {
         }
 
         // Create new timeout
-        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.DisableAbsentResidentsDailyTimer);
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.disableAbsentResidentsDailyTimer);
         if (runtimeMilliseconds != null) {
             this.log.debug(
                 `Creating absent timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(
@@ -4211,7 +4300,7 @@ class Residents extends utils.Adapter {
         }
 
         // Create new timeout
-        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.ResetOvernightDailyTimer);
+        const runtimeMilliseconds = this.getMillisecondsUntilTime(this.config.resetOvernightDailyTimer);
         if (runtimeMilliseconds != null) {
             this.log.debug(
                 `Creating overnight reset timeout in ${runtimeMilliseconds}ms (${this.convertMillisecondsToDuration(

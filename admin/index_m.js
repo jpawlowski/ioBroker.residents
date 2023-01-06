@@ -3,6 +3,11 @@
 /* eslint-env jquery, browser */ // https://eslint.org/docs/user-guide/configuring#specifying-environments
 /* global values2table, table2values, M */ // for eslint
 
+let residentialStates = [];
+let moodStates = [];
+let activityStates = [];
+let focusStates = [];
+let customFocusStates = [];
 let roomie = [];
 let guest = [];
 let pet = [];
@@ -36,6 +41,11 @@ function load(settings, onChange) {
         }
     }
 
+    residentialStates = settings.residentialStates || [];
+    moodStates = settings.moodStates || [];
+    activityStates = settings.activityStates || [];
+    focusStates = settings.focusStates || [];
+    customFocusStates = settings.customFocusStates || [];
     roomie = settings.roomie || [];
     guest = settings.guest || [];
     pet = settings.pet || [];
@@ -45,6 +55,11 @@ function load(settings, onChange) {
         setValue(key, settings[key], onChange);
     }
 
+    values2table('residentialStates', residentialStates, onChange);
+    values2table('moodStates', moodStates, onChange);
+    values2table('activityStates', activityStates, onChange);
+    values2table('focusStates', focusStates, onChange);
+    values2table('customFocusStates', customFocusStates, onChange);
     values2table('roomie', roomie, onChange);
     values2table('guest', guest, onChange);
     values2table('pet', pet, onChange);
@@ -102,6 +117,11 @@ function save(callback) {
     });
 
     // Get edited table
+    obj.residentialStates = table2values('residentialStates');
+    obj.moodStates = table2values('moodStates');
+    obj.activityStates = table2values('activityStates');
+    obj.focusStates = table2values('focusStates');
+    obj.customFocusStates = table2values('customFocusStates');
     obj.roomie = table2values('roomie');
     obj.guest = table2values('guest');
     obj.pet = table2values('pet');
