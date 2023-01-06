@@ -3582,35 +3582,25 @@ class Residents extends utils.Adapter {
 
         // Presence update
         else if (this.presenceSubscriptionMapping[id]) {
-            for (const device in this.presenceSubscriptionMapping[id]) {
+            for (const deviceId in this.presenceSubscriptionMapping[id]) {
+                const device = this.wayhomeSubscriptionMapping[id][deviceId].split('.');
                 if (this.initialized)
-                    this.log.info(
-                        id +
-                            ': Detected presence update for ' +
-                            this.presenceSubscriptionMapping[id][device] +
-                            ': ' +
-                            presence,
-                    );
+                    this.log.info(id + ': Detected presence update for ' + device[1] + ': ' + presence);
                 state.val = presence;
                 state.ack = false;
-                await this.setResidentDevicePresence(this.presenceSubscriptionMapping[id][device], 'home', state);
+                await this.setResidentDevicePresence(device[0], device[1], 'home', state);
             }
         }
 
         // Way Home activity update
         else if (this.wayhomeSubscriptionMapping[id]) {
-            for (const device in this.wayhomeSubscriptionMapping[id]) {
+            for (const deviceId in this.wayhomeSubscriptionMapping[id]) {
+                const device = this.wayhomeSubscriptionMapping[id][deviceId].split('.');
                 if (this.initialized)
-                    this.log.info(
-                        id +
-                            ': Detected way home update for ' +
-                            this.wayhomeSubscriptionMapping[id][device] +
-                            ': ' +
-                            presence,
-                    );
+                    this.log.info(id + ': Detected way home update for ' + device[1] + ': ' + presence);
                 state.val = presence;
                 state.ack = false;
-                await this.setResidentDeviceActivity(this.wayhomeSubscriptionMapping[id][device], 'wayhome', state);
+                await this.setResidentDeviceActivity(device[0], device[1], 'wayhome', state);
             }
         } else {
             this.log.error(id + ': Presence update event has no matching device');
@@ -3635,13 +3625,13 @@ class Residents extends utils.Adapter {
                     oldState.val = this.states[id + '.activity.state'];
                     state.val = 1;
                     this.states[id + '.activity.state'] = state.val;
-                    await this.setResidentDeviceActivity(id, 'state', state, oldState);
+                    await this.setResidentDeviceActivity(residentType, device, 'state', state, oldState);
                 }
             } else {
                 oldState.val = this.states[id + '.presence.state'];
                 state.val = 0;
                 this.states[id + '.presence.state'] = state.val;
-                await this.setResidentDevicePresence(id, 'state', state, oldState);
+                await this.setResidentDevicePresence(residentType, device, 'state', state, oldState);
             }
         }
     }
