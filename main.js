@@ -3272,7 +3272,7 @@ class Residents extends utils.Adapter {
      */
     async setResidentDeviceMood(residentType, device, state, oldState) {
         const id = residentType + '.' + device;
-        const presenceState = await this.getStateAsync(device + '.presence.state');
+        const presenceState = await this.getStateAsync(id + '.presence.state');
         if (!presenceState || presenceState.val == undefined) return;
         if (!oldState) oldState = state;
 
