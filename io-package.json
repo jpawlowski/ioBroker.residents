@@ -119,48 +119,190 @@
         "roomie": [],
         "guest": [],
         "pet": [],
-        "stateTranslations": [{ "icon": "🔲", "text": "Off" }],
+        "stateTranslations": [
+            {
+                "icon": "🔲",
+                "text": "Off"
+            }
+        ],
         "residentialStates": [
-            { "icon": "🛫", "text": "Extended Absence" },
-            { "icon": "⏸️", "text": "Away" },
-            { "icon": "🐶", "text": "Pet Care" },
-            { "icon": "⏱️", "text": "Way Home" },
-            { "icon": "🏠", "text": "Home" },
-            { "icon": "🚫", "text": "Do Not Disturb" },
-            { "icon": "🧘", "text": "Wind Down" },
-            { "icon": "🛌", "text": "Bedtime" },
-            { "icon": "🛏️", "text": "Got Up" },
-            { "icon": "🥱", "text": "Night Walk" },
-            { "icon": "⏰", "text": "Wake Up" },
-            { "icon": "💤", "text": "Night" }
+            {
+                "icon": "🛫",
+                "text": "Extended Absence"
+            },
+            {
+                "icon": "⏸️",
+                "text": "Away"
+            },
+            {
+                "icon": "🐶",
+                "text": "Pet Care"
+            },
+            {
+                "icon": "⏱️",
+                "text": "Way Home"
+            },
+            {
+                "icon": "🏠",
+                "text": "Home"
+            },
+            {
+                "icon": "🚫",
+                "text": "Do Not Disturb"
+            },
+            {
+                "icon": "🧘",
+                "text": "Wind Down"
+            },
+            {
+                "icon": "🛌",
+                "text": "Bedtime"
+            },
+            {
+                "icon": "🛏️",
+                "text": "Got Up"
+            },
+            {
+                "icon": "🥱",
+                "text": "Night Walk"
+            },
+            {
+                "icon": "⏰",
+                "text": "Wake Up"
+            },
+            {
+                "icon": "💤",
+                "text": "Night"
+            }
         ],
         "moodStates": [
-            { "icon": "🔺🔺🔺🔺🔺", "text": "Couldn't Get Worse" },
-            { "icon": "🔺🔺🔺🔺", "text": "Extraordinary Bad" },
-            { "icon": "🔺🔺🔺", "text": "Extremely Bad" },
-            { "icon": "🔸🔸", "text": "Pretty Bad" },
-            { "icon": "🔸", "text": "Somewhat Not Good" },
-            { "icon": "☯️", "text": "Balanced" },
-            { "icon": "⭐", "text": "Somewhat Okay" },
-            { "icon": "⭐⭐", "text": "Pretty Good" },
-            { "icon": "⭐⭐⭐", "text": "Extremely Good" },
-            { "icon": "🌟🌟🌟🌟", "text": "Extraordinary Good" },
-            { "icon": "🌟🌟🌟🌟🌟", "text": "Couldn't Be Better" }
+            {
+                "icon": "🔺🔺🔺🔺🔺",
+                "text": "Couldn't Get Worse"
+            },
+            {
+                "icon": "🔺🔺🔺🔺",
+                "text": "Extraordinary Bad"
+            },
+            {
+                "icon": "🔺🔺🔺",
+                "text": "Extremely Bad"
+            },
+            {
+                "icon": "🔸🔸",
+                "text": "Pretty Bad"
+            },
+            {
+                "icon": "🔸",
+                "text": "Somewhat Not Good"
+            },
+            {
+                "icon": "☯️",
+                "text": "Balanced"
+            },
+            {
+                "icon": "⭐",
+                "text": "Somewhat Okay"
+            },
+            {
+                "icon": "⭐⭐",
+                "text": "Pretty Good"
+            },
+            {
+                "icon": "⭐⭐⭐",
+                "text": "Extremely Good"
+            },
+            {
+                "icon": "🌟🌟🌟🌟",
+                "text": "Extraordinary Good"
+            },
+            {
+                "icon": "🌟🌟🌟🌟🌟",
+                "text": "Couldn't Be Better"
+            }
         ],
         "activityStates": [
-            { "id": 1901, "icon": "🪥", "text": "Getting to Bed" },
-            { "id": 2000, "icon": "😴", "text": "Sleeping" },
-            { "id": 2020, "icon": "😴", "text": "Asleep again" }
+            {
+                "id": 1901,
+                "icon": "🪥",
+                "text": "Getting to Bed"
+            },
+            {
+                "id": 2000,
+                "icon": "😴",
+                "text": "Sleeping"
+            },
+            {
+                "id": 2020,
+                "icon": "😴",
+                "text": "Asleep again"
+            }
         ],
         "focusStates": [
-            { "enabled": true, "icon": "👤", "text": "Personal", "dnd": true, "home": true, "away": false },
-            { "enabled": true, "icon": "💼", "text": "Work", "dnd": false, "home": true, "away": true },
-            { "enabled": true, "icon": "🧘", "text": "Mindfulness", "dnd": true, "home": true, "away": false },
-            { "enabled": true, "icon": "💪", "text": "Fitness", "dnd": true, "home": true, "away": true },
-            { "enabled": true, "icon": "📙", "text": "Reading", "dnd": false, "home": true, "away": false },
-            { "enabled": true, "icon": "🚀", "text": "Gaming", "dnd": false, "home": true, "away": false },
-            { "enabled": true, "icon": "🚘", "text": "Driving", "dnd": false, "home": false, "away": true },
-            { "enabled": true, "icon": "🛒", "text": "Shopping", "dnd": false, "home": false, "away": true }
+            {
+                "enabled": true,
+                "icon": "👤",
+                "text": "Personal",
+                "dnd": true,
+                "home": true,
+                "away": false
+            },
+            {
+                "enabled": true,
+                "icon": "💼",
+                "text": "Work",
+                "dnd": false,
+                "home": true,
+                "away": true
+            },
+            {
+                "enabled": true,
+                "icon": "🧘",
+                "text": "Mindfulness",
+                "dnd": true,
+                "home": true,
+                "away": false
+            },
+            {
+                "enabled": true,
+                "icon": "💪",
+                "text": "Fitness",
+                "dnd": true,
+                "home": true,
+                "away": true
+            },
+            {
+                "enabled": true,
+                "icon": "📙",
+                "text": "Reading",
+                "dnd": false,
+                "home": true,
+                "away": false
+            },
+            {
+                "enabled": true,
+                "icon": "🚀",
+                "text": "Gaming",
+                "dnd": false,
+                "home": true,
+                "away": false
+            },
+            {
+                "enabled": true,
+                "icon": "🚘",
+                "text": "Driving",
+                "dnd": false,
+                "home": false,
+                "away": true
+            },
+            {
+                "enabled": true,
+                "icon": "🛒",
+                "text": "Shopping",
+                "dnd": false,
+                "home": false,
+                "away": true
+            }
         ],
         "customFocusStates": []
     },
