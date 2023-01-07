@@ -3,6 +3,7 @@
 /* eslint-env jquery, browser */ // https://eslint.org/docs/user-guide/configuring#specifying-environments
 /* global values2table, table2values, M */ // for eslint
 
+let stateTranslations = [];
 let residentialStates = [];
 let moodStates = [];
 let activityStates = [];
@@ -41,6 +42,7 @@ function load(settings, onChange) {
         }
     }
 
+    stateTranslations = settings.stateTranslations || [];
     residentialStates = settings.residentialStates || [];
     moodStates = settings.moodStates || [];
     activityStates = settings.activityStates || [];
@@ -55,6 +57,7 @@ function load(settings, onChange) {
         setValue(key, settings[key], onChange);
     }
 
+    values2table('stateTranslations', stateTranslations, onChange);
     values2table('residentialStates', residentialStates, onChange);
     values2table('moodStates', moodStates, onChange);
     values2table('activityStates', activityStates, onChange);
@@ -117,6 +120,7 @@ function save(callback) {
     });
 
     // Get edited table
+    obj.stateTranslations = table2values('stateTranslations');
     obj.residentialStates = table2values('residentialStates');
     obj.moodStates = table2values('moodStates');
     obj.activityStates = table2values('activityStates');

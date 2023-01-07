@@ -212,17 +212,20 @@ class Residents extends utils.Adapter {
         const residentialLang = residentialStateTexts[this.language]
             ? residentialStateTexts[this.language]
             : residentialStateTexts['en'];
-        const residentialStates = {};
+        const residentialStates = {
+            0: '',
+        };
         for (const i in residentialLang) {
             residentialLang[i] = {
                 text:
+                    this.config.residentialStates != undefined &&
                     this.config.residentialStates[i].text != '' &&
                     this.config.residentialStates[i].text != residentialStateTexts['en'][i]
                         ? this.config.residentialStates[i].text
                         : residentialLang[i],
             };
             residentialLang[i]['state'] = residentialLang[i].text;
-            if (this.config.residentialStates[i].icon != '') {
+            if (this.config.residentialStates != undefined && this.config.residentialStates[i].icon != '') {
                 residentialLang[i]['icon'] = this.config.residentialStates[i].icon;
                 residentialLang[i]['state'] = this.config.residentialStates[i].icon + ' ' + residentialLang[i].text;
             }
@@ -235,39 +238,175 @@ class Residents extends utils.Adapter {
             await this.setObjectAsync('state', currentObject);
         }
 
-        const moodStates = {
+        const moodStateTexts = {
             en: {
-                '-5': "🔺🔺🔺🔺🔺 Couldn't Get Worse",
-                '-4': '🔺🔺🔺🔺 Extraordinary Bad',
-                '-3': '🔺🔺🔺 Extremely Bad',
-                '-2': '🔸🔸 Pretty Bad',
-                '-1': '🔸 Somewhat Not Good',
-                0: '☯️ Balanced',
-                1: '⭐️ Somewhat Okay',
-                2: '⭐️⭐️ Pretty Good',
-                3: '⭐️⭐️⭐️ Extremely Good',
-                4: '🌟🌟🌟🌟 Extraordinary Good',
-                5: "🌟🌟🌟🌟🌟 Couldn't Be Better",
+                0: "Couldn't Get Worse",
+                1: 'Extraordinary Bad',
+                2: 'Extremely Bad',
+                3: 'Pretty Bad',
+                4: 'Somewhat Not Good',
+                5: 'Balanced',
+                6: 'Somewhat Okay',
+                7: 'Pretty Good',
+                8: 'Extremely Good',
+                9: 'Extraordinary Good',
+                10: "Couldn't Be Better",
             },
             de: {
-                '-5': '🔺🔺🔺🔺🔺 Könnte nicht schlimmer werden',
-                '-4': '🔺🔺🔺🔺 Außerordentlich schlecht',
-                '-3': '🔺🔺🔺 Äußerst schlecht',
-                '-2': '🔸🔸 Ziemlich schlecht',
-                '-1': '🔸 Nicht so gut',
-                0: '☯️ Ausgeglichen',
-                1: '⭐️ Einigermaßen okay',
-                2: '⭐️⭐️ Ziemlich gut',
-                3: '⭐️⭐️⭐️ Äußerst gut',
-                4: '🌟🌟🌟🌟 Außerordentlich gut',
-                5: '🌟🌟🌟🌟🌟 Könnte nicht besser sein',
+                0: 'Könnte nicht schlimmer werden',
+                1: 'Außerordentlich schlecht',
+                2: 'Äußerst schlecht',
+                3: 'Ziemlich schlecht',
+                4: 'Nicht so gut',
+                5: 'Ausgeglichen',
+                6: 'Einigermaßen okay',
+                7: 'Ziemlich gut',
+                8: 'Sehr gut',
+                9: 'Außerordentlich gut',
+                10: 'Könnte nicht besser sein',
+            },
+            ru: {
+                0: 'Не могли бы получить Worse',
+                1: 'Необычный Плохо',
+                2: 'Чрезвычайно плохо',
+                3: 'Очень плохо',
+                4: 'Что-то не хорошо',
+                5: 'сбалансированный',
+                6: 'Немного хорошо',
+                7: 'Довольно хорошо',
+                8: 'Чрезвычайно хорошо',
+                9: 'Необычный Хорошо',
+                10: 'Не может быть лучше',
+            },
+            pt: {
+                0: 'Não consegui ficar pior',
+                1: 'Mau Extraordinário',
+                2: 'Extremamente mau',
+                3: 'Muito mau',
+                4: 'Não é bom',
+                5: 'Equilibrado',
+                6: 'Alguma coisa bem',
+                7: 'Muito bem',
+                8: 'Extremamente bom',
+                9: 'Bem Extraordinário',
+                10: 'Não podia ser melhor',
+            },
+            nl: {
+                0: 'Kon Worse niet krijgen',
+                1: 'Buitengewoon slecht',
+                2: 'Extreem slecht',
+                3: 'Best',
+                4: 'Enigszins',
+                5: 'Gebalanceerd',
+                6: 'Enigszins oké',
+                7: 'Mooi',
+                8: 'Extreem goed',
+                9: 'Buitengewoon goed',
+                10: 'Kon niet beter',
+            },
+            fr: {
+                0: 'Ça ne pourrait pas être pire',
+                1: 'Extraordinairement mauvais',
+                2: 'Extrêmement mauvais',
+                3: 'Pas mal',
+                4: "C'est pas bon",
+                5: 'Équilibré',
+                6: 'Assez bien',
+                7: 'Plutôt bien',
+                8: 'Très bien',
+                9: 'Bien extraordinaire',
+                10: 'Ça ne pourrait pas être mieux',
+            },
+            it: {
+                0: 'Non potrebbe essere peggio',
+                1: 'Scarsa straordinaria',
+                2: 'Estremamente cattivo',
+                3: 'Abbastanza',
+                4: 'Qualcosa che non va"',
+                5: 'Equilibrato',
+                6: "Un po' ok",
+                7: 'Bello',
+                8: 'Estremamente buono',
+                9: 'Buono straordinario',
+                10: 'Non potrebbe essere meglio',
+            },
+            es: {
+                0: 'No podría ponerse peor',
+                1: 'Extraordinario malo',
+                2: 'Muy malo',
+                3: 'Bastante mal',
+                4: 'Algo que no es bueno',
+                5: 'Equilibrado',
+                6: 'Algo bien',
+                7: 'Muy bien',
+                8: 'Muy bueno',
+                9: 'Bien extraordinario',
+                10: 'No podría ser mejor',
+            },
+            pl: {
+                0: 'Nie mogło być gorzej',
+                1: 'Nadzwyczajny',
+                2: 'Badacze',
+                3: 'Całkiem źle',
+                4: 'Niedobrze',
+                5: 'Zrównoważony',
+                6: 'Trochę w porządku',
+                7: 'Całkiem dobrze',
+                8: 'Dobro',
+                9: 'Dobry nadzwyczajny',
+                10: 'Nie mogło być lepiej',
+            },
+            uk: {
+                0: 'Чи не побоюватися',
+                1: 'Поганий',
+                2: 'Надзвичайно Поганий',
+                3: 'Гарненька Поганий',
+                4: 'Що не добре',
+                5: 'збалансований',
+                6: 'Дещо нормально',
+                7: 'Гарненька Добре',
+                8: 'Надзвичайно Добре',
+                9: 'Надзвичайне добро',
+                10: 'Не можна краще',
+            },
+            'zh-cn': {
+                0: '没有比这更糟糕的了',
+                1: '特设包',
+                2: '极力包',
+                3: '序言',
+                4: '某些人',
+                5: '平衡',
+                6: '有点好',
+                7: '善意',
+                8: '极好',
+                9: '特 法',
+                10: '再好不过了',
             },
         };
-        const moodLang = moodStates[this.language] ? moodStates[this.language] : moodStates['en'];
+        const moodLang = moodStateTexts[this.language] ? moodStateTexts[this.language] : moodStateTexts['en'];
+        const moodStates = {
+            0: '',
+        };
+        for (const key in moodLang) {
+            moodLang[key] = {
+                text:
+                    this.config.moodStates != undefined &&
+                    this.config.moodStates[key].text != '' &&
+                    this.config.moodStates[key].text != moodStateTexts['en'][key]
+                        ? this.config.moodStates[key].text
+                        : moodLang[key],
+            };
+            moodLang[key]['state'] = moodLang[key].text;
+            if (this.config.moodStates != undefined && this.config.moodStates[key].icon != '') {
+                moodLang[key]['icon'] = this.config.moodStates[key].icon;
+                moodLang[key]['state'] = this.config.moodStates[key].icon + ' ' + moodLang[key].text;
+            }
+            moodStates[key] = moodLang[key]['state'];
+        }
         // Update common.states
         currentObject = await this.getObjectAsync('mood');
         if (currentObject) {
-            currentObject.common.states = moodLang;
+            currentObject.common.states = moodStates;
             await this.setObjectAsync('mood', currentObject);
         }
 
@@ -359,11 +498,24 @@ class Residents extends utils.Adapter {
                 // @ts-ignore
                 objectTemplates.instanceObjects.filter((e) => e._id == 'state')[0],
             );
+            // Update common.states
+            currentObject = await this.getObjectAsync('group.state');
+            if (currentObject) {
+                currentObject.common.states = residentialStates;
+                await this.setObjectAsync('group.state', currentObject);
+            }
+
             await this.setObjectNotExistsAsync(
                 'group.mood',
                 // @ts-ignore
                 objectTemplates.instanceObjects.filter((e) => e._id == 'mood')[0],
             );
+            // Update common.states
+            currentObject = await this.getObjectAsync('group.mood');
+            if (currentObject) {
+                currentObject.common.states = moodStates;
+                await this.setObjectAsync('group.mood', currentObject);
+            }
 
             this.subscriptions.push('group.state');
             this.subscriptions.push('group.mood');
@@ -417,9 +569,11 @@ class Residents extends utils.Adapter {
                 'zh-cn': '访客设备',
             },
         };
+
         const residentTypes = ['roomie', 'pet', 'guest'];
         for (const i in residentTypes) {
             const residentType = residentTypes[i];
+            if (this.config[residentType] == undefined) continue;
             for (const i2 in this.config[residentType]) {
                 await this.setObjectNotExistsAsync(residentType, {
                     type: 'folder',
@@ -569,195 +723,414 @@ class Residents extends utils.Adapter {
                         native: {},
                     });
 
-                    const activityIcons = {
-                        // 000-0999: Not present at home / Away
-                        0: residentialLang[0].icon,
-                        1: residentialLang[1].icon,
-                        2: residentialLang[3].icon,
-
-                        // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-                        100: this.config.focusStates[0].icon,
-                        101: this.config.focusStates[1].icon,
-                        102: this.config.focusStates[2].icon,
-                        103: this.config.focusStates[3].icon,
-                        104: this.config.focusStates[4].icon,
-                        105: this.config.focusStates[5].icon,
-                        106: this.config.focusStates[6].icon,
-                        107: this.config.focusStates[7].icon,
-
-                        // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-                        1000: residentialLang[4].icon,
-
-                        // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-                        1100: this.config.focusStates[0].icon,
-                        1101: this.config.focusStates[1].icon,
-                        1102: this.config.focusStates[2].icon,
-                        1103: this.config.focusStates[3].icon,
-                        1104: this.config.focusStates[4].icon,
-                        1105: this.config.focusStates[5].icon,
-                        1106: this.config.focusStates[6].icon,
-                        1107: this.config.focusStates[7].icon,
-
-                        // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                        1900: residentialLang[6].icon,
-                        1901: residentialLang[6].icon,
-                        1902: residentialLang[7].icon,
-
-                        // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-                        2000: residentialLang[11].icon,
-                        2010: residentialLang[9].icon,
-                        2020: residentialLang[11].icon,
-                        2100: residentialLang[10].icon,
-                        2101: residentialLang[10].icon,
-                        2102: residentialLang[10].icon,
-                        2103: residentialLang[10].icon,
-                        2104: residentialLang[10].icon,
-                        2105: residentialLang[10].icon,
-
-                        // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                        2200: residentialLang[8].icon,
-                        2210: residentialLang[8].icon,
-                    };
-
                     const activityStateTexts = {
                         en: {
                             // 000-0999: Not present at home / Away
-                            0: 'Away: Extended Absence',
-                            1: 'Away: On the Road for Today',
-                            2: 'Away: Way Home',
+                            0: 'Extended Absence',
+                            1: 'On the Road for Today',
+                            2: 'Way Home',
 
                             // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            100: 'Away: Personal',
-                            101: 'Away: Work',
-                            102: 'Away: Mindfulness',
-                            103: 'Away: Fitness',
-                            104: 'Away: Reading',
-                            105: 'Away: Gaming',
-                            106: 'Away: Driving',
-                            107: 'Away: Shopping',
+                            100: 'Personal',
+                            101: 'Work',
+                            102: 'Mindfulness',
+                            103: 'Fitness',
+                            104: 'Reading',
+                            105: 'Gaming',
+                            106: 'Driving',
+                            107: 'Shopping',
 
                             // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
                             1000: 'Home',
 
                             // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            1100: 'Focus: Personal',
-                            1101: 'Focus: Work',
-                            1102: 'Focus: Mindfulness',
-                            1103: 'Focus: Fitness',
-                            1104: 'Focus: Reading',
-                            1105: 'Focus: Gaming',
-                            1106: 'Focus: Driving',
-                            1107: 'Focus: Shopping',
+                            1100: 'Personal',
+                            1101: 'Work',
+                            1102: 'Mindfulness',
+                            1103: 'Fitness',
+                            1104: 'Reading',
+                            1105: 'Gaming',
+                            1106: 'Driving',
+                            1107: 'Shopping',
 
                             // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                            1900: 'Wind Down: Preparing Bedtime',
-                            1901: 'Bedtime: Getting to Bed',
-                            1902: 'Night: In Bed',
+                            1900: 'Preparing Bedtime',
+                            1901: 'Getting to Bed',
+                            1902: 'In Bed',
 
                             // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-                            2000: 'Night: Sleeping',
+                            2000: 'Sleeping',
 
                             // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                            2010: 'Night: Awake during Night Time',
-                            2020: 'Night: Asleep again',
+                            2010: 'Awake during Night Time',
+                            2020: 'Asleep again',
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
-                            2100: 'Night: Wake-up Alarm',
-                            2101: 'Wake Up: 💤 Alarm Snooze',
-                            2102: 'Wake Up: 💤 Alarm Snooze',
-                            2103: 'Wake Up: 💤💤 Alarm Snooze',
-                            2104: 'Wake Up: 💤💤 Alarm Snooze',
-                            2105: 'Wake Up: 💤💤💤 Alarm Snooze',
+                            2100: 'Wake-up Alarm',
+                            2101: '💤 Alarm Snooze',
+                            2102: '💤 Alarm Snooze',
+                            2103: '💤💤 Alarm Snooze',
+                            2104: '💤💤 Alarm Snooze',
+                            2105: '💤💤💤 Alarm Snooze',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                            2200: 'Got Up: Awakening after Wake-up Alarm',
-                            2210: 'Got Up: Awakening',
+                            2200: 'Awakening after Wake-up Alarm',
+                            2210: 'Awakening',
                         },
                         de: {
                             // 000-0999: Not present at home / Away
-                            0: 'Abwesend: Längere Abwesenheit',
-                            1: 'Abwesend: Unterwegs für heute',
-                            2: 'Abwesend: Nachhauseweg',
+                            0: 'Längere Abwesenheit',
+                            1: 'Unterwegs für heute',
+                            2: 'Nachhauseweg',
 
                             // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            100: 'Abwesend: Zeit für mich',
-                            101: 'Abwesend: Arbeiten',
-                            102: 'Abwesend: Achtsamkeit',
-                            103: 'Abwesend: Fitness',
-                            104: 'Abwesend: Lesen',
-                            105: 'Abwesend: Spielen',
-                            106: 'Abwesend: Fahren',
-                            107: 'Abwesend: Shopping',
+                            100: 'Zeit für mich',
+                            101: 'Arbeiten',
+                            102: 'Achtsamkeit',
+                            103: 'Fitness',
+                            104: 'Lesen',
+                            105: 'Spielen',
+                            106: 'Fahren',
+                            107: 'Shopping',
 
                             // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
                             1000: 'zu Hause',
 
                             // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-                            1100: 'Fokus: Zeit für mich',
-                            1101: 'Fokus: Arbeiten',
-                            1102: 'Fokus: Achtsamkeit',
-                            1103: 'Fokus: Fitness',
-                            1104: 'Fokus: Lesen',
-                            1105: 'Fokus: Spielen',
+                            1100: 'Zeit für mich',
+                            1101: 'Arbeiten',
+                            1102: 'Achtsamkeit',
+                            1103: 'Fitness',
+                            1104: 'Lesen',
+                            1105: 'Spielen',
+                            1106: 'Fahren',
+                            1107: 'Shopping',
 
                             // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-                            1900: 'Entspannen: Auf Schlaf einstellen',
-                            1901: 'Schlafenszeit: Bettfertig machen',
-                            1902: 'Nacht: Im Bett',
+                            1900: 'Auf Schlaf einstellen',
+                            1901: 'Bettfertig machen',
+                            1902: 'Im Bett',
 
                             // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-                            2000: 'Nacht: Schlafen',
+                            2000: 'Schlafen',
 
                             // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-                            2010: 'Nacht: Wach während der Nacht',
-                            2020: 'Nacht: Wieder eingeschlafen',
+                            2010: 'Wach während der Nacht',
+                            2020: 'Wieder eingeschlafen',
 
                             // 2100-2199: SLEEPING TIME at home: While I should get up
-                            2100: 'Nacht: Weckalarm',
-                            2101: 'Wecker: 💤 Schlummern',
-                            2102: 'Wecker: 💤 Schlummern',
-                            2103: 'Wecker: 💤💤 Schlummern',
-                            2104: 'Wecker: 💤💤 Schlummern',
-                            2105: 'Wecker: 💤💤💤 Schlummern',
+                            2100: 'Weckalarm',
+                            2101: '💤 Schlummern',
+                            2102: '💤 Schlummern',
+                            2103: '💤💤 Schlummern',
+                            2104: '💤💤 Schlummern',
+                            2105: '💤💤💤 Schlummern',
 
                             // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-                            2200: 'Aufgestanden: Aufwachen nach Weckruf',
-                            2210: 'Aufgestanden: Aufwachen',
+                            2200: 'Aufwachen nach Weckruf',
+                            2210: 'Aufwachen',
                         },
-                    };
-
-                    const offIcon = '🔲';
-                    const offStates = {
-                        en: offIcon + ' Off',
-                        de: offIcon + ' Aus',
-                        ru: offIcon + 'С сайта',
-                        pt: offIcon + ' Desligado',
-                        nl: offIcon + ' Uit',
-                        fr: offIcon + ' Désactivé',
-                        it: offIcon + ' Spento',
-                        es: offIcon + ' Apagado',
-                        pl: offIcon + ' Wył.',
-                        uk: offIcon + ' Вимкнено',
-                        'zh-cn': offIcon + '关掉了',
                     };
 
                     const activityLang = activityStateTexts[this.language]
                         ? activityStateTexts[this.language]
-                        : activityStateTexts['en'];
-                    for (const i in activityLang) {
-                        activityLang[i] = activityIcons[i] + ' ' + activityLang[i];
-                    }
-                    const offLang = offStates[this.language] ? offStates[this.language] : offStates['en'];
-
+                        : activityStateTexts.en;
                     const activityStates = {
                         0: '',
                     };
+
+                    // add Focus Modes
+                    if (this.config.focusStates != undefined && this.config.focusStates.length > 0) {
+                        for (const key in this.config.focusStates) {
+                            const awayFocusKey = Number(key) + 100;
+                            const homeFocusKey = Number(key) + 100 + 1000;
+                            if (
+                                this.config.focusStates[key].enabled != undefined &&
+                                this.config.focusStates[key].enabled == false
+                            ) {
+                                delete activityLang[awayFocusKey];
+                                delete activityLang[homeFocusKey];
+                                continue;
+                            }
+                            if (
+                                this.config.focusStates[key].text != '' &&
+                                this.config.focusStates[key].text != activityStateTexts['en'][awayFocusKey]
+                            ) {
+                                activityLang[awayFocusKey] = this.config.focusStates[key].text;
+                                activityLang[homeFocusKey] = this.config.focusStates[key].text;
+                            }
+                            // TODO: dynamic update of states depending on presence
+                            // if (
+                            //     this.config.focusStates[key].away != undefined &&
+                            //     this.config.focusStates[key].away == false
+                            // ) {
+                            //     delete activityLang[awayFocusKey];
+                            // }
+
+                            // TODO: dynamic update of states depending on presence
+                            // if (
+                            //     this.config.focusStates[key].home != undefined &&
+                            //     this.config.focusStates[key].home == false
+                            // ) {
+                            //     delete activityLang[homeFocusKey];
+                            // }
+                        }
+                    } else {
+                        this.log.error('Configuration error: config.focusStates has invalid format');
+                    }
+
+                    // add Custom Focus Modes
+                    if (this.config.customFocusStates != undefined && this.config.customFocusStates.length > 0) {
+                        for (const key in this.config.customFocusStates) {
+                            // Limit custom focus modes to maximum of 100
+                            if (Number(key) > 99) {
+                                this.log.error('Reached maximum limit of 100 Custom Focus Modes.');
+                                break;
+                            }
+                            if (
+                                // @ts-ignore
+                                (this.config.customFocusStates[key].enabled != undefined &&
+                                    // @ts-ignore
+                                    this.config.customFocusStates[key].enabled == false) ||
+                                // @ts-ignore
+                                this.config.customFocusStates[key].text == undefined ||
+                                // @ts-ignore
+                                this.config.customFocusStates[key].text == ''
+                            )
+                                continue;
+
+                            const awayFocusKey = Number(key) + 200;
+                            const homeFocusKey = Number(key) + 200 + 1000;
+
+                            // TODO: dynamic update of states depending on presence
+                            // if (
+                            //     // @ts-ignore
+                            //     this.config.customFocusStates[key].away == undefined ||
+                            //     // @ts-ignore
+                            //     this.config.customFocusStates[key].away == true
+                            // )
+                            // @ts-ignore
+                            activityLang[awayFocusKey] = this.config.customFocusStates[key].text;
+
+                            // TODO: dynamic update of states depending on presence
+                            // if (
+                            //     // @ts-ignore
+                            //     this.config.customFocusStates[key].home == undefined ||
+                            //     // @ts-ignore
+                            //     this.config.customFocusStates[key].home == true
+                            // )
+                            // @ts-ignore
+                            activityLang[homeFocusKey] = this.config.customFocusStates[key].text;
+                        }
+                    }
+
+                    const offStateTexts = {
+                        en: 'Off',
+                        de: 'Aus',
+                        ru: 'С сайта',
+                        pt: 'Desligado',
+                        nl: 'Uit',
+                        fr: 'Désactivé',
+                        it: 'Spento',
+                        es: 'Apagado',
+                        pl: 'Wył.',
+                        uk: 'Вимкнено',
+                        'zh-cn': '关掉了',
+                    };
+                    let offLang = offStateTexts[this.language] ? offStateTexts[this.language] : offStateTexts.en;
+                    if (this.config.stateTranslations != undefined && this.config.stateTranslations[0] != undefined) {
+                        if (
+                            this.config.stateTranslations[0].text != '' &&
+                            this.config.stateTranslations[0].text != offStateTexts.en
+                        )
+                            offLang = this.config.stateTranslations[0].text;
+                        if (this.config.stateTranslations[0].icon != '')
+                            offLang = this.config.stateTranslations[0].icon + ' ' + offLang;
+                    }
+
+                    const focusStateTexts = {
+                        en: 'Focus',
+                        de: 'Fokus',
+                        ru: '',
+                        pt: '',
+                        nl: '',
+                        fr: '',
+                        it: '',
+                        es: '',
+                        pl: '',
+                        uk: '',
+                        'zh-cn': '',
+                    };
+                    const focusLang = focusStateTexts[this.language]
+                        ? focusStateTexts[this.language]
+                        : focusStateTexts.en;
+
                     const focusStates = {
                         0: '',
                     };
 
                     for (const key in activityLang) {
-                        activityStates[key] = activityLang[key];
+                        let customActivityState;
+                        if (this.config.activityStates != undefined)
+                            customActivityState = this.config.activityStates.filter((obj) => {
+                                return obj.id == Number(key);
+                            })[0];
+                        activityLang[key] = {
+                            text:
+                                customActivityState != undefined &&
+                                customActivityState.text != '' &&
+                                customActivityState.text != activityStateTexts['en'][key]
+                                    ? customActivityState.text
+                                    : activityLang[key],
+                        };
+
+                        const regexp = /^([^:]*):\s*(.+)$/;
+                        const match = activityLang[key].text.match(regexp);
+
+                        // Extract custom prefix from text
+                        if (match) {
+                            if (match[1].trim() != '') activityLang[key].prefix = match[1].trim();
+                            activityLang[key].text = match[2].trim();
+                        }
+
+                        // Add prefix from residential state
+                        else {
+                            // Away
+                            if (Number(key) >= 0 && Number(key) < 1000) {
+                                if (activityLang[key].text != residentialLang[1].text)
+                                    activityLang[key].prefix = residentialLang[1].text;
+                            }
+
+                            // Focus modes
+                            else if (Number(key) >= 1100 && Number(key) < 1300) {
+                                activityLang[key].prefix = focusLang;
+                            }
+
+                            // Wind Down
+                            else if (Number(key) == 1900) {
+                                if (activityLang[key].text != residentialLang[6].text)
+                                    activityLang[key].prefix = residentialLang[6].text;
+                            }
+
+                            // Bedtime
+                            else if (Number(key) == 1901) {
+                                if (activityLang[key].text != residentialLang[7].text)
+                                    activityLang[key].prefix = residentialLang[7].text;
+                            }
+
+                            // In Bed
+                            else if (Number(key) == 1902) {
+                                if (activityLang[key].text != residentialLang[11].text)
+                                    activityLang[key].prefix = residentialLang[11].text;
+                            }
+
+                            // Home
+                            else if (Number(key) >= 1000 && Number(key) < 2000) {
+                                if (activityLang[key].text != residentialLang[4].text)
+                                    activityLang[key].prefix = residentialLang[4].text;
+                            }
+
+                            // Wake-up
+                            else if (Number(key) >= 2101 && Number(key) < 2200) {
+                                if (activityLang[key].text != residentialLang[10].text)
+                                    activityLang[key].prefix = residentialLang[10].text;
+                            }
+
+                            // Awoken
+                            else if (Number(key) >= 2200 && Number(key) < 2300) {
+                                if (activityLang[key].text != residentialLang[8].text)
+                                    activityLang[key].prefix = residentialLang[8].text;
+                            }
+
+                            // Night
+                            else if (Number(key) >= 2000) {
+                                if (activityLang[key].text != residentialLang[11].text)
+                                    activityLang[key].prefix = residentialLang[11].text;
+                            }
+                        }
+
+                        // Add custom activity icons
+                        if (customActivityState != undefined && customActivityState.icon != '') {
+                            activityLang[key].icon = customActivityState.icon;
+                        }
+
+                        // Add icons from residential state
+                        else {
+                            let focusIndex = Number(key) - 100;
+                            if (focusIndex >= 1000) focusIndex -= 1000;
+                            let customFocusIndex = Number(key) - 200;
+                            if (customFocusIndex >= 1000) customFocusIndex -= 1000;
+
+                            // Away
+                            if (Number(key) == 0) {
+                                activityLang[key].icon = residentialLang[0].icon;
+                            } else if (Number(key) == 2) {
+                                activityLang[key].icon = residentialLang[3].icon;
+                            } else if (Number(key) >= 1 && Number(key) < 100) {
+                                activityLang[key].icon = residentialLang[1].icon;
+                            }
+
+                            // Focus modes
+                            else if (
+                                (Number(key) >= 100 && Number(key) < 200) ||
+                                (Number(key) >= 1100 && Number(key) < 1200)
+                            ) {
+                                if (this.config.focusStates[focusIndex].icon != '')
+                                    activityLang[key].icon = this.config.focusStates[focusIndex].icon;
+                            }
+
+                            // Custom Focus modes
+                            else if (
+                                (Number(key) >= 200 && Number(key) < 300) ||
+                                (Number(key) >= 1200 && Number(key) < 1300)
+                            ) {
+                                // @ts-ignore
+                                if (this.config.customFocusStates[customFocusIndex].icon != '')
+                                    // @ts-ignore
+                                    activityLang[key].icon = this.config.customFocusStates[customFocusIndex].icon;
+                            }
+
+                            // Wind Down
+                            else if (Number(key) == 1900) {
+                                activityLang[key].icon = residentialLang[6].icon;
+                            }
+
+                            // Bedtime
+                            else if (Number(key) >= 1901 && Number(key) < 2000) {
+                                activityLang[key].icon = residentialLang[7].icon;
+                            }
+
+                            // Home
+                            else if (Number(key) >= 1000 && Number(key) < 2000) {
+                                activityLang[key].icon = residentialLang[4].icon;
+                            }
+
+                            // Awake at night
+                            else if (Number(key) == 2010) {
+                                activityLang[key].icon = residentialLang[9].icon;
+                            }
+
+                            // Wake-up
+                            else if (Number(key) >= 2100 && Number(key) < 2200) {
+                                activityLang[key].icon = residentialLang[10].icon;
+                            }
+
+                            // Awoken
+                            else if (Number(key) >= 2200 && Number(key) < 2300) {
+                                activityLang[key].icon = residentialLang[8].icon;
+                            }
+
+                            // Night
+                            else if (Number(key) >= 2000) {
+                                activityLang[key].icon = residentialLang[11].icon;
+                            }
+                        }
+
+                        activityLang[key].state =
+                            (activityLang[key].icon ? activityLang[key].icon + ' ' : '') +
+                            (activityLang[key].prefix ? activityLang[key].prefix + ': ' : '') +
+                            activityLang[key].text;
+                        activityStates[key] = activityLang[key].state;
 
                         // Numbers below 1000 only for activity.state
                         // Numbers from 2000 onwards only for night time
@@ -773,22 +1146,22 @@ class Residents extends utils.Adapter {
 
                         // Only numbers below 1900 for activity.focus
                         else if (Number(key) < 1900) {
-                            focusStates[key] = activityLang[key];
+                            focusStates[key] =
+                                (activityLang[key].icon ? activityLang[key].icon + ' ' : '') + activityLang[key].text;
                         }
 
                         // DND variants for activity.state
-                        const newKey = Number(key) + 10000;
-                        let newVal = activityLang[key];
-                        if (newVal.includes(':')) {
-                            newVal = newVal.replace(
-                                /^((?:\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])+\s)\s*(.+):\s+(.+)$/,
-                                '$2 ($1$3)',
-                            );
-                            newVal = residentialStates[5] + ': ' + newVal;
-                        } else {
-                            newVal = residentialStates[5];
-                        }
-                        activityStates[newKey] = newVal;
+                        const dndKey = Number(key) + 10000;
+                        activityStates[dndKey] =
+                            (residentialLang[5].icon ? residentialLang[5].icon + ' ' : '') +
+                            residentialLang[5].text +
+                            (dndKey != 11000
+                                ? (activityLang[key].icon ? ': ' + activityLang[key].icon : ':') +
+                                  (activityLang[key].prefix ? ' ' + activityLang[key].prefix : '') +
+                                  (activityLang[key].prefix
+                                      ? ' | ' + activityLang[key].text
+                                      : (activityLang[key].icon ? ' ' : '') + activityLang[key].text)
+                                : '');
                     }
 
                     await this.setObjectNotExistsAsync(
@@ -872,7 +1245,7 @@ class Residents extends utils.Adapter {
                                 write: true,
                                 def: 0,
                                 desc: {
-                                    en: 'The focus the resident has set from themself.',
+                                    en: 'The focus the resident has set for themself.',
                                     de: 'Der Fokus, den der Bewohner für sich gesetzt hat.',
                                     ru: 'Сосредоточьтесь на том, что резидент поставил от себя.',
                                     pt: 'O foco que o residente estabeleceu deles.',
@@ -987,9 +1360,9 @@ class Residents extends utils.Adapter {
                                 },
                                 states: {
                                     0: offLang,
-                                    1: activityLang[1900],
-                                    2: activityLang[1901],
-                                    3: activityLang[1902],
+                                    1: activityLang[1900].state,
+                                    2: activityLang[1901].state,
+                                    3: activityLang[1902].state,
                                 },
                             },
                             native: {},
@@ -1005,9 +1378,9 @@ class Residents extends utils.Adapter {
                     if (currentObject) {
                         currentObject.common.states = {
                             0: offLang,
-                            1: activityLang[1900],
-                            2: activityLang[1901],
-                            3: activityLang[1902],
+                            1: activityLang[1900].state,
+                            2: activityLang[1901].state,
+                            3: activityLang[1902].state,
                         };
                         await this.setObjectAsync(id + '.activity.bedtime', currentObject);
                     }
@@ -1285,11 +1658,11 @@ class Residents extends utils.Adapter {
                                 },
                                 type: 'number',
                                 role: 'level.mode.resident.mood',
-                                min: -5,
-                                max: 5,
+                                min: 0,
+                                max: 10,
                                 read: true,
                                 write: true,
-                                def: 0,
+                                def: 5,
                                 desc: {
                                     en: 'Mood of the resident with negative or positive tendency',
                                     de: 'Laune des Bewohners mit negativer oder positiver Tendenz',
@@ -1303,7 +1676,7 @@ class Residents extends utils.Adapter {
                                     uk: 'Примушені резидента з негативною або позитивною тенденцією',
                                     'zh-cn': '居民的情绪有消极或积极的倾向',
                                 },
-                                states: moodLang,
+                                states: moodStates,
                             },
                             native: {},
                         },
@@ -1316,7 +1689,7 @@ class Residents extends utils.Adapter {
                     // Update common.states
                     const currentObject = await this.getObjectAsync(id + '.mood.state');
                     if (currentObject) {
-                        currentObject.common.states = moodLang;
+                        currentObject.common.states = moodStates;
                         await this.setObjectAsync(id + '.mood.state', currentObject);
                     }
                 }
@@ -2248,8 +2621,16 @@ class Residents extends utils.Adapter {
 
         await this.setResidentsSummary();
 
-        if (this.config.disableAbsentResidentsDailyTimerEnabled) this.timeoutDisableAbsentResidents(true);
-        if (this.config.resetOvernightDailyTimerEnabled) this.timeoutResetOvernight(true);
+        if (
+            this.config.disableAbsentResidentsDailyTimerEnabled != undefined &&
+            this.config.disableAbsentResidentsDailyTimerEnabled == true
+        )
+            this.timeoutDisableAbsentResidents(true);
+        if (
+            this.config.resetOvernightDailyTimerEnabled != undefined &&
+            this.config.resetOvernightDailyTimerEnabled == true
+        )
+            this.timeoutResetOvernight(true);
         this.initialized = true;
     }
 
@@ -3045,7 +3426,7 @@ class Residents extends utils.Adapter {
 
                 // Only take over focus value between 1000 and 1900
                 if (state.val >= 10000) state.val -= 10000;
-                if (state.val < 1000 || state.val >= 1900) state.val = 1000;
+                if (state.val == 1000 || state.val < 1000 || state.val >= 1900) state.val = 0;
                 await this.setStateAsync(id + '.activity.focus', state);
 
                 if (presenceState.val == 2 && changePresenceToHome) {
@@ -3169,14 +3550,10 @@ class Residents extends utils.Adapter {
 
             case 'focus': {
                 state.ack = true;
-                if (presenceState.val == 1) {
-                    this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
-                } else {
-                    this.log.warn(device + ': Focus can only be controlled during waking time at home');
-                    state.val = oldState.val;
-                    state.q = 0x40;
-                    await this.setStateAsync(id + '.activity.focus', state);
-                }
+                if (presenceState.val == 0 && state.val == 0) state.val = 0;
+                if (presenceState.val == 1 && state.val == 0) state.val = 1000;
+                if (presenceState.val == 2 && state.val == 0) state.val = 2000;
+                this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
                 break;
             }
 
@@ -3727,7 +4104,7 @@ class Residents extends utils.Adapter {
                     homeSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: homeState.lc });
                 }
 
-                if (moodState != undefined && typeof moodState.val == 'number') moodCount += moodState.val;
+                if (moodState != undefined && typeof moodState.val == 'number') moodCount += moodState.val - 5;
 
                 if (dndState != undefined && dndState.val == true) {
                     this.log.debug('    - does not want to be disturbed');
@@ -4126,7 +4503,7 @@ class Residents extends utils.Adapter {
         const moodAverage = homeSum.length > 0 ? moodCount / homeSum.length : 0;
         await this.setStateAsync('mood', {
             // Strive for the golden middle
-            val: moodAverage > 0 ? Math.floor(moodAverage) : Math.ceil(moodAverage),
+            val: moodAverage > 0 ? Math.floor(moodAverage + 5) : Math.ceil(moodAverage + 5),
             ack: true,
         });
 
@@ -4134,7 +4511,7 @@ class Residents extends utils.Adapter {
         if (this.parentInstances.length > 0) {
             let leadingInstance = String(this.namespace);
             let groupStateVal = residentsStateVal;
-            let groupMood = moodAverage;
+            let groupMood = moodAverage - 5;
             let moodFoundCounter = 0;
 
             for (const i in this.parentInstances) {
@@ -4156,7 +4533,7 @@ class Residents extends utils.Adapter {
                     const moodState = await this.getForeignStateAsync(parentInstance + '.mood');
                     if (moodState && typeof moodState.val == 'number') {
                         moodFoundCounter++;
-                        groupMood += moodState.val;
+                        groupMood += moodState.val - 5;
                     }
                 }
 
@@ -4175,7 +4552,7 @@ class Residents extends utils.Adapter {
             const groupMoodAverage = moodFoundCounter > 0 ? groupMood / (moodFoundCounter + 1) : groupMood;
             await this.setStateChangedAsync('group.mood', {
                 // Strive for the golden middle
-                val: groupMoodAverage > 0 ? Math.floor(groupMoodAverage) : Math.ceil(groupMoodAverage),
+                val: groupMoodAverage > 0 ? Math.floor(groupMoodAverage + 5) : Math.ceil(groupMoodAverage + 5),
                 ack: true,
             });
 
@@ -4370,6 +4747,7 @@ class Residents extends utils.Adapter {
                 .replace(/ö/g, 'oe') // Replace o Umlaut
                 .replace(/ü/g, 'ue') // Replace u Umlaut
                 .replace(/ß/g, 'ss') // Replace Eszett
+                // @ts-ignore
                 // @ts-ignore
                 .replace(/_([a-z])/g, (m, w) => {
                     return w.toUpperCase();

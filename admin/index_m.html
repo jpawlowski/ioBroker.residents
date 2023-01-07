@@ -367,15 +367,15 @@
                             </div>
                         </div>
                         <ul class="collapsible">
-                            <!-- Settings for language -->
+                            <!-- Settings for translations -->
                             <li>
                                 <div class="collapsible-header">
                                     <i class="material-icons">expand_more</i>
-                                    <h6 class="translate">Language</h6>
+                                    <h6 class="translate">Translations</h6>
                                 </div>
                                 <div class="collapsible-body">
                                     <div class="row">
-                                        <div class="input-field col s6 l2">
+                                        <div class="input-field col s3 l2">
                                             <select id="language" class="value">
                                                 <option value="" class="translate">System language</option>
                                                 <option value="en">English</option>
@@ -390,9 +390,71 @@
                                                 <option value="uk">український</option>
                                                 <option value="zh-cn">简体中文</option>
                                             </select>
-                                            <label for="language" class="translate">Language setting</label>
+                                            <label for="language" class="translate">General language for states</label>
+                                            <span class="translate">Set the language for state translations.</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s3">
+                                            <label for="stateTranslations" class="translate"
+                                            >Adjust general state value icons & texts</label
+                                        >
+                                </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s3" id="stateTranslations">
+                                            <div class="table-values-div">
+                                                <table class="table-values">
+                                                    <thead>
+                                                        <tr>
+                                                            <th
+                                                                data-name="_index"
+                                                                id="events_col_0"
+                                                                style="
+                                                                    width: 80px;
+                                                                    background: #174475;
+                                                                    text-align: center;
+                                                                "
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                #
+                                                            </th>
+                                                            <th
+                                                                data-name="icon"
+                                                                id="events_col_1"
+                                                                data-type="text"
+                                                                style="width: 160px; background: #174475"
+                                                                class="translate"
+                                                                data-style="text-align: center"
+                                                            >
+                                                                Icon<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Emoji</small
+                                                                >
+                                                            </th>
+                                                            <th
+                                                                data-name="text"
+                                                                id="events_col_2"
+                                                                data-type="text"
+                                                                style="width: 100%; background: #174475"
+                                                                class="translate"
+                                                            >
+                                                                Custom Text<br /><small
+                                                                    style="font-weight: normal !important"
+                                                                    class="translate"
+                                                                    >Optional overwrite default text</small
+                                                                >
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                            <br />
                                             <span class="translate"
-                                                >Set a different language for state translations</span
+                                                ><u>Note:</u> Leave the default English text or set it to blank for
+                                                integrated text and translation.</span
                                             >
                                         </div>
                                     </div>
@@ -464,6 +526,11 @@
                                                     </thead>
                                                 </table>
                                             </div>
+                                            <br />
+                                            <span class="translate"
+                                                ><u>Note:</u> Leave the default English text or set it to blank for
+                                                integrated text and translation.</span
+                                            >
                                         </div>
                                     </div>
                                 </div>
@@ -521,6 +588,11 @@
                                                     </thead>
                                                 </table>
                                             </div>
+                                            <br />
+                                            <span class="translate"
+                                                ><u>Note:</u> Leave the default English text or set it to blank for
+                                                integrated text and translation.</span
+                                            >
                                         </div>
                                     </div>
                                 </div>
@@ -531,7 +603,7 @@
                             <li>
                                 <div class="collapsible-header">
                                     <i class="material-icons">expand_more</i>
-                                    <h6 class="translate">Activity Status</h6>
+                                    <h6 class="translate">Activity Status Overwrite</h6>
                                 </div>
                                 <div class="collapsible-body">
                                     <div class="row">
@@ -604,6 +676,18 @@
                                                     </thead>
                                                 </table>
                                             </div>
+                                            <br />
+                                            <span class="translate"
+                                                ><u>Note:</u> Leave the default English text or set it to blank for
+                                                integrated text and translation.</span
+                                            >
+                                            <br />
+                                            <br />
+                                            <span class="translate"
+                                                ><u>Important:</u> You can <u>not</u> create new activity states here,
+                                                only replace their icon and texts. You may want to use Custom Focus
+                                                Modes instead.</span
+                                            >
                                         </div>
                                     </div>
                                     <h6 class="translate">Activity Number Reference</h6>
@@ -737,8 +821,8 @@
                                             <div class="collapsible-body">
                                                 <div class="row">
                                                     <div class="input-field col s6 lighten-4">
-                                                        Each number from 0-2999 is added 10000 to represent the same
-                                                        status but with Do Not Disturb enabled.
+                                                        Each number from 0-2999 is added 10.000 to represent the same
+                                                        status when Do Not Disturb is enabled.
                                                     </div>
                                                 </div>
                                             </div>
@@ -853,6 +937,11 @@
                                                     </thead>
                                                 </table>
                                             </div>
+                                            <br />
+                                            <span class="translate"
+                                                ><u>Note:</u> Leave the default English text or set it to blank for
+                                                integrated text and translation.</span
+                                            >
                                         </div>
                                     </div>
                                     <div class="row"></div>

@@ -140,7 +140,7 @@
             { "icon": "🔺🔺🔺", "text": "Extremely Bad" },
             { "icon": "🔸🔸", "text": "Pretty Bad" },
             { "icon": "🔸", "text": "Somewhat Not Good" },
-            { "icon": "☯", "text": "Balanced" },
+            { "icon": "☯️", "text": "Balanced" },
             { "icon": "⭐", "text": "Somewhat Okay" },
             { "icon": "⭐⭐", "text": "Pretty Good" },
             { "icon": "⭐⭐⭐", "text": "Extremely Good" },
@@ -149,7 +149,8 @@
         ],
         "activityStates": [
             { "id": 1901, "icon": "🪥", "text": "Getting to Bed" },
-            { "id": 2000, "icon": "😴", "text": "Sleeping" }
+            { "id": 2000, "icon": "😴", "text": "Sleeping" },
+            { "id": 2020, "icon": "😴", "text": "Asleep again" }
         ],
         "focusStates": [
             { "enabled": true, "icon": "👤", "text": "Personal", "dnd": true, "home": true, "away": false },
@@ -240,23 +241,32 @@
                 "role": "value.residents.mood",
                 "read": true,
                 "write": false,
-                "def": 0,
+                "def": 5,
                 "desc": {
                     "en": "Mood of the residents with negative or positive tendency",
-                    "de": "Laune der Bewohner mit negativer oder positiver Tendenz"
+                    "de": "Laune der Bewohner mit negativer oder positiver Tendenz",
+                    "ru": "Настроение жителей с негативной или позитивной тенденцией",
+                    "pt": "Humor dos residentes com tendência negativa ou positiva",
+                    "nl": "Stemming van de bewoners met negatieve of positieve tendens",
+                    "fr": "Humeur des résidents à tendance négative ou positive",
+                    "it": "Stato d'animo dei residenti con tendenza negativa o positiva",
+                    "es": "Estado de ánimo de los residentes con tendencia negativa o positiva",
+                    "pl": "Nastrój mieszkańców z tendencją negatywną lub pozytywną",
+                    "uk": "Настрої населення з негативною або позитивною тенденцією",
+                    "zh-cn": "具有消极或积极倾向的居民的情绪"
                 },
                 "states": {
-                    "0": "0: Neutral",
-                    "1": "+1: Somewhat Good",
-                    "2": "+2: Pretty Good",
-                    "3": "+3: Extremely Good",
-                    "4": "+4: Extraordinary Good",
-                    "5": "+5: Couldn't Be Better",
-                    "-5": "-5: Couldn't Get Worse",
-                    "-4": "-4: Extraordinary Bad",
-                    "-3": "-3: Extremely Bad",
-                    "-2": "-2: Pretty Bad",
-                    "-1": "-1: Somewhat Bad"
+                    "0": "🔺🔺🔺🔺🔺 Couldn't Get Worse",
+                    "1": "🔺🔺🔺🔺 Extraordinary Bad",
+                    "2": "🔺🔺🔺 Extremely Bad",
+                    "3": "🔸🔸 Pretty Bad",
+                    "4": "🔸 Somewhat Bad",
+                    "5": "☯ Neutral",
+                    "6": "⭐ Somewhat Good",
+                    "7": "⭐⭐ Pretty Good",
+                    "8": "⭐⭐⭐ Extremely Good",
+                    "9": "🌟🌟🌟🌟 Extraordinary Good",
+                    "10": "🌟🌟🌟🌟🌟 Couldn't Be Better"
                 }
             },
             "native": {}
