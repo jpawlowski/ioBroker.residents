@@ -3450,7 +3450,7 @@ class Residents extends utils.Adapter {
                 if (focusObject != undefined) await this.setObjectAsync(id + '.activity.focus', focusObject);
 
                 if (state.val >= 10000) state.val -= 10000; // remove DND value for activity.focus
-                if (state.val < 100 || state.val >= 300) state.val = 0;
+                if (state.val < 100 || (state.val >= 300 && state.val < 1100) || state.val >= 1300) state.val = 0;
                 await this.setStateAsync(id + '.activity.focus', state);
 
                 if (presenceState.val == 2 && changePresenceToHome) {
@@ -3573,11 +3573,19 @@ class Residents extends utils.Adapter {
             }
 
             case 'focus': {
-                state.ack = true;
-                if (presenceState.val == 0 && state.val == 0) state.val = enabledState.val == true ? 1 : 0;
-                if (presenceState.val == 1 && state.val == 0) state.val = 1000;
-                if (presenceState.val == 2 && state.val == 0) state.val = 2000;
-                this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
+                if (presenceState.val == 2) {
+                    this.log.warn(device + ': A focus can not be set during night time');
+                    state.ack = true;
+                    state.val = oldState.val;
+                    state.q = 0x40;
+                    await this.setStateAsync(id + '.activity.focus', state);
+                } else {
+                    state.ack = true;
+                    if (presenceState.val == 0 && state.val == 0) state.val = enabledState.val == true ? 1 : 0;
+                    if (presenceState.val == 1 && state.val == 0) state.val = 1000;
+                    if (presenceState.val == 2 && state.val == 0) state.val = 2000;
+                    this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
+                }
                 break;
             }
 
