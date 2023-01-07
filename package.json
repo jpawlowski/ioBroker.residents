@@ -1,6 +1,6 @@
 {
   "name": "iobroker.residents",
-  "version": "0.0.3-beta.5",
+  "version": "0.0.3-beta.6",
   "description": "The ioBroker Residents adapter helps to map the presence and activity status of individual residents to their digital self. This is used to create a logical overall status of all residents and their presence or current activity at home. Residents are represented by dedicated virtual devices with different types of roomie, guest, or pet.",
   "author": {
     "name": "Julian Pawlowski",
