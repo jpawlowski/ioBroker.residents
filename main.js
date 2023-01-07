@@ -2308,7 +2308,7 @@ class Residents extends utils.Adapter {
                     resident['yahkaInstanceId'] != '' &&
                     resident['yahkaInstanceId'] != 'none'
                 ) {
-                    const serial = this.namespace + '.' + residentType + '.' + id;
+                    const serial = this.namespace + '.' + id;
                     const yahkaDeviceConfig = {
                         configType: 'customdevice',
                         manufacturer: 'ioBroker',
