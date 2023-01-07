@@ -1,33 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.2-beta.2",
+        "version": "0.0.3-beta.0",
         "news": {
-            "0.0.2-beta.2": {
-                "en": "Remove warnings for foreign presence states\nAdd missing object descriptions\nAdd extended adapter description to better explain the purpose of existence",
-                "de": "Warnungen bei fremden Anwesenheitsdatenpunkten entfernt\nFehlende Objektbeschreibungen hinzugefügt\nErweiterte Adapter-Beschreibung hinzugefügt, um den Existenzweck besser zu erklären",
-                "ru": "Удалить предупреждения для иностранных государств присутствия\nДобавить недостающие описания объектов\nДобавьте расширенное описание адаптера, чтобы объяснить цель существования",
-                "pt": "Remover avisos para estados de presença estrangeira\nAdicionar descrições de objetos ausentes\nAdicionar descrição estendida do adaptador para explicar a finalidade da existência",
-                "nl": "Verwijder waarschuwingen voor buitenlandse aanwezigheid\nVermiste beschrijvingen\nVerlengde adapter beschrijving om het doel van het bestaan te verklaren",
-                "fr": "Supprimer les avertissements pour les États de présence étrangère\nAjouter les descriptions d'objet manquantes\nAjouter une description d'adaptateur étendue pour expliquer le but de l'existence",
-                "it": "Rimuovere gli avvisi per gli stati di presenza straniera\nAggiungi descrizioni degli oggetti mancanti\nAggiungi la descrizione dell'adattatore estesa per spiegare lo scopo dell'esistenza",
-                "es": "Eliminar advertencias para estados de presencia extranjeros\nAñadir descripciones de objetos desaparecidos\nAñadir una descripción ampliada del adaptador para explicar el propósito de la existencia",
-                "pl": "Remove ostrzega przed obcymi państwami  obecności\nNiezapomniany opis obiektów\nAddd extended adapter description to wyjaśnienie celu istnienia",
-                "uk": "Видалення попереджень про наявність іноземних держав\nДодати відсутні описи об'єктів\nДодайте розширений опис адаптера, щоб пояснити мету існування",
-                "zh-cn": "向外国存在国发出警告\n增加缺失的物体说明\n增加较长的适应说明,解释存在的目的"
-            },
-            "0.0.2-beta.1": {
-                "en": "Sync foreign presence state during startup",
-                "de": "Synchronisiere fremde Anwesenheitsstatus während des Starts",
-                "ru": "Синхронное состояние присутствия во время стартапа",
-                "pt": "Sincronizar estado de presença estrangeira durante a inicialização",
-                "nl": "Vertaling:",
-                "fr": "État de présence étrangère synchronisée pendant le démarrage",
-                "it": "Sync stato di presenza estera durante l'avvio",
-                "es": "Estado de presencia extranjera sincronizado durante la puesta en marcha",
-                "pl": "Państwo zagraniczne w czasie startu",
-                "uk": "Синхронізація стану зовнішньої присутності при запуску",
-                "zh-cn": "外国在开办期间的存在"
+            "0.0.3-beta.0": {
+                "en": "Added emoji icons to states\nAdded customizable translations for states\nChanged values for mood to correct visible sorting order\nRenamed activity tasks to Focus Mode (similar to Apple Focus Mode)\nAdded custom Focus Modes\nMoved resident devices to subfolders\nTimers can be disabled",
+                "de": "Emoji Icons zu States hinzugefügt\nAnpassbare Übersetzungen für States hinzugefügt\nGeänderte Werte für Laune, um sichtbare Sortierreihenfolge zu korrigieren\nAktivits-Tasks iin Fokus Modus umbenannt (ähnlich dem Apple FoKus Modus)\nBenutzerdefinierte Fokus Modi hinzugefügt\nBewohner Geräte in Unterordner verschoben\nTimer können deaktiviert werden",
+                "ru": "Добавлены иконки emoji в государства\nДобавлены настраиваемые переводы для государств\nИзмененные значения для настроения, чтобы исправить видимый порядок сортировки\nПереименованные задачи деятельности для Focus Mode (похожие Apple Focus Mode)\nДобавлены настройки Focus Modes\nПереместили устройства резидентов в подпапки\nТаймеры могут быть отключены",
+                "pt": "Adicionado emoji ícones para estados\nAdicionadas traduções personalizáveis para estados\nValores alterados para humor para corrigir ordem de classificação visível\nRenomeado tarefas de atividade para o Modo de Foco (semelhante ao Modo de Foco da Apple)\nAdicionado modos de foco personalizados\nDispositivos residentes movidos para subpastas\nOs Timers podem ser desativados",
+                "nl": "Emoji iconen toegevoegd aan staten\nVertaling:\nVeranderde waarden om zichtbare orde te corrigeren\nHernoemde activiteiten aan Focus Mode (similar to Applecus Fode)\nVoeg de gebruikelijke Focus Modes toe\nVerhuisde bewoner apparatuur naar subfolders\nTimers kunnen uitgeschakeld worden",
+                "fr": "Ajout d'icônes emoji aux états\nAjout de traductions personnalisables pour les Etats\nValeurs modifiées pour l'humeur pour corriger l'ordre de tri visible\nFonctions d'activité renommées pour le mode Focus (similaire au mode Focus Apple)\nAjouté les modes de Focus personnalisés\nDispositifs de résidence mobiles pour les sous-dossiers\nTimers can be disabled",
+                "it": "Aggiunto icone emoji agli stati\nAggiunto traduzioni personalizzabili per gli stati\nValori modificati per l'umore per correggere l'ordine di smistamento visibile\nAttività rinominate in modalità messa a fuoco (simile a modalità messa a fuoco Apple)\nAggiunta modalità di messa a fuoco personalizzate\nDispositivi residenti spostati a sottocartelle\nI timer possono essere disabilitati",
+                "es": "Se agregaron iconos emoji a estados\nAñadido traducciones personalizable para estados\nValores cambiados para el estado de ánimo para corregir orden de clasificación visible\nTareas de actividad renombradas para Focus Mode (similar a Apple Focus Mode)\nModos de enfoque personalizados\nDispositivos residentes móviles a subcarpetas\nLas condiciones pueden desactivarse",
+                "pl": "Ikony emoji do stanów\nDodrukowane dodatnie tłumaczenia dla państw\nZmiana wartości nastroju w celu poprawy porządku widzialnego\nZmiana zadań związanych z Focus Mode (podobnie jak Apple Focus Mode)\nAdded Focus Mode\nUrządzenia mieszkalne\nTimery mogą być niepełnosprawne",
+                "uk": "Додано іконки смайликів до станів\nДодано настроювані переклади для штатів\nЗмінені значення для настрою, щоб виправити видимий порядок сортування\nПерейменовані завдання діяльності для фокус-режиму (іміляр до Apple Focus Mode)\nДодано користувацькі режими фокусу\nПеремішані пристрої резидента для підпапок\nТімери можуть бути відключені",
+                "zh-cn": "向各州增建的埃莫吉斯群岛\n增加供各州使用的定制翻译\nB. 纠正明显混乱的改变价值\n重新命名的活动任务以重点 Mode(与A补充重点 Mode相似)\n添加的习俗焦点\n住宅装置\n时间可以残疾者"
             }
         },
         "titleLang": {
