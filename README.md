@@ -34,9 +34,16 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.4 (2023-01-07)
 
--   (Julian Pawlowski) Fix `info.presence.awayAll`
+### **WORK IN PROGRESS**
+
+-   (Julian Pawlowski) Added emoji icons to states
+-   (Julian Pawlowski) Added customizable translations for states
+-   (Julian Pawlowski) Changed values for mood to correct visible sorting order
+-   (Julian Pawlowski) Renamed activity tasks to Focus Mode (similar to Apple Focus Mode)
+-   (Julian Pawlowski) Added custom Focus Modes
+-   (Julian Pawlowski) Moved resident devices to subfolders
+-   (Julian Pawlowski) Timers can be disabled
 
 ## License
 
