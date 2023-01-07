@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.0",
+        "version": "0.0.3-beta.1",
         "news": {
+            "0.0.3-beta.1": {
+                "en": "Fix Yahka support",
+                "de": "Yahka Support repariert",
+                "ru": "Fix Поддержка Yahka",
+                "pt": "Suporte Fix Yahka",
+                "nl": "_",
+                "fr": "Fix Yahka support",
+                "it": "Fisso supporto Yahka",
+                "es": "Soporte de Yahka fijo",
+                "pl": "Fix Yahka",
+                "uk": "Фіксація підтримки Яхки",
+                "zh-cn": "Fix Yahka支助"
+            },
             "0.0.3-beta.0": {
                 "en": "Added emoji icons to states\nAdded customizable translations for states\nChanged values for mood to correct visible sorting order\nRenamed activity tasks to Focus Mode (similar to Apple Focus Mode)\nAdded custom Focus Modes\nMoved resident devices to subfolders\nTimers can be disabled",
                 "de": "Emoji Icons zu States hinzugefügt\nAnpassbare Übersetzungen für States hinzugefügt\nGeänderte Werte für Laune, um sichtbare Sortierreihenfolge zu korrigieren\nAktivits-Tasks iin Fokus Modus umbenannt (ähnlich dem Apple FoKus Modus)\nBenutzerdefinierte Fokus Modi hinzugefügt\nBewohner Geräte in Unterordner verschoben\nTimer können deaktiviert werden",
