@@ -2236,6 +2236,7 @@ class Residents extends utils.Adapter {
                         (await this.setResidentDevicePresenceFromEvent(
                             resident.foreignPresenceObjectId,
                             foreignPresenceState,
+                            true,
                         )) != false
                     ) {
                         this.log.info(
@@ -2280,6 +2281,7 @@ class Residents extends utils.Adapter {
                         (await this.setResidentDevicePresenceFromEvent(
                             resident.foreignWayhomeObjectId,
                             foreignWayhomeState,
+                            true,
                         )) != false
                     ) {
                         this.log.info(
@@ -3883,9 +3885,10 @@ class Residents extends utils.Adapter {
      *
      * @param {string} id
      * @param {ioBroker.State} state
-     * @param {ioBroker.StateObject} [_stateObj]
+     * @param {boolean} [dryrun]
+     * @param {ioBroker.StateObject} [_stateObj] function internal only
      */
-    async setResidentDevicePresenceFromEvent(id, state, _stateObj) {
+    async setResidentDevicePresenceFromEvent(id, state, dryrun, _stateObj) {
         const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
         if (!stateObj) return false;
         let type = stateObj.common.type;
@@ -3970,7 +3973,7 @@ class Residents extends utils.Adapter {
                     return false;
                 }
                 state.val = jsonPresenceVal;
-                return this.setResidentDevicePresenceFromEvent(id, state, {
+                return this.setResidentDevicePresenceFromEvent(id, state, dryrun, {
                     _id: stateObj._id,
                     type: 'state',
                     common: {
@@ -3987,6 +3990,11 @@ class Residents extends utils.Adapter {
 
         if (presence == null) {
             this.log.error(id + ': Unable to determine presence state value');
+        }
+
+        // Validate datapoint only
+        else if (dryrun) {
+            return true;
         }
 
         // Presence update
