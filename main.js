@@ -831,15 +831,9 @@ class Residents extends utils.Adapter {
                 activityLang[key].text;
             activityStates[key] = activityLang[key].state;
 
-            // Numbers below 1000 only for activity.state
-            // Numbers from 2000 onwards only for night time
-            if (Number(key) < 1000 || Number(key) >= 2000) {
-                continue;
-            }
-
             // Consider no active focus as Off and
             // map as 0 to comply with boolean standards
-            else if (Number(key) == 1000) {
+            if (Number(key) == 1000) {
                 focusStates['away'][0] = offLang;
                 focusStates['home'][0] = offLang;
             }
@@ -847,29 +841,46 @@ class Residents extends utils.Adapter {
             // Only numbers between 100-299 or 1100-1299 for activity.focus
             else if ((Number(key) >= 100 && Number(key) < 300) || (Number(key) >= 1100 && Number(key) < 1300)) {
                 const stateVal = (activityLang[key].icon ? activityLang[key].icon + ' ' : '') + activityLang[key].text;
+                let focusIndex = Number(key) - 100;
+                if (focusIndex >= 1000) focusIndex -= 1000;
+                let customFocusIndex = Number(key) - 200;
+                if (customFocusIndex >= 1000) customFocusIndex -= 1000;
 
-                // Check away/home usage for Focus Modes
-                if ((Number(key) >= 100 && Number(key) < 200) || (Number(key) >= 1100 && Number(key) < 1200)) {
-                    let focusIndex = Number(key) - 100;
-                    if (focusIndex >= 1000) focusIndex -= 1000;
-                    if (this.config.focusStates[focusIndex].away == true) focusStates['away'][key] = stateVal;
-                    if (this.config.focusStates[focusIndex].home == true) focusStates['home'][key] = stateVal;
+                // Check away usage for Focus Modes
+                if (Number(key) >= 100 && Number(key) < 200 && this.config.focusStates[focusIndex].away == true) {
+                    focusStates['away'][key] = stateVal;
+                }
+                // Check home usage for Focus Modes
+                else if (
+                    Number(key) >= 1100 &&
+                    Number(key) < 1200 &&
+                    this.config.focusStates[focusIndex].home == true
+                ) {
+                    focusStates['home'][key] = stateVal;
                 }
 
-                // Check away/home usage Custom Focus Modes
-                else if ((Number(key) >= 200 && Number(key) < 300) || (Number(key) >= 1200 && Number(key) < 1300)) {
-                    let customFocusIndex = Number(key) - 200;
-                    if (customFocusIndex >= 1000) customFocusIndex -= 1000;
+                // Check away usage Custom Focus Modes
+                else if (
+                    Number(key) >= 200 &&
+                    Number(key) < 300 &&
                     // @ts-ignore
-                    if (this.config.customFocusStates[customFocusIndex].away == true)
-                        focusStates['away'][key] = stateVal;
+                    this.config.customFocusStates[customFocusIndex].away == true
+                ) {
+                    focusStates['away'][key] = stateVal;
+                }
+                // Check home usage Custom Focus Modes
+                else if (
+                    Number(key) >= 1200 &&
+                    Number(key) < 1300 &&
                     // @ts-ignore
-                    if (this.config.customFocusStates[customFocusIndex].home == true)
-                        focusStates['home'][key] = stateVal;
+                    this.config.customFocusStates[customFocusIndex].home == true
+                ) {
+                    focusStates['home'][key] = stateVal;
                 }
             }
 
             // DND variants for activity.state
+            if (Number(key) < 1000 || Number(key) >= 2000) continue;
             const dndKey = Number(key) + 10000;
             activityStates[dndKey] =
                 (residentialLang[5].icon ? residentialLang[5].icon + ' ' : '') +
@@ -1111,7 +1122,7 @@ class Residents extends utils.Adapter {
                                 type: 'number',
                                 role: 'level.mode.resident.focus',
                                 min: 0,
-                                max: 19999,
+                                max: 12999,
                                 read: true,
                                 write: true,
                                 def: 0,
@@ -3436,11 +3447,10 @@ class Residents extends utils.Adapter {
                 await this.setStateAsync(id + '.activity.state', state);
 
                 // Dynamically update common.states for activity.focus
-                await this.setObjectAsync(id + '.activity.focus', focusObject);
+                if (focusObject != undefined) await this.setObjectAsync(id + '.activity.focus', focusObject);
 
-                // Only take over focus value between 1000 and 1900
-                if (state.val >= 10000) state.val -= 10000;
-                if (state.val == 1000 || state.val < 1000 || state.val >= 1900) state.val = 0;
+                if (state.val >= 10000) state.val -= 10000; // remove DND value for activity.focus
+                if (state.val < 100 || state.val >= 300) state.val = 0;
                 await this.setStateAsync(id + '.activity.focus', state);
 
                 if (presenceState.val == 2 && changePresenceToHome) {
@@ -3564,7 +3574,7 @@ class Residents extends utils.Adapter {
 
             case 'focus': {
                 state.ack = true;
-                if (presenceState.val == 0 && state.val == 0) state.val = 0;
+                if (presenceState.val == 0 && state.val == 0) state.val = enabledState.val == true ? 1 : 0;
                 if (presenceState.val == 1 && state.val == 0) state.val = 1000;
                 if (presenceState.val == 2 && state.val == 0) state.val = 2000;
                 this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
