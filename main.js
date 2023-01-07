@@ -2308,18 +2308,19 @@ class Residents extends utils.Adapter {
                     resident['yahkaInstanceId'] != '' &&
                     resident['yahkaInstanceId'] != 'none'
                 ) {
+                    const serial = this.namespace + '.' + residentType + '.' + id;
                     const yahkaDeviceConfig = {
                         configType: 'customdevice',
                         manufacturer: 'ioBroker',
                         model: 'residents.' + residentType,
                         name: name,
-                        serial: this.namespace + '.' + id,
+                        serial: serial,
                         firmware: this.version,
                         enabled: true,
                         category: '11',
                         services: [
                             {
-                                name: this.namespace + '.' + id + '.presence.home',
+                                name: serial + '.presence.home',
                                 subType: 'ioBroker.residents.presence.sensor',
                                 type: 'OccupancySensor',
                                 characteristics: [
@@ -2333,20 +2334,20 @@ class Residents extends utils.Adapter {
                                         name: 'StatusActive',
                                         enabled: true,
                                         inOutFunction: 'ioBroker.State',
-                                        inOutParameters: this.namespace + '.' + id + '.enabled',
+                                        inOutParameters: serial + '.enabled',
                                     },
                                     {
                                         name: 'OccupancyDetected',
                                         enabled: true,
                                         inOutFunction: 'ioBroker.State',
-                                        inOutParameters: this.namespace + '.' + id + '.presence.home',
+                                        inOutParameters: serial + '.presence.home',
                                     },
                                 ],
-                                linkTo: this.namespace + '.' + id + '.presence.state',
+                                linkTo: serial + '.presence.state',
                                 isPrimary: true,
                             },
                             {
-                                name: this.namespace + '.' + id + '.presence.state',
+                                name: serial + '.presence.state',
                                 subType: 'ioBroker.residents.presence.actor',
                                 type: 'SecuritySystem',
                                 characteristics: [
@@ -2365,7 +2366,7 @@ class Residents extends utils.Adapter {
                                         enabled: true,
                                         customCharacteristic: true,
                                         inOutFunction: 'ioBroker.State',
-                                        inOutParameters: this.namespace + '.' + id + '.enabled',
+                                        inOutParameters: serial + '.enabled',
                                     },
                                     {
                                         name: 'SecuritySystemCurrentState',
@@ -2375,7 +2376,7 @@ class Residents extends utils.Adapter {
                                             validValues: [0, 1, 2],
                                         },
                                         inOutFunction: 'ioBroker.State.OnlyACK',
-                                        inOutParameters: this.namespace + '.' + id + '.presence.state',
+                                        inOutParameters: serial + '.presence.state',
                                         conversionFunction: 'map',
                                         conversionParameters: {
                                             /* eslint-disable */
@@ -2420,7 +2421,7 @@ class Residents extends utils.Adapter {
                                             maxValue: 2,
                                         },
                                         inOutFunction: 'ioBroker.State',
-                                        inOutParameters: this.namespace + '.' + id + '.presence.state',
+                                        inOutParameters: serial + '.presence.state',
                                         conversionFunction: 'map',
                                         conversionParameters: {
                                             /* eslint-disable */
@@ -2458,7 +2459,7 @@ class Residents extends utils.Adapter {
                                         },
                                     },
                                 ],
-                                linkTo: this.namespace + '.' + id + '.presence.home',
+                                linkTo: serial + '.presence.home',
                             },
                         ],
                         groupString: this.namespace,
@@ -2471,12 +2472,11 @@ class Residents extends utils.Adapter {
                     if (
                         currentYahkaConf &&
                         currentYahkaConf.common.name == 'yahka' &&
-                        currentYahkaConf.native.bridge.devices.filter((e) => e.serial == this.namespace + '.' + id)
-                            .length == 0
+                        currentYahkaConf.native.bridge.devices.filter((e) => e.serial == serial).length == 0
                     ) {
                         this.log.info(
                             'Homekit support: Adding ' +
-                                id +
+                                serial +
                                 ' to devices of ' +
                                 resident['yahkaInstanceId'] +
                                 ' instance',
