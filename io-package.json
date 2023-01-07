@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.3",
+        "version": "0.0.3-beta.4",
         "news": {
-            "0.0.3-beta.3": {
-                "en": "Fix Yahka support",
-                "de": "Yahka Support repariert",
-                "ru": "Fix Поддержка Yahka",
-                "pt": "Suporte Fix Yahka",
-                "nl": "Yahka Support repariert",
-                "fr": "Fix Yahka support",
-                "it": "Fisso supporto Yahka",
-                "es": "Soporte de Yahka fijo",
-                "pl": "Fix Yahka",
-                "uk": "Фіксація підтримки Яхки",
-                "zh-cn": "Fix Yahka支助"
+            "0.0.3-beta.4": {
+                "en": "Fix `info.presence.awayAll`",
+                "de": "`info.presence.awayAll` repariert",
+                "ru": "Fix `info.presence.awayAll`",
+                "pt": "Corrigir `info.presence.awayAll`",
+                "nl": "Fix `info.presence.awayAll`",
+                "fr": "Fix `info.presence.awayAll`",
+                "it": "Fissare `info.presence.awayAll`",
+                "es": "Fijar `info.presence.awayAll`",
+                "pl": "Fix `info.presence.awayAll`",
+                "uk": "Завантажити `info.presence.awayAll`",
+                "zh-cn": "Fix `info.presence.awayAll`"
             }
         },
         "titleLang": {
