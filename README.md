@@ -35,15 +35,15 @@ The adapter is also designed to support a sophisticated notification routing sys
     ### **WORK IN PROGRESS**
 -->
 
-### 0.0.2-beta.2 (2023-01-03)
+### **WORK IN PROGRESS**
 
--   (Julian Pawlowski) Remove warnings for foreign presence states
--   (Julian Pawlowski) Add missing object descriptions
--   (Julian Pawlowski) Add extended adapter description to better explain the purpose of existence
-
-### 0.0.2-beta.1 (2023-01-03)
-
--   (Julian Pawlowski) Sync foreign presence state during startup
+-   (Julian Pawlowski) Added emoji icons to states
+-   (Julian Pawlowski) Added customizable translations for states
+-   (Julian Pawlowski) Changed values for mood to correct visible sorting order
+-   (Julian Pawlowski) Renamed activity tasks to Focus Mode (similar to Apple Focus Mode)
+-   (Julian Pawlowski) Added custom Focus Modes
+-   (Julian Pawlowski) Moved resident devices to subfolders
+-   (Julian Pawlowski) Timers can be disabled
 
 ## License
 
