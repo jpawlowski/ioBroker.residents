@@ -3742,7 +3742,7 @@ class Residents extends utils.Adapter {
 
                 // Always reset mood if presence state was changed
                 if (residentType != 'pet' && state.val != oldState.val) {
-                    await this.setStateChangedAsync(id + '.mood.state', { val: 0, ack: true });
+                    await this.setStateChangedAsync(id + '.mood.state', { val: 5, ack: true });
                 }
 
                 // When present at home
