@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.1",
+        "version": "0.0.3-beta.2",
         "news": {
+            "0.0.3-beta.2": {
+                "en": "Fix mood reset when presence changes",
+                "de": "Zurücksetzen von Laune repariert, wenn sich die Anwesenheit ändert",
+                "ru": "Исправление сброса настроения при изменении присутствия",
+                "pt": "Corrigir a redefinição de humor quando a presença muda",
+                "nl": "Stemmingsresten als aanwezigheid verandert",
+                "fr": "Réinitialiser l'humeur lorsque la présence change",
+                "it": "Ripristino dell'umore quando la presenza cambia",
+                "es": "Reiniciar el estado de ánimo cuando cambia la presencia",
+                "pl": "Nastroje Fixa reaktywują się, gdy obecność zmienia się",
+                "uk": "Виправлення скидання настрою при зміні присутності",
+                "zh-cn": "当存在变化时,固定单元重新出现"
+            },
             "0.0.3-beta.1": {
                 "en": "Fix Yahka support",
                 "de": "Yahka Support repariert",
