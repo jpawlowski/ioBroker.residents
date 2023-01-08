@@ -34,9 +34,10 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.6 (2023-01-07)
 
--   (Julian Pawlowski) Avoid unexpected presence change during restart
+### **WORK IN PROGRESS**
+
+-   (Julian Pawlowski) Add info datapoints for last presence events of residents
 
 ## License
 
