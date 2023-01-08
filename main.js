@@ -39,6 +39,7 @@ class Residents extends utils.Adapter {
 
     /**
      * Adapter instance startup
+     * @returns void
      */
     async onReady() {
         this.roomies = this.config.roomie != undefined ? this.config.roomie : [];
@@ -2659,6 +2660,7 @@ class Residents extends utils.Adapter {
      *
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
+     * @returns void
      */
     onStateChange(id, state) {
         const a = id.split('.');
@@ -2765,6 +2767,7 @@ class Residents extends utils.Adapter {
      * Adapter instance shutdown
      *
      * @param {() => void} callback
+     * @returns void
      */
     onUnload(callback) {
         try {
@@ -2794,6 +2797,7 @@ class Residents extends utils.Adapter {
      *
      * @param {string} id
      * @param {ioBroker.State} state
+     * @returns void
      */
     processGlobalControlCommand(id, state) {
         const a = id.split('.');
@@ -2808,7 +2812,7 @@ class Residents extends utils.Adapter {
 
         if (typeof level1 != 'string') return;
 
-        // const oldState = this.states[id];
+        // const oldState = this.states[id] || state;
         this.states[id] = state;
 
         switch (levels2_3) {
@@ -3210,6 +3214,7 @@ class Residents extends utils.Adapter {
      *
      * @param {string} id
      * @param {ioBroker.State} state
+     * @returns void
      */
     processResidentDeviceControlCommand(id, state) {
         const a = id.split('.');
@@ -3222,46 +3227,40 @@ class Residents extends utils.Adapter {
 
         if (typeof level1 != 'string' || typeof level2 != 'string') return;
 
-        const oldState = this.states[id];
+        const oldState = this.states[id] || state;
         this.states[id] = state;
 
         switch (level3) {
             case 'enabled': {
                 this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
-                this.enableResidentDevice(level1, level2, state, oldState);
-                break;
+                return this.enableResidentDevice(level1, level2, state, oldState);
             }
 
             case 'activity': {
-                if (typeof level4 != 'string') return;
+                if (typeof level4 != 'string') return false;
                 this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDeviceActivity(level1, level2, level4, state, oldState);
-                break;
+                return this.setResidentDeviceActivity(level1, level2, level4, state, oldState);
             }
 
             case 'mood': {
                 this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDeviceMood(level1, level2, state, oldState);
-                break;
+                return this.setResidentDeviceMood(level1, level2, state, oldState);
             }
 
             case 'presence': {
-                if (typeof level4 != 'string') return;
+                if (typeof level4 != 'string') return false;
                 this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDevicePresence(level1, level2, level4, state, oldState);
-                break;
+                return this.setResidentDevicePresence(level1, level2, level4, state, oldState);
             }
 
             case 'presenceFollowing': {
-                if (typeof level4 != 'string') return;
+                if (typeof level4 != 'string') return false;
                 this.log.debug(level2 + ': Controlling ' + id + ': ' + state.val);
-                this.setResidentDevicePresenceFollowing(level1, level2, level4, state, oldState);
-                break;
+                return this.setResidentDevicePresenceFollowing(level1, level2, level4, state, oldState);
             }
 
             default: {
                 this.log.error(level2 + ': Controlling unknown channel ' + level3);
-                break;
             }
         }
     }
@@ -3271,6 +3270,7 @@ class Residents extends utils.Adapter {
      *
      * @param {string} id
      * @param {ioBroker.State} state
+     * @returns void
      */
     processResidentDeviceUpdateEvent(id, state) {
         const a = id.split('.');
@@ -3281,7 +3281,7 @@ class Residents extends utils.Adapter {
         const level3 = a.shift(); // third level ID
         const level4 = a.shift(); // fourth level ID
 
-        // const oldState = this.states[id];
+        // const oldState = this.states[id] || state;
         this.states[id] = state;
 
         switch (level3) {
@@ -3323,7 +3323,6 @@ class Residents extends utils.Adapter {
 
             default: {
                 this.log.error(this.namespace + ": Received unknown ack'ed update of " + id + ': ' + state.val);
-                break;
             }
         }
     }
@@ -3336,6 +3335,7 @@ class Residents extends utils.Adapter {
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
+     * @returns void
      */
     async setResidentDeviceActivity(residentType, device, command, state, oldState) {
         const id = residentType + '.' + device;
@@ -3350,7 +3350,8 @@ class Residents extends utils.Adapter {
             !activityState ||
             activityState.val == undefined ||
             typeof activityState.val != 'number' ||
-            !dndState
+            !dndState ||
+            state.val == undefined
         )
             return;
 
@@ -3365,7 +3366,21 @@ class Residents extends utils.Adapter {
 
         switch (command) {
             case 'state': {
-                if (typeof state.val != 'number' || oldState.val == null || typeof oldState.val != 'number') return;
+                if (typeof state.val != 'number' || oldState.val == null || typeof oldState.val != 'number') {
+                    this.log.error(
+                        id +
+                            '.activity.state' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.state', oldState);
+                    return;
+                }
                 if (oldState.val >= 10000) oldState.val -= 10000;
                 let changePresenceToHome = false;
                 let changePresenceToAway = false;
@@ -3468,6 +3483,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'awake': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.awake' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.awake', oldState);
+                    return;
+                }
                 if (activityState.val < 2000) {
                     this.log.warn(device + ': Awake state can only be controlled during night time');
                     state.ack = true;
@@ -3503,6 +3533,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'bedtime': {
+                if (typeof state.val != 'number') {
+                    this.log.error(
+                        id +
+                            '.activity.bedtime' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.bedtime', oldState);
+                    return;
+                }
                 state.ack = true;
                 if (activityState.val >= 1000) {
                     let newActivityVal = 1000;
@@ -3530,6 +3575,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'dnd': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.dnd' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.dnd', oldState);
+                    return;
+                }
                 state.ack = true;
                 if (presenceState.val == 0) {
                     this.log.warn(device + ': Do Not Disturb can only be controlled during presence at home');
@@ -3553,6 +3613,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'overnight': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.overnight' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.overnight', oldState);
+                    return;
+                }
                 state.ack = true;
                 if (state.val == true) {
                     if (enabledState.val == false) {
@@ -3575,6 +3650,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'focus': {
+                if (typeof state.val != 'number') {
+                    this.log.error(
+                        id +
+                            '.activity.focus' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.focus', oldState);
+                    return;
+                }
                 if (presenceState.val == 2) {
                     this.log.warn(device + ': A focus can not be set during night time');
                     state.ack = true;
@@ -3592,6 +3682,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'wakeup': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.wakeup' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.wakeup', oldState);
+                    return;
+                }
                 state.ack = true;
                 if (presenceState.val == 2) {
                     await this.setStateAsync(id + '.activity.wakeup', state);
@@ -3617,7 +3722,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'wakeupSnooze': {
-                if (state.val != true) return;
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.wakeupSnooze' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.wakeupSnooze', oldState);
+                    return;
+                }
                 state.ack = true;
                 if (activityState.val >= 2100 && activityState.val < 2200) {
                     let newActivityVal = Number(activityState.val);
@@ -3639,6 +3758,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'wayhome': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.activity.wayhome' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.activity.wayhome', oldState);
+                    return;
+                }
                 const away = await this.getStateAsync(device + '.presence.away');
                 if (away && away.val == false) {
                     this.log.warn(device + ': Wayhome state can only be controlled during absence');
@@ -3668,9 +3802,11 @@ class Residents extends utils.Adapter {
 
             default: {
                 this.log.warn(device + ': Controlling unknown activity ' + command);
-                break;
+                return false;
             }
         }
+
+        return true;
     }
 
     /**
@@ -3680,9 +3816,26 @@ class Residents extends utils.Adapter {
      * @param {string} device
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
+     * @returns void
      */
     async setResidentDeviceMood(residentType, device, state, oldState) {
         const id = residentType + '.' + device;
+        if (!oldState) oldState = state;
+        if (typeof state.val != 'boolean') {
+            this.log.error(
+                id +
+                    '.mood.state' +
+                    " has rejected invalid input value type '" +
+                    typeof state.val +
+                    "' with value " +
+                    state.val,
+            );
+            oldState.ack = true;
+            oldState.q = 0x01;
+            oldState.ts = state.ts;
+            await this.setStateAsync(id + '.mood.state', oldState);
+            return;
+        }
         const presenceState = await this.getStateAsync(id + '.presence.state');
         if (!presenceState || presenceState.val == undefined) return;
         if (!oldState) oldState = state;
@@ -3705,6 +3858,7 @@ class Residents extends utils.Adapter {
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
+     * @returns void
      */
     async setResidentDevicePresence(residentType, device, command, state, oldState) {
         const id = residentType + '.' + device;
@@ -3729,7 +3883,21 @@ class Residents extends utils.Adapter {
 
         switch (command) {
             case 'state': {
-                if (typeof state.val != 'number') return;
+                if (typeof state.val != 'number') {
+                    this.log.error(
+                        id +
+                            '.presence.state' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.presence.state', oldState);
+                    return;
+                }
 
                 // Disable immediately if no overnight stay planned
                 if (overnightState && overnightState.val == false && state.val == 0) {
@@ -3832,6 +4000,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'home': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.presence.home' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.presence.state', oldState);
+                    return;
+                }
                 state.val = state.val == true ? 1 : 0;
                 if (this.initialized) {
                     await this.setStateAsync(id + '.presence.state', state);
@@ -3842,6 +4025,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'night': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.presence.night' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.presence.state', oldState);
+                    return;
+                }
                 if (state.val == true) {
                     state.val = 2;
                 } else {
@@ -3852,6 +4050,21 @@ class Residents extends utils.Adapter {
             }
 
             case 'away': {
+                if (typeof state.val != 'boolean') {
+                    this.log.error(
+                        id +
+                            '.presence.away' +
+                            " has rejected invalid input value type '" +
+                            typeof state.val +
+                            "' with value " +
+                            state.val,
+                    );
+                    oldState.ack = true;
+                    oldState.q = 0x01;
+                    oldState.ts = state.ts;
+                    await this.setStateAsync(id + '.presence.state', oldState);
+                    return;
+                }
                 state.val = state.val == true ? 0 : 1;
                 await this.setStateAsync(id + '.presence.state', state);
                 break;
@@ -3859,7 +4072,6 @@ class Residents extends utils.Adapter {
 
             default: {
                 this.log.warn(id + ': Controlling unknown presence ' + command);
-                break;
             }
         }
     }
@@ -3872,6 +4084,7 @@ class Residents extends utils.Adapter {
      * @param {string} command
      * @param {ioBroker.State} state
      * @param {ioBroker.State} [oldState]
+     * @returns void
      */
     async setResidentDevicePresenceFollowing(residentType, device, command, state, oldState) {
         const id = residentType + '.' + device;
@@ -3887,6 +4100,7 @@ class Residents extends utils.Adapter {
      * @param {ioBroker.State} state
      * @param {boolean} [dryrun]
      * @param {ioBroker.StateObject} [_stateObj] function internal only
+     * @returns void
      */
     async setResidentDevicePresenceFromEvent(id, state, dryrun, _stateObj) {
         const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
@@ -4031,10 +4245,27 @@ class Residents extends utils.Adapter {
      * @param {string} residentType
      * @param {string} device
      * @param {ioBroker.State} state
-     * @param {ioBroker.State} oldState
+     * @param {ioBroker.State} [oldState]
+     * @returns void
      */
     async enableResidentDevice(residentType, device, state, oldState) {
         const id = residentType + '.' + device;
+        if (!oldState) oldState = state;
+        if (typeof state.val != 'boolean') {
+            this.log.error(
+                id +
+                    '.enabled' +
+                    " has rejected invalid input value type '" +
+                    typeof state.val +
+                    "' with value " +
+                    state.val,
+            );
+            oldState.ack = true;
+            oldState.q = 0x01;
+            oldState.ts = state.ts;
+            await this.setStateAsync(id + '.enabled', oldState);
+            return;
+        }
         await this.setStateAsync(id + '.enabled', { val: state.val, ack: true, from: state.from });
         if (oldState.val != state.val) {
             if (state.val == true) {
@@ -4054,7 +4285,10 @@ class Residents extends utils.Adapter {
     }
 
     /**
+     * Calculate residents summary from resident devices
+     *
      * @param {boolean} [_run]
+     * @returns void
      */
     async setResidentsSummary(_run) {
         // Debounce re-calculation when multiple changes occure in a short time
@@ -4605,6 +4839,7 @@ class Residents extends utils.Adapter {
      * Disable any resident that is currently away, assuming to be away for the day as there was no overnight
      *
      * @param {boolean} [initialize]
+     * @returns void
      */
     timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
@@ -4724,6 +4959,7 @@ class Residents extends utils.Adapter {
      * Convert HH:mm or HH:mm:ss to milliseconds until next occurance
      *
      * @param {string} timeOfDay - time in HH:mm or HH:mm:ss
+     * @returns number | null
      */
     getMillisecondsUntilTime(timeOfDay) {
         if (!timeOfDay) return null;
@@ -4758,6 +4994,7 @@ class Residents extends utils.Adapter {
 
     /**
      * @param {number} duration
+     * @returns string HH:mm
      */
     convertMillisecondsToDuration(duration) {
         const seconds = Math.floor((duration / 1000) % 60);
@@ -4771,6 +5008,7 @@ class Residents extends utils.Adapter {
 
     /**
      * @param {string} id
+     * @returns string
      */
     cleanNamespace(id) {
         return (
@@ -4819,6 +5057,7 @@ class Residents extends utils.Adapter {
     /**
      * @param {object} a
      * @param {object} b
+     * @returns number
      */
     reverseSortResidentsListByTimecode(a, b) {
         if (a.tc == undefined || b.tc == undefined) return 0;
