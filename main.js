@@ -563,6 +563,483 @@ class Residents extends utils.Adapter {
                 2200: 'Aufwachen nach Weckruf',
                 2210: 'Aufwachen',
             },
+            // ru: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // pt: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // nl: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // fr: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // it: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // es: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // pl: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // uk: {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
+            // 'zh-cn': {
+            //     // 000-0999: Not present at home / Away
+            //     0: '',
+            //     1: '',
+            //     2: '',
+
+            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     100: '',
+            //     101: '',
+            //     102: '',
+            //     103: '',
+            //     104: '',
+            //     105: '',
+            //     106: '',
+            //     107: '',
+
+            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
+            //     1000: '',
+
+            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
+            //     1100: '',
+            //     1101: '',
+            //     1102: '',
+            //     1103: '',
+            //     1104: '',
+            //     1105: '',
+            //     1106: '',
+            //     1107: '',
+
+            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
+            //     1900: '',
+            //     1901: '',
+            //     1902: '',
+
+            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
+            //     2000: '',
+
+            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
+            //     2010: '',
+            //     2020: '',
+
+            //     // 2100-2199: SLEEPING TIME at home: While I should get up
+            //     2100: '',
+            //     2101: '',
+            //     2102: '',
+            //     2103: '',
+            //     2104: '',
+            //     2105: '',
+
+            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
+            //     2200: '',
+            //     2210: '',
+            // },
         };
 
         const activityLang = activityStateTexts[this.language]
@@ -573,7 +1050,11 @@ class Residents extends utils.Adapter {
         };
 
         // add Focus Modes
-        if (this.config.focusStates != undefined && this.config.focusStates.length > 0) {
+        if (
+            this.config.focusStates != undefined &&
+            typeof this.config.focusStates == 'object' &&
+            this.config.focusStates.length > 0
+        ) {
             for (const key in this.config.focusStates) {
                 const awayFocusKey = Number(key) + 100;
                 const homeFocusKey = Number(key) + 100 + 1000;
@@ -654,15 +1135,15 @@ class Residents extends utils.Adapter {
         const focusStateTexts = {
             en: 'Focus',
             de: 'Fokus',
-            ru: '',
-            pt: '',
-            nl: '',
-            fr: '',
-            it: '',
-            es: '',
-            pl: '',
-            uk: '',
-            'zh-cn': '',
+            ru: 'Фокус',
+            pt: 'Foco',
+            nl: 'Focus',
+            fr: 'Focus',
+            it: 'Focus',
+            es: 'Focus',
+            pl: 'Focus',
+            uk: 'Фокус',
+            'zh-cn': '焦点',
         };
         const focusLang = focusStateTexts[this.language] ? focusStateTexts[this.language] : focusStateTexts.en;
 
@@ -981,7 +1462,7 @@ class Residents extends utils.Adapter {
                 );
 
                 await this.setObjectNotExistsAsync(id + '.info', {
-                    type: 'channel',
+                    type: 'folder',
                     common: {
                         name: {
                             en: 'Information about ' + name,
@@ -1025,8 +1506,185 @@ class Residents extends utils.Adapter {
                 });
                 await this.setStateChangedAsync(id + '.info.name', { val: name, ack: true });
 
-                // Activity support not for pets
+                await this.setObjectNotExistsAsync(id + '.info.presence', {
+                    type: 'channel',
+                    common: {
+                        name: {
+                            en: 'Information about presence of ' + name,
+                            de: 'Informationen über die Anwesenheit von ' + name,
+                            ru: 'Информация о наличии ' + name,
+                            pt: 'InformaÃ§Ãμes sobre a presença de ' + name,
+                            nl: 'Informatie over aanwezigheid van ' + name,
+                            fr: 'Informations sur la présence de ' + name,
+                            it: 'Informazioni sulla presenza di ' + name,
+                            es: 'Información sobre la presencia de ' + name,
+                            pl: 'Informacja o obecności ' + name,
+                            uk: 'Інформація про наявність ' + name,
+                            'zh-cn': name + ' 有关十国存在的资料',
+                        },
+                    },
+                    native: {},
+                });
+
+                await this.setObjectNotExistsAsync(id + '.info.presence.lastHome', {
+                    type: 'state',
+                    common: {
+                        name: {
+                            en: name + ' came home last',
+                            de: name + ' kam zuletzt nach Hause',
+                            ru: name + ' вернулся домой последним',
+                            pt: name + ' chegou a casa por último',
+                            nl: name + ' kwam laatst thuis',
+                            fr: name + ' est rentré en dernier',
+                            it: name + ' è tornato a casa per ultimo',
+                            es: name + ' llegó a casa el último',
+                            pl: name + ' wrócił do domu ostatnio',
+                            uk: name + ' прийшов додому останнім',
+                            'zh-cn': name + ' 最后回家了',
+                        },
+                        type: 'string',
+                        role: 'text.residents.lastHome',
+                        read: true,
+                        write: false,
+                        desc: {
+                            en: 'Weekday and time when ' + name + ' last came home',
+                            de: 'Wochentag und Uhrzeit, wann ' + name + ' zuletzt nach Hause gekommen ist',
+                            ru: 'День недели и время, когда ' + name + ' в последний раз приходил домой',
+                            pt: 'Dia da semana e hora da última vez que ' + name + ' regressou a casa',
+                            nl: 'Weekdag en tijdstip waarop ' + name + ' voor het laatst thuis kwam',
+                            fr:
+                                'Jour de la semaine et heure à laquelle ' +
+                                name +
+                                ' est rentré pour la dernière fois à la maison',
+                            it: 'Giorno della settimana e ora in cui ' + name + " è tornato a casa per l'ultima volta",
+                            es: 'Día de la semana y hora en que ' + name + ' llegó a casa por última vez',
+                            pl: 'Dzień tygodnia i godzina, kiedy ' + name + ' ostatni raz wrócił do domu',
+                            uk: 'День тижня та час, коли ' + name + ' востаннє повертався додому',
+                            'zh-cn': name + ' 最后一次回家的工作日和时间',
+                        },
+                    },
+                    native: {},
+                });
+
+                await this.setObjectNotExistsAsync(id + '.info.presence.lastAway', {
+                    type: 'state',
+                    common: {
+                        name: {
+                            en: name + ' left home last',
+                            de: name + ' verließ zuletzt das Haus',
+                            ru: name + ' ушел из дома последним',
+                            pt: name + ' saiu de casa por último',
+                            nl: name + ' vertrok laatst van huis',
+                            fr: name + ' a quitté la maison en dernier',
+                            it: name + " è uscito di casa l'ultima volta",
+                            es: name + ' salió de casa el pasado',
+                            pl: name + ' wyszedł z domu jako ostatni',
+                            uk: name + ' пішов з дому останнім',
+                            'zh-cn': name + ' 最后离开家',
+                        },
+                        type: 'string',
+                        role: 'text.residents.lastAway',
+                        read: true,
+                        write: false,
+                        desc: {
+                            en: 'Weekday and time when ' + name + ' last left home',
+                            de: 'Wochentag und Uhrzeit, wann ' + name + ' zuletzt das Hause verlassen hat',
+                            ru: 'День недели и время, когда ' + name + ' в последний раз уходил из дома',
+                            pt: 'Dia e hora da semana em que ' + name + ' saiu pela última vez de casa',
+                            nl: 'Weekdag en tijdstip waarop ' + name + ' het laatst van huis is vertrokken',
+                            fr:
+                                'Jour de la semaine et heure à laquelle ' +
+                                name +
+                                ' a quitté son domicile pour la dernière fois.',
+                            it: 'Giorno e ora in cui ' + name + " è uscito di casa per l'ultima volta",
+                            es: 'Día de la semana y hora en que ' + name + ' salió de casa por última vez',
+                            pl: 'Dzień tygodnia i godzina, kiedy ' + name + ' ostatni raz wyszedł z domu',
+                            uk: 'День тижня та час, коли ' + name + ' востаннє виходив з дому',
+                            'zh-cn': name + ' 最后一次离家的工作日和时间',
+                        },
+                    },
+                    native: {},
+                });
+
+                // Night/Awoken statistics and activity support not for pets
                 if (residentType != 'pet') {
+                    await this.setObjectNotExistsAsync(id + '.info.presence.lastNight', {
+                        type: 'state',
+                        common: {
+                            name: {
+                                en: name + ' went to sleep last',
+                                de: name + ' hat sich zuletzt schlafen gelegt',
+                                ru: name + ' уснул последним',
+                                pt: name + ' foi dormir por último',
+                                nl: name + ' is laatst gaan slapen',
+                                fr: name + " s'est couché en dernier",
+                                it: name + ' è andato a dormire per ultimo',
+                                es: name + ' se ha ido a dormir el último',
+                                pl: name + ' poszedł spać ostatni raz',
+                                uk: name + ' пішов спати останнім',
+                                'zh-cn': name + ' 已经睡了最后一觉',
+                            },
+                            type: 'string',
+                            role: 'text.residents.lastNight',
+                            read: true,
+                            write: false,
+                            desc: {
+                                en: 'Weekday and time when ' + name + ' last went to sleep',
+                                de: 'Wochentag und Uhrzeit, wann ' + name + ' sich zuletzt schlafen gelegt hat',
+                                ru: 'День недели и время, когда ' + name + ' в последний раз ложился спать',
+                                pt: 'Dia da semana e hora da última vez que ' + name + ' adormeceu',
+                                nl: 'Weekdag en tijd waarop ' + name + ' voor het laatst ging slapen',
+                                fr: 'Jour de la semaine et heure du dernier coucher de ' + name + '',
+                                it:
+                                    'Giorno della settimana e ora in cui ' +
+                                    name +
+                                    " è andato a dormire per l'ultima volta",
+                                es: 'Día de la semana y hora a la que ' + name + ' se fue a dormir por última vez',
+                                pl: 'Dzień tygodnia i godzina, kiedy ' + name + ' ostatnio poszedł spać',
+                                uk: 'День тижня та час, коли ' + name + ' востаннє лягав спати',
+                                'zh-cn': name + ' 最后一次入睡的工作日和时间',
+                            },
+                        },
+                        native: {},
+                    });
+
+                    await this.setObjectNotExistsAsync(id + '.info.presence.lastAwoken', {
+                        type: 'state',
+                        common: {
+                            name: {
+                                en: name + ' woke up last',
+                                de: name + ' ist zuletzt aufgewacht',
+                                ru: name + ' проснулся последним',
+                                pt: name + ' acordou por último',
+                                nl: name + ' werd laatst wakker',
+                                fr: name + " s'est réveillé hier",
+                                it: name + " si è svegliato l'ultima volta",
+                                es: name + ' se despertó el pasado',
+                                pl: name + ' obudził się ostatnio',
+                                uk: name + ' прокинувся останнім',
+                                'zh-cn': name + ' 最后醒来的时候',
+                            },
+                            type: 'string',
+                            role: 'text.residents.lastAwoken',
+                            read: true,
+                            write: false,
+                            desc: {
+                                en: 'Weekday and time when ' + name + ' last woke up',
+                                de: 'Wochentag und Uhrzeit, wann ' + name + ' zuletzt aufgewacht ist',
+                                ru: 'День недели и время, когда ' + name + ' в последний раз просыпался',
+                                pt: 'Dia e hora da semana em que ' + name + ' acordou pela última vez',
+                                nl: 'Weekdag en tijd waarop ' + name + ' voor het laatst wakker werd',
+                                fr: 'Jour de la semaine et heure du dernier réveil de ' + name,
+                                it: "Giorno della settimana e ora dell'ultimo risveglio di " + name,
+                                es: 'Día de la semana y hora en que ' + name + ' se despertó por última vez',
+                                pl: 'Dzień tygodnia i godzina, kiedy ' + name + ' ostatnio się obudził',
+                                uk: 'День тижня та час, коли ' + name + ' востаннє прокинувся',
+                                'zh-cn': name + ' 最后一次醒来的工作日和时间',
+                            },
+                        },
+                        native: {},
+                    });
+
                     await this.setObjectNotExistsAsync(id + '.activity', {
                         type: 'channel',
                         common: {
@@ -1712,6 +2370,51 @@ class Residents extends utils.Adapter {
                         1: 'Nur ankommen',
                         2: 'Nur verlassen',
                     },
+                    // ru: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // pt: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // nl: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // fr: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // it: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // es: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // pl: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // uk: {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
+                    // 'zh-cn': {
+                    //     0: '',
+                    //     1: '',
+                    //     2: '',
+                    // },
                 };
                 const homeModeLang = homeModeStates[this.language]
                     ? homeModeStates[this.language]
@@ -1875,6 +2578,51 @@ class Residents extends utils.Adapter {
                             1: 'Nur einschlafen',
                             2: 'Nur aufstehen',
                         },
+                        // ru: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // pt: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // nl: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // fr: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // it: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // es: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // pl: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // uk: {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
+                        // 'zh-cn': {
+                        //     0: '',
+                        //     1: '',
+                        //     2: '',
+                        // },
                     };
                     const nightModeLang = nightModeStates[this.language]
                         ? nightModeStates[this.language]
@@ -2812,7 +3560,7 @@ class Residents extends utils.Adapter {
 
         if (typeof level1 != 'string') return;
 
-        // const oldState = this.states[id] || state;
+        // const oldState = this.states[id] ? this.states[id] : state;
         this.states[id] = state;
 
         switch (levels2_3) {
@@ -3227,7 +3975,7 @@ class Residents extends utils.Adapter {
 
         if (typeof level1 != 'string' || typeof level2 != 'string') return;
 
-        const oldState = this.states[id] || state;
+        const oldState = this.states[id] ? this.states[id] : state;
         this.states[id] = state;
 
         switch (level3) {
@@ -3281,7 +4029,7 @@ class Residents extends utils.Adapter {
         const level3 = a.shift(); // third level ID
         const level4 = a.shift(); // fourth level ID
 
-        // const oldState = this.states[id] || state;
+        // const oldState = this.states[id] ? this.states[id] : state;
         this.states[id] = state;
 
         switch (level3) {
@@ -3375,10 +4123,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.state', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.state', state);
                     return;
                 }
                 if (oldState.val >= 10000) oldState.val -= 10000;
@@ -3492,10 +4240,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.awake', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.awake', state);
                     return;
                 }
                 if (activityState.val < 2000) {
@@ -3542,10 +4290,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.bedtime', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.bedtime', state);
                     return;
                 }
                 state.ack = true;
@@ -3584,10 +4332,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.dnd', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.dnd', state);
                     return;
                 }
                 state.ack = true;
@@ -3622,10 +4370,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.overnight', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.overnight', state);
                     return;
                 }
                 state.ack = true;
@@ -3659,14 +4407,14 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.focus', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.focus', state);
                     return;
                 }
                 if (presenceState.val == 2) {
-                    this.log.warn(device + ': A focus can not be set during night time');
+                    this.log.debug(device + ': A focus can not be set during night time');
                     state.ack = true;
                     state.val = oldState.val;
                     state.q = 0x40;
@@ -3675,7 +4423,14 @@ class Residents extends utils.Adapter {
                     state.ack = true;
                     if (presenceState.val == 0 && state.val == 0) state.val = enabledState.val == true ? 1 : 0;
                     if (presenceState.val == 1 && state.val == 0) state.val = 1000;
-                    if (presenceState.val == 2 && state.val == 0) state.val = 2000;
+                    if (presenceState.val == 1 && state.val >= 10000) {
+                        if (dndState.val == false)
+                            await this.setStateAsync(id + '.activity.dnd', { val: true, ack: true });
+                        state.val -= 10000;
+                    } else {
+                        if (dndState.val == true)
+                            await this.setStateAsync(id + '.activity.dnd', { val: false, ack: true });
+                    }
                     this.setResidentDeviceActivity(residentType, device, 'state', state, activityState);
                 }
                 break;
@@ -3691,10 +4446,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.wakeup', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.wakeup', state);
                     return;
                 }
                 state.ack = true;
@@ -3731,10 +4486,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.wakeupSnooze', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.wakeupSnooze', state);
                     return;
                 }
                 state.ack = true;
@@ -3767,10 +4522,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.activity.wayhome', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.activity.wayhome', state);
                     return;
                 }
                 const away = await this.getStateAsync(device + '.presence.away');
@@ -3821,7 +4576,7 @@ class Residents extends utils.Adapter {
     async setResidentDeviceMood(residentType, device, state, oldState) {
         const id = residentType + '.' + device;
         if (!oldState) oldState = state;
-        if (typeof state.val != 'boolean') {
+        if (typeof state.val != 'number') {
             this.log.error(
                 id +
                     '.mood.state' +
@@ -3830,10 +4585,10 @@ class Residents extends utils.Adapter {
                     "' with value " +
                     state.val,
             );
-            oldState.ack = true;
-            oldState.q = 0x01;
-            oldState.ts = state.ts;
-            await this.setStateAsync(id + '.mood.state', oldState);
+            state.ack = true;
+            state.q = 0x01;
+            state.val = oldState.val;
+            await this.setStateAsync(id + '.mood.state', state);
             return;
         }
         const presenceState = await this.getStateAsync(id + '.presence.state');
@@ -3892,11 +4647,65 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.presence.state', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.presence.state', state);
                     return;
+                }
+
+                // Update last* datapoints when presence changed
+                if (state.val != oldState.val) {
+                    const last = new Date(state.ts).toLocaleTimeString(this.language, {
+                        weekday: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                    });
+
+                    if (residentType != 'pet' && oldState.val == 2)
+                        await this.setStateChangedAsync(id + '.info.presence.lastAwoken', {
+                            val: last,
+                            ack: true,
+                            ts: state.ts,
+                            lc: state.ts,
+                            from: state.from,
+                        });
+
+                    switch (state.val) {
+                        case 0: {
+                            await this.setStateChangedAsync(id + '.info.presence.lastAway', {
+                                val: last,
+                                ack: true,
+                                ts: state.ts,
+                                lc: state.ts,
+                                from: state.from,
+                            });
+                            break;
+                        }
+                        case 1: {
+                            if (oldState.val == 0)
+                                await this.setStateChangedAsync(id + '.info.presence.lastHome', {
+                                    val: last,
+                                    ack: true,
+                                    ts: state.ts,
+                                    lc: state.ts,
+                                    from: state.from,
+                                });
+                            break;
+                        }
+                        case 2: {
+                            if (residentType != 'pet')
+                                await this.setStateChangedAsync(id + '.info.presence.lastNight', {
+                                    val: last,
+                                    ack: true,
+                                    ts: state.ts,
+                                    lc: state.ts,
+                                    from: state.from,
+                                });
+                            break;
+                        }
+                    }
                 }
 
                 // Disable immediately if no overnight stay planned
@@ -4009,10 +4818,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.presence.state', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.presence.state', state);
                     return;
                 }
                 state.val = state.val == true ? 1 : 0;
@@ -4034,10 +4843,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.presence.state', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.presence.state', state);
                     return;
                 }
                 if (state.val == true) {
@@ -4059,10 +4868,10 @@ class Residents extends utils.Adapter {
                             "' with value " +
                             state.val,
                     );
-                    oldState.ack = true;
-                    oldState.q = 0x01;
-                    oldState.ts = state.ts;
-                    await this.setStateAsync(id + '.presence.state', oldState);
+                    state.ack = true;
+                    state.q = 0x01;
+                    state.val = oldState.val;
+                    await this.setStateAsync(id + '.presence.state', state);
                     return;
                 }
                 state.val = state.val == true ? 0 : 1;
@@ -4132,7 +4941,7 @@ class Residents extends utils.Adapter {
                 type = this.getDatatypeFromString(state.val);
             }
             if (type == null) {
-                this.log.error(id + ': Monitored presence datapoint seems inapproproate due to unknown string format');
+                this.log.error(id + ': Monitored presence datapoint seems inappropriate due to unknown string format');
                 return false;
             }
             this.log.silly(id + ": Interpreting presence datapoint as type '" + type + "'");
@@ -4150,7 +4959,7 @@ class Residents extends utils.Adapter {
                 if (stateObj.common.min != undefined && stateObj.common.min != 0) {
                     this.log.error(
                         id +
-                            ': Monitored presence datapoint seems inapproproate with minimum value of ' +
+                            ': Monitored presence datapoint seems inappropriate with minimum value of ' +
                             stateObj.common.min,
                     );
                     return false;
@@ -4158,7 +4967,7 @@ class Residents extends utils.Adapter {
                 if (stateObj.common.max != undefined && stateObj.common.max != 1) {
                     this.log.error(
                         id +
-                            ': Monitored presence datapoint seems inapproproate with maximum value of ' +
+                            ': Monitored presence datapoint seems inappropriate with maximum value of ' +
                             stateObj.common.max,
                     );
                     return false;
@@ -4260,10 +5069,10 @@ class Residents extends utils.Adapter {
                     "' with value " +
                     state.val,
             );
-            oldState.ack = true;
-            oldState.q = 0x01;
-            oldState.ts = state.ts;
-            await this.setStateAsync(id + '.enabled', oldState);
+            state.ack = true;
+            state.q = 0x01;
+            state.val = oldState.val;
+            await this.setStateAsync(id + '.enabled', state);
             return;
         }
         await this.setStateAsync(id + '.enabled', { val: state.val, ack: true, from: state.from });
