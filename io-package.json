@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.8",
+        "version": "0.0.3-beta.9",
         "news": {
-            "0.0.3-beta.8": {
-                "en": "Add template for Siri Shortcuts to control Focus Modes",
-                "de": "Vorlage für Siri Shortcuts hinzugefügt, um Fokus Modi zu steuern",
-                "ru": "Добавьте шаблон для Siri Shortcuts для управления Focus Modes",
-                "pt": "Adicionar modelo para atalhos Siri para controlar modos de foco",
-                "nl": "Vertaling:",
-                "fr": "Ajouter un modèle pour les raccourcis Siri pour contrôler les modes Focus",
-                "it": "Aggiungi un modello per le scorciatoie Siri per controllare le modalità di messa a fuoco",
-                "es": "Añadir plantilla para Atajos Siri para controlar Modos Focus",
-                "pl": "Addd szablon dla Siri Shortcuts kontroluje tryb Focus",
-                "uk": "Додавання шаблону для шорти Siri для керування режимами фокусу",
-                "zh-cn": "控制焦点 Modes的短期执行者增加模板"
+            "0.0.3-beta.9": {
+                "en": "Fix awayAll determination",
+                "de": "awayAll Ermittlung korrigiert",
+                "ru": "Fix прочь Все определения",
+                "pt": "Corrigir Toda determinação",
+                "nl": "Vertaling: Alle vastberadenheid",
+                "fr": "Arrêtez ! All determination",
+                "it": "Riparare Tutta la determinazione",
+                "es": "Arréglalo. Toda determinación",
+                "pl": "Fix odchodzi. Wszystkie determinacje",
+                "uk": "Відправити Всі визначення",
+                "zh-cn": "固定 一切决心"
             }
         },
         "titleLang": {
