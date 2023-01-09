@@ -34,9 +34,10 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.8 (2023-01-09)
 
--   (Julian Pawlowski) Add template for Siri Shortcuts to control Focus Modes
+### **WORK IN PROGRESS**
+
+-   (jpawlowski) Fix awayAll determination
 
 ## License
 
