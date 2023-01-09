@@ -57,6 +57,7 @@
             "family",
             "presence",
             "activity",
+            "focus mode",
             "bedtime",
             "wakeup",
             "Bewohner",
@@ -66,6 +67,8 @@
             "Familie",
             "Anwesenheit",
             "Aktivität",
+            "Fokus Modus",
+            "Siri Shortcuts",
             "Schlafenszeit",
             "Weckruf"
         ],
