@@ -5508,7 +5508,7 @@ class Residents extends utils.Adapter {
             ack: true,
         });
         await this.setStateAsync('info.presence.awayAll', {
-            val: totalResidentsCount == 0 || (awaySum.length > 0 && awaySum.length == totalResidentsCount),
+            val: totalResidentsCount == 0 || homeSum.length == 0,
             ack: true,
         });
         await this.setStateAsync('info.presence.petsHome', { val: petHomeSum.length > 0, ack: true });
