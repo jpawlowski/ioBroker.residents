@@ -4909,7 +4909,7 @@ class Residents extends utils.Adapter {
      * @param {ioBroker.State} state
      * @param {boolean} [dryrun]
      * @param {ioBroker.StateObject} [_stateObj] function internal only
-     * @returns void
+     * @returns boolean
      */
     async setResidentDevicePresenceFromEvent(id, state, dryrun, _stateObj) {
         const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
@@ -4996,6 +4996,17 @@ class Residents extends utils.Adapter {
                     return false;
                 }
                 state.val = jsonPresenceVal;
+
+                // if there is a date/time delivered, take this over instead of our time
+                const regexISO8601 =
+                    /^(\d{4})(?:-(\d{2}))??(?:-(\d{2}))??T(\d{2}):(\d{2})(?::(\d{2}))??(?:\.(\d+))??((?:[+-]{1}\d{2}:\d{2})|Z)??$/;
+                if (jsonObj.date != undefined && typeof jsonObj.date == 'string' && jsonObj.date.match(regexISO8601))
+                    try {
+                        state.ts = new Date(jsonObj.date).getTime();
+                    } catch (e) {
+                        //
+                    }
+
                 return this.setResidentDevicePresenceFromEvent(id, state, dryrun, {
                     _id: stateObj._id,
                     type: 'state',
