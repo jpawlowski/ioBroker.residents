@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.7",
+        "version": "0.0.3-beta.8",
         "news": {
-            "0.0.3-beta.7": {
-                "en": "Add info datapoints for last presence events of residents",
-                "de": "Info-Datenpunkte für die letzte Anwesenheitsänderung von Bewohnern hinzugefügt",
-                "ru": "Добавить информационные точки для последнего присутствия резидентов",
-                "pt": "Adicione info datapoints para eventos de última presença de moradores",
-                "nl": "Voeg informatie toe voor de laatste aanwezigheid van bewoners",
-                "fr": "Ajouter des points de données pour les derniers événements de présence des résidents",
-                "it": "Aggiungi info datapoints per eventi di ultima presenza dei residenti",
-                "es": "Añadir info datapoints for last presence events of residents",
-                "pl": "Adddinfo datapoints for the last presence events of people in a country",
-                "uk": "Додайте інформаційні точки для останніх подій присутності мешканців",
-                "zh-cn": "为居民的最后存在活动增加数据点"
+            "0.0.3-beta.8": {
+                "en": "Add template for Siri Shortcuts to control Focus Modes",
+                "de": "Vorlage für Siri Shortcuts hinzugefügt, um Fokus Modi zu steuern",
+                "ru": "Добавьте шаблон для Siri Shortcuts для управления Focus Modes",
+                "pt": "Adicionar modelo para atalhos Siri para controlar modos de foco",
+                "nl": "Vertaling:",
+                "fr": "Ajouter un modèle pour les raccourcis Siri pour contrôler les modes Focus",
+                "it": "Aggiungi un modello per le scorciatoie Siri per controllare le modalità di messa a fuoco",
+                "es": "Añadir plantilla para Atajos Siri para controlar Modos Focus",
+                "pl": "Addd szablon dla Siri Shortcuts kontroluje tryb Focus",
+                "uk": "Додавання шаблону для шорти Siri для керування режимами фокусу",
+                "zh-cn": "控制焦点 Modes的短期执行者增加模板"
             }
         },
         "titleLang": {
