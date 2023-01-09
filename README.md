@@ -34,9 +34,10 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.7 (2023-01-08)
 
--   (Julian Pawlowski) Add info datapoints for last presence events of residents
+### **WORK IN PROGRESS**
+
+-   (Julian Pawlowski) Add template for Siri Shortcuts to control Focus Modes
 
 ## License
 
