@@ -3954,7 +3954,8 @@ class Residents extends utils.Adapter {
         }
 
         state.ack = true;
-        this.setStateAsync(id, state);
+        state.lc = state.ts;
+        this.setState(id, state);
     }
 
     /**
@@ -4508,6 +4509,7 @@ class Residents extends utils.Adapter {
                     state.val = true;
                     state.q = 0x41;
                 }
+                state.lc = state.ts;
                 await this.setStateAsync(id + '.activity.wakeupSnooze', state);
                 break;
             }
