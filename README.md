@@ -9,7 +9,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.residents.png?downloads=true)](https://nodei.co/npm/iobroker.residents/)
 
-**Tests:** ![Test and Release](https://github.com/jpawlowski/ioBroker.residents/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test](https://github.com/jpawlowski/ioBroker.residents/workflows/Test/badge.svg) ![Test and Release](https://github.com/jpawlowski/ioBroker.residents/workflows/Test%20and%20Release/badge.svg)
 
 ## Residents adapter for ioBroker
 
@@ -34,6 +34,7 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
 ### 0.0.3-beta.10 (2023-01-15)
 
 -   (jpawlowski) Improve event monitoring for JSON values
