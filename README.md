@@ -34,8 +34,7 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.3-beta.10 (2023-01-15)
 
 -   (jpawlowski) Improve event monitoring for JSON values
 

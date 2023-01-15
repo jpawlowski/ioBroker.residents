@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.9",
+        "version": "0.0.3-beta.10",
         "news": {
-            "0.0.3-beta.9": {
-                "en": "Fix awayAll determination",
-                "de": "awayAll Ermittlung korrigiert",
-                "ru": "Fix прочь Все определения",
-                "pt": "Corrigir Toda determinação",
-                "nl": "Vertaling: Alle vastberadenheid",
-                "fr": "Arrêtez ! All determination",
-                "it": "Riparare Tutta la determinazione",
-                "es": "Arréglalo. Toda determinación",
-                "pl": "Fix odchodzi. Wszystkie determinacje",
-                "uk": "Відправити Всі визначення",
-                "zh-cn": "固定 一切决心"
+            "0.0.3-beta.10": {
+                "en": "Improve event monitoring for JSON values",
+                "de": "Verbesserung der Ereignisüberwachung bei JSON-Werten",
+                "ru": "Улучшение мониторинга событий за JSON-значения",
+                "pt": "Melhorar o monitoramento de eventos para valores JSON",
+                "nl": "Improve event monitoren voor JSON waarden",
+                "fr": "Améliorer la surveillance d'événements pour les valeurs JSON",
+                "it": "Migliorare il monitoraggio degli eventi per i valori JSON",
+                "es": "Mejorar el monitoreo de eventos para valores JSON",
+                "pl": "Improwizacja wartości JSON",
+                "uk": "Покращення моніторингу подій для значень JSON",
+                "zh-cn": "B. 改进对联合国家评价活动的监测"
             }
         },
         "titleLang": {
