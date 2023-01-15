@@ -3488,16 +3488,31 @@ class Residents extends utils.Adapter {
         else {
             // The state was controlled (ack=false)
             if (!state.ack) {
-                if (this.presenceSubscriptionMapping[id] != undefined)
+                if (
+                    this.hasJsonStructure(state.val) &&
+                    (this.presenceSubscriptionMapping[id] != undefined ||
+                        this.wayhomeSubscriptionMapping[id] != undefined)
+                ) {
+                    // for JSON values, don't expect any ack being set
+                    this.log.warn(
+                        id +
+                            ": Received non-ack'ed JSON presence event which might lead to dublicate event processing. Maybe ask the maintainer for " +
+                            adapterName +
+                            ' adapter to write state values containing JSON with `ack=true` and also define the state object with `common.write=false`?',
+                    );
+                    this.setResidentDevicePresenceFromEvent(id, state);
+                    return;
+                } else if (this.presenceSubscriptionMapping[id] != undefined) {
                     this.log.debug(
                         id +
                             ": Received non-ack'ed presence control event. Waiting for ack'ed event to process presence change.",
                     );
-                if (this.wayhomeSubscriptionMapping[id] != undefined)
+                } else if (this.wayhomeSubscriptionMapping[id] != undefined) {
                     this.log.debug(
                         id +
                             ": Received non-ack'ed way home control event. Waiting for ack'ed event to process way home change.",
                     );
+                }
             }
 
             // The state was updated (ack=true)
@@ -4937,7 +4952,7 @@ class Residents extends utils.Adapter {
         }
 
         if (type == 'mixed' || type == 'string') {
-            if (stateObj.common.role == 'json') {
+            if (stateObj.common.role == 'json' || id.split('.').at(-1)?.toLowerCase() == 'json') {
                 type = 'json';
             } else {
                 type = this.getDatatypeFromString(state.val);
@@ -4949,8 +4964,6 @@ class Residents extends utils.Adapter {
             this.log.silly(id + ": Interpreting presence datapoint as type '" + type + "'");
         }
 
-        let jsonObj = null;
-        let jsonPresenceVal = null;
         switch (type) {
             case 'boolean': {
                 presence = Boolean(state.val);
@@ -4979,12 +4992,12 @@ class Residents extends utils.Adapter {
             }
 
             case 'json': {
-                try {
-                    jsonObj = JSON.parse(String(state.val));
-                } catch (e) {
-                    this.log.error(id + ': Error while parsing JSON value');
+                const [err, jsonObj] = this.safeJsonParse(state.val);
+                if (err) {
+                    this.log.error(id + ': Failed to parse JSON: ' + err.message);
                     return false;
                 }
+                let jsonPresenceVal = null;
                 if (jsonObj.entry != undefined) {
                     jsonPresenceVal = jsonObj.entry;
                 } else if (jsonObj.presence != undefined) {
@@ -5860,8 +5873,10 @@ class Residents extends utils.Adapter {
      * @returns ioBroker.CommonState common.type
      */
     getDatatypeFromString(string) {
-        const val = String(string).toLowerCase();
         let type = null;
+        if (typeof string !== 'string') return type;
+
+        const val = string.toLowerCase();
         switch (val) {
             case 'false':
             case 'true':
@@ -5873,7 +5888,37 @@ class Residents extends utils.Adapter {
                 type = 'number';
                 break;
         }
+
+        if (type == null && this.hasJsonStructure(string)) type = 'json';
+
         return type;
+    }
+
+    /**
+     * @param {any} string
+     * @returns boolean
+     */
+    hasJsonStructure(string) {
+        if (typeof string !== 'string') return false;
+        try {
+            const result = JSON.parse(string);
+            const type = Object.prototype.toString.call(result);
+            return type === '[object Object]' || type === '[object Array]';
+        } catch (err) {
+            return false;
+        }
+    }
+
+    /**
+     * @param {any} string
+     * @returns object
+     */
+    safeJsonParse(string) {
+        try {
+            return [null, JSON.parse(string)];
+        } catch (err) {
+            return [err];
+        }
     }
 
     /**
