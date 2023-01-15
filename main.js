@@ -4941,6 +4941,7 @@ class Residents extends utils.Adapter {
             type != 'boolean' &&
             type != 'number' &&
             type != 'string' &&
+            type != 'mixed' &&
             // @ts-ignore
             type != 'json'
         ) {

@@ -35,9 +35,9 @@ The adapter is also designed to support a sophisticated notification routing sys
     ### **WORK IN PROGRESS**
 -->
 
-### 0.0.3-beta.10 (2023-01-15)
+### **WORK IN PROGRESS**
 
--   (jpawlowski) Improve event monitoring for JSON values
+-   (jpawlowski) fix for foreign event with objects of mixed type
 
 ## License
 
