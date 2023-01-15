@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.10",
+        "version": "0.0.3-beta.11",
         "news": {
-            "0.0.3-beta.10": {
-                "en": "Improve event monitoring for JSON values",
-                "de": "Verbesserung der Ereignisüberwachung bei JSON-Werten",
-                "ru": "Улучшение мониторинга событий за JSON-значения",
-                "pt": "Melhorar o monitoramento de eventos para valores JSON",
-                "nl": "Improve event monitoren voor JSON waarden",
-                "fr": "Améliorer la surveillance d'événements pour les valeurs JSON",
-                "it": "Migliorare il monitoraggio degli eventi per i valori JSON",
-                "es": "Mejorar el monitoreo de eventos para valores JSON",
-                "pl": "Improwizacja wartości JSON",
-                "uk": "Покращення моніторингу подій для значень JSON",
-                "zh-cn": "B. 改进对联合国家评价活动的监测"
+            "0.0.3-beta.11": {
+                "en": "fix for foreign event with objects of mixed type",
+                "de": "fix für Ereignisse femder Adapter mit Objekten vom Typ 'mixed'",
+                "ru": "исправить для иностранного события с объектами смешанного типа",
+                "pt": "correção para evento estrangeiro com objetos de tipo misto",
+                "nl": "vertaling:",
+                "fr": "fixation pour événement étranger avec des objets de type mixte",
+                "it": "fix per evento straniero con oggetti di tipo misto",
+                "es": "solución para eventos extranjeros con objetos de tipo mixto",
+                "pl": "utrzymanie cudzoziemców z przedmiotami mieszanymi typu",
+                "uk": "фіксація для зовнішньої події з об'єктами змішаного типу",
+                "zh-cn": "f 外国活动与混杂的物品"
             }
         },
         "titleLang": {
