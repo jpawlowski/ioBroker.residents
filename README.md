@@ -34,9 +34,11 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.11 (2023-01-15)
 
--   (jpawlowski) fix for foreign event with objects of mixed type
+### **WORK IN PROGRESS**
+
+-   (jpawlowski) change object roles to standard definitions
+-   (jpawlowski) prepare for first release in ioBroker latest repository
 
 ## License
 
