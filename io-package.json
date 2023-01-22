@@ -3063,7 +3063,7 @@
                     "zh-cn": "避免居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3101,7 +3101,7 @@
                     "zh-cn": "避免将居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3139,7 +3139,7 @@
                     "zh-cn": "A. 居家的居民"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3177,7 +3177,7 @@
                     "zh-cn": "避免夜间睡觉居民"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3215,7 +3215,7 @@
                     "zh-cn": "避免居民离开"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3253,7 +3253,7 @@
                     "zh-cn": "避免居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3311,7 +3311,7 @@
                     "zh-cn": "在所有积极居民的夜间居住"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3349,7 +3349,7 @@
                     "zh-cn": "在所有活跃的居民中,一夜间都受到严重伤害"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3387,7 +3387,7 @@
                     "zh-cn": "三. 在所有积极居民的夜间重新定居"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3425,7 +3425,7 @@
                     "zh-cn": "无居民的住房"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3463,7 +3463,7 @@
                     "zh-cn": "所有居民的住房"
                 },
                 "type": "boolean",
-                "role": "button.mode",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
