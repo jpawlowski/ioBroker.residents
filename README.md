@@ -34,10 +34,10 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.0.3-beta.12 (2023-01-22)
 
--   (jpawlowski) change object roles to standard definitions
--   (jpawlowski) prepare for first release in ioBroker latest repository
+### **WORK IN PROGRESS**
+
+-   (jpawlowski) Update Siri Shortcuts templates
 
 ## License
 
