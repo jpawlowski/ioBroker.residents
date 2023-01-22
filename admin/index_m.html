@@ -1060,8 +1060,8 @@
                                                 <tr>
                                                     <th class="translate">Name</th>
                                                     <th class="translate">Description</th>
-                                                    <th class="translate">Setup</th>
-                                                    <th class="translate">Link</th>
+                                                    <th class="translate">Setup Instructions</th>
+                                                    <th class="translate">Download</th>
                                                 </tr>
                                             </thead>
 
@@ -1071,22 +1071,737 @@
                                                         class="translate blue-text text-darken-4"
                                                         style="font-weight: 600"
                                                     >
-                                                        Focus Mode local sync for home
+                                                        Residents Sync
                                                     </td>
                                                     <td class="translate">
-                                                        Sync your current Focus Mode from iOS or Mac devices using Siri
-                                                        Shortcuts. This template implements a WLAN SSID filter and uses
-                                                        only local connections.
+                                                        Implements the ioBroker Residents Event API and uses
+                                                        ioBroker.simple-api or ioBroker.cloud adapters to send data.
+                                                        This shortcut is required by any other shortcut below.
                                                     </td>
                                                     <td class="translate">
-                                                        Create Personal Automations in the Shortcuts app for each
-                                                        desired Focus, with both enable and disable activity.
+                                                        Import to Shotcuts app on your iPhone and run the setup wizard
+                                                        to configure your connection details. Note the comments inside
+                                                        the shortcut for further explanation.
                                                     </td>
-                                                    <td>
+                                                    <td class="center">
                                                         <a
-                                                            href="siri_shortcuts/ioBroker.residents Focus Sync.shortcut"
-                                                            style="font-weight: 700"
-                                                            >Download</a
+                                                            href="siri_shortcuts/ioB.residents Sync.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Home Presence
+                                                    </td>
+                                                    <td class="translate">Set your presence state to 'home'.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set Home Presence.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Night Presence
+                                                    </td>
+                                                    <td class="translate">Set your presence state to 'night'.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set Night Presence.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Away Presence
+                                                    </td>
+                                                    <td class="translate">Set your presence state to 'away'.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set Away Presence.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Do Not Disturb Activity ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Set your activity state 'do not disturb' to ON.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set dedicated DND on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Do Not Disturb Activity OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Set your activity state 'do not disturb' to OFF.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set dedicated DND off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Way Home Activity ON
+                                                    </td>
+                                                    <td class="translate">Set your activity state 'way home' to ON.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set Way Home on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Way Home Activity OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Set your activity state 'way home' to OFF.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Set Way Home off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Location Update
+                                                    </td>
+                                                    <td class="translate">Send your current location.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and run manually as
+                                                        desired. Automated run is usually kind of frustrating due to
+                                                        limitations of the Shortcuts app when using location-based
+                                                        triggers that always require or attention and confirmation to
+                                                        run.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents Update Location.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Bedtime Wind Down starts
+                                                    </td>
+                                                    <td class="translate">
+                                                        Start bedtime process and begin wind down.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Sleep trigger and
+                                                        select 'Wind Down Begins'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When Wind Down starts.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Bedtime begins
+                                                    </td>
+                                                    <td class="translate">
+                                                        Continue bedtime process and begin bedtime.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Sleep trigger and
+                                                        select 'Bedtime Begins'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When Bedtime begins.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Wake Up Alarm goes off
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync when your wake-up alarm clock fires to wake you up.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Alarm trigger and
+                                                        select 'Goes Off'. Make sure to also select 'Wake-Up' from the
+                                                        alarms list.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When Wake Up goes off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Wake Up Alarm snoozed
+                                                    </td>
+                                                    <td class="translate">Sync when your wake-up alarm is snoozed.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Alarm trigger and
+                                                        select 'Is Snoozed'. Make sure to also select 'Wake-Up' from the
+                                                        alarms list.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When Wake Up is snoozed.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Wake Up Alarm stopped
+                                                    </td>
+                                                    <td class="translate">Sync when your wake-up alarm is stopped.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Alarm trigger and
+                                                        select 'Is Stopped'. Make sure to also select 'Wake-Up' from the
+                                                        alarms list.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When Wake Up is stopped.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Do Not Disturb Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Do Not Disturb.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger 'Do
+                                                        Not Disturb' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Do Not Disturb on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Do Not Disturb Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Do Not Disturb.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger 'Do
+                                                        Not Disturb' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Do Not Disturb off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Driving Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Driving.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Driving' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Driving on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Driving Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Driving.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Driving' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Driving off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Fitness Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Fitness.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Fitness' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Fitness on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Fitness Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Fitness.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Fitness' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Fitness off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Gaming Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Gaming.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Gaming' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Gaming on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Gaming Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Gaming.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Gaming' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Gaming off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Mindfulness Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Mindfulness.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Mindfulness' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Mindfulness on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Mindfulness Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Mindfulness.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Mindfulness' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Mindfulness off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Personal Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Personal.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Personal' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Personal on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Personal Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Personal.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Personal' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Personal off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Reading Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Reading.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Reading' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Reading on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Reading Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Reading.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Reading' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Reading off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Shopping Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when enabling Shopping.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Shopping' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Shopping on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Shopping Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">
+                                                        Sync your Focus Mode when disabling Shopping.
+                                                    </td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Shopping' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Shopping off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Work Focus Mode ON
+                                                    </td>
+                                                    <td class="translate">Sync your Focus Mode when enabling Work.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Work' and only enable 'When Turning On'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Work on.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
+                                                        >
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="translate blue-text text-darken-4"
+                                                        style="font-weight: 600"
+                                                    >
+                                                        Work Focus Mode OFF
+                                                    </td>
+                                                    <td class="translate">Sync your Focus Mode when disabling Work.</td>
+                                                    <td class="translate">
+                                                        Import to Shotcuts app on your iPhone and create a Personal
+                                                        Automation in the Shortcuts app using the Focus Mode trigger
+                                                        'Work' and only enable 'When Turning Off'.
+                                                    </td>
+                                                    <td class="center">
+                                                        <a
+                                                            href="siri_shortcuts/ioB.residents When turning Work off.shortcut"
+                                                            class="btn-floating waves-light btn-small"
+                                                            ><i class="material-icons left">file_download</i></a
                                                         >
                                                     </td>
                                                 </tr>

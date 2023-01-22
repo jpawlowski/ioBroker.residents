@@ -5847,26 +5847,22 @@ class Residents extends utils.Adapter {
      * @returns string
      */
     cleanNamespace(id) {
-        return (
-            id
-                .trim()
-                .replace(/\./g, '_') // Replace dots with underscores
-                .replace(/\s/g, '_') // Replace whitespaces with underscores
-                .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
-                .replace(/_+$/g, '') // Remove underscores end
-                .replace(/^_+/g, '') // Remove underscores beginning
-                .replace(/_+/g, '_') // Replace multiple underscores with one
-                .toLowerCase()
-                .replace(/ä/g, 'ae') // Replace a Umlaut
-                .replace(/ö/g, 'oe') // Replace o Umlaut
-                .replace(/ü/g, 'ue') // Replace u Umlaut
-                .replace(/ß/g, 'ss') // Replace Eszett
-                // @ts-ignore
-                // @ts-ignore
-                .replace(/_([a-z])/g, (m, w) => {
-                    return w.toUpperCase();
-                })
-        );
+        return id
+            .trim()
+            .replace(/\./g, '_') // Replace dots with underscores
+            .replace(/\s/g, '_') // Replace whitespaces with underscores
+            .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
+            .replace(/_+$/g, '') // Remove underscores end
+            .replace(/^_+/g, '') // Remove underscores beginning
+            .replace(/_+/g, '_') // Replace multiple underscores with one
+            .toLowerCase()
+            .replace(/ä/g, 'ae') // Replace a Umlaut
+            .replace(/ö/g, 'oe') // Replace o Umlaut
+            .replace(/ü/g, 'ue') // Replace u Umlaut
+            .replace(/ß/g, 'ss') // Replace Eszett
+            .replace(/_([a-z])/g, (m, w) => {
+                return w.toUpperCase();
+            });
     }
 
     /**
