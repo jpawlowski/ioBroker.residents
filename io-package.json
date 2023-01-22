@@ -316,7 +316,7 @@
                     "zh-cn": "总的居住国"
                 },
                 "type": "number",
-                "role": "value.resident.mode",
+                "role": "value",
                 "min": 0,
                 "max": 11,
                 "read": true,
@@ -370,7 +370,7 @@
                     "zh-cn": "家庭中居民平均生活费"
                 },
                 "type": "number",
-                "role": "value.residents.mood",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 5,
@@ -441,7 +441,7 @@
                     "zh-cn": "居民可以达到?"
                 },
                 "type": "boolean",
-                "role": "indicator.reachable.residents",
+                "role": "indicator.reachable",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -499,7 +499,7 @@
                     "zh-cn": "有些居民长期缺席?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.disabled",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": true,
@@ -537,7 +537,7 @@
                     "zh-cn": "所有长期没有居民?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.disabledAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -575,7 +575,7 @@
                     "zh-cn": "A. 长期居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.disabled",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -600,7 +600,7 @@
                     "zh-cn": "第一居民在入侵状态下"
                 },
                 "type": "string",
-                "role": "text.residents.disabledFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -625,7 +625,7 @@
                     "zh-cn": "入侵国家的最后居民"
                 },
                 "type": "string",
-                "role": "text.residents.disabledLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -650,7 +650,7 @@
                     "zh-cn": "长期不在居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.disabledList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -675,7 +675,7 @@
                     "zh-cn": "所有积极创作者总数"
                 },
                 "type": "number",
-                "role": "value.residents.total",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -700,7 +700,7 @@
                     "zh-cn": "在职居民总数"
                 },
                 "type": "number",
-                "role": "value.residents.totalResidents",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -725,7 +725,7 @@
                     "zh-cn": "活页总数"
                 },
                 "type": "number",
-                "role": "value.residents.totalPets",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -750,7 +750,7 @@
                     "zh-cn": "父母居民"
                 },
                 "type": "array",
-                "role": "list.residents.parent",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -795,7 +795,7 @@
                     "zh-cn": "留在家里的一些居民?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.home",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -833,7 +833,7 @@
                     "zh-cn": "所有居民在家里?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.homeAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -871,7 +871,7 @@
                     "zh-cn": "家庭居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.homeCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -896,7 +896,7 @@
                     "zh-cn": "第一个居民点"
                 },
                 "type": "string",
-                "role": "text.residents.homeFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -921,7 +921,7 @@
                     "zh-cn": "最后居民点"
                 },
                 "type": "string",
-                "role": "text.residents.homeLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -946,7 +946,7 @@
                     "zh-cn": "家庭居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.homeList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -971,7 +971,7 @@
                     "zh-cn": "留在家里?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.petHome",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1009,7 +1009,7 @@
                     "zh-cn": "仅存在一些重复?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.petHomeAlone",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1047,7 +1047,7 @@
                     "zh-cn": "家里的书目编号"
                 },
                 "type": "number",
-                "role": "value.residents.petHomeCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1072,7 +1072,7 @@
                     "zh-cn": "先逃回家国"
                 },
                 "type": "string",
-                "role": "text.residents.petsHomeFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1097,7 +1097,7 @@
                     "zh-cn": "到达家国的最后时间"
                 },
                 "type": "string",
-                "role": "text.residents.petsHomeLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1122,7 +1122,7 @@
                     "zh-cn": "家里的书目一览表"
                 },
                 "type": "array",
-                "role": "list.residents.petHomeList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -1147,7 +1147,7 @@
                     "zh-cn": "有些居民被赶走?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.night",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1185,7 +1185,7 @@
                     "zh-cn": "所有居民都被赶走?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.nightAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1223,7 +1223,7 @@
                     "zh-cn": "睡觉居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.nightCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1248,7 +1248,7 @@
                     "zh-cn": "第一批居民"
                 },
                 "type": "string",
-                "role": "text.residents.nightFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1273,7 +1273,7 @@
                     "zh-cn": "被掠夺的最后居民"
                 },
                 "type": "string",
-                "role": "text.residents.nightLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1298,7 +1298,7 @@
                     "zh-cn": "居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.nightList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -1323,7 +1323,7 @@
                     "zh-cn": "有些居民离开?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.away",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1361,7 +1361,7 @@
                     "zh-cn": "所有居民都可以离开?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.awayAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1399,7 +1399,7 @@
                     "zh-cn": "居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.awayCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1424,7 +1424,7 @@
                     "zh-cn": "第一次居民离开家园"
                 },
                 "type": "string",
-                "role": "text.residents.awayFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1449,7 +1449,7 @@
                     "zh-cn": "最后居民离开家园"
                 },
                 "type": "string",
-                "role": "text.residents.awayLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1474,7 +1474,7 @@
                     "zh-cn": "缺席居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.awayList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -1519,7 +1519,7 @@
                     "zh-cn": "有些居民准备好?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.bedtime",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1557,7 +1557,7 @@
                     "zh-cn": "所有居民都准备好?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.bedtimeAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1595,7 +1595,7 @@
                     "zh-cn": "准备准备接受的居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.bedtimeCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1620,7 +1620,7 @@
                     "zh-cn": "第一批居民准备好准备好。"
                 },
                 "type": "string",
-                "role": "text.residents.bedtimeFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1645,7 +1645,7 @@
                     "zh-cn": "准备好好好的居民"
                 },
                 "type": "string",
-                "role": "text.residents.bedtimeLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1670,7 +1670,7 @@
                     "zh-cn": "准备名单"
                 },
                 "type": "array",
-                "role": "list.residents.bedtimeList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -1695,7 +1695,7 @@
                     "zh-cn": "有些居民刚走?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.gotup",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1733,7 +1733,7 @@
                     "zh-cn": "所有居民都刚刚获得?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.gotupAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1771,7 +1771,7 @@
                     "zh-cn": "刚到达的居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.gotupCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1796,7 +1796,7 @@
                     "zh-cn": "第一批居民"
                 },
                 "type": "string",
-                "role": "text.residents.gotupFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1821,7 +1821,7 @@
                     "zh-cn": "最终居民"
                 },
                 "type": "string",
-                "role": "text.residents.gotupLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1846,7 +1846,7 @@
                     "zh-cn": "刚刚到达的居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.gotupList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -1871,7 +1871,7 @@
                     "zh-cn": "一些居民夜间行?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.nightwalk",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1909,7 +1909,7 @@
                     "zh-cn": "所有居民都在夜间走?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.nightwalkAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -1947,7 +1947,7 @@
                     "zh-cn": "夜间行居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.nightwalkCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -1972,7 +1972,7 @@
                     "zh-cn": "夜间行第一居民"
                 },
                 "type": "string",
-                "role": "text.residents.nightwalkFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -1997,7 +1997,7 @@
                     "zh-cn": "流落在夜附近的最后居民"
                 },
                 "type": "string",
-                "role": "text.residents.nightwalkLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2022,7 +2022,7 @@
                     "zh-cn": "夜间行居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.nightwalkList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2047,7 +2047,7 @@
                     "zh-cn": "某些居民在等待时间前逃亡?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.winddown",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2085,7 +2085,7 @@
                     "zh-cn": "所有的居民都在等待时间下滑?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.winddownAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2123,7 +2123,7 @@
                     "zh-cn": "被赶走的居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.winddownCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -2148,7 +2148,7 @@
                     "zh-cn": "开始缩编的第一居民"
                 },
                 "type": "string",
-                "role": "text.residents.winddownFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2173,7 +2173,7 @@
                     "zh-cn": "最终逃亡的居民"
                 },
                 "type": "string",
-                "role": "text.residents.winddownLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2198,7 +2198,7 @@
                     "zh-cn": "被赶走的居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.winddownList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2223,7 +2223,7 @@
                     "zh-cn": "有些居民希望受到干扰?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.dnd",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2261,7 +2261,7 @@
                     "zh-cn": "所有东方居民都想感到不安?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.dndAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2299,7 +2299,7 @@
                     "zh-cn": "无干扰的居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.dndCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -2324,7 +2324,7 @@
                     "zh-cn": "第一次居民能够不受干扰。"
                 },
                 "type": "string",
-                "role": "text.residents.dndFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2349,7 +2349,7 @@
                     "zh-cn": "最后一个居民能够不受干扰"
                 },
                 "type": "string",
-                "role": "text.residents.dndLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2374,7 +2374,7 @@
                     "zh-cn": "A. 能够无干扰的居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.dndList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2399,7 +2399,7 @@
                     "zh-cn": "今天晚上有些居民?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.overnight",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2437,7 +2437,7 @@
                     "zh-cn": "今天一夜间所有居民?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.overnightAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2475,7 +2475,7 @@
                     "zh-cn": "居民今天夜间停留的人数"
                 },
                 "type": "number",
-                "role": "value.residents.overnightCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -2500,7 +2500,7 @@
                     "zh-cn": "第一次居民规划周多"
                 },
                 "type": "string",
-                "role": "text.residents.overnightFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2525,7 +2525,7 @@
                     "zh-cn": "最后的居民规划"
                 },
                 "type": "string",
-                "role": "text.residents.overnightLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2550,7 +2550,7 @@
                     "zh-cn": "居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.overnightList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2575,7 +2575,7 @@
                     "zh-cn": "一些居民有后续呼吁?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.wakeup",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2613,7 +2613,7 @@
                     "zh-cn": "所有居民都发出呼吁?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.wakeupAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2651,7 +2651,7 @@
                     "zh-cn": "A. 发出呼吁的居民人数"
                 },
                 "type": "number",
-                "role": "value.residents.wakeupCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -2676,7 +2676,7 @@
                     "zh-cn": "第一居民开始发出呼吁"
                 },
                 "type": "string",
-                "role": "text.residents.wakeupFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2701,7 +2701,7 @@
                     "zh-cn": "最终居民开始发出呼吁"
                 },
                 "type": "string",
-                "role": "text.residents.wakeupLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2726,7 +2726,7 @@
                     "zh-cn": "一、背后居民名单"
                 },
                 "type": "array",
-                "role": "list.residents.wakeupList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2751,7 +2751,7 @@
                     "zh-cn": "一些居民如何在家里?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.wayhome",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2789,7 +2789,7 @@
                     "zh-cn": "所有没有居民在家里?"
                 },
                 "type": "boolean",
-                "role": "indicator.residents.wayhomeAll",
+                "role": "indicator",
                 "read": true,
                 "write": false,
                 "def": false,
@@ -2827,7 +2827,7 @@
                     "zh-cn": "居民在家中的人数"
                 },
                 "type": "number",
-                "role": "value.residents.wayhomeCount",
+                "role": "value",
                 "read": true,
                 "write": false,
                 "def": 0
@@ -2852,7 +2852,7 @@
                     "zh-cn": "第一个居民以其家园为主"
                 },
                 "type": "string",
-                "role": "text.residents.wayhomeFirst",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2877,7 +2877,7 @@
                     "zh-cn": "最后一个居民正在家园。"
                 },
                 "type": "string",
-                "role": "text.residents.wayhomeLast",
+                "role": "text",
                 "read": true,
                 "write": false,
                 "def": ""
@@ -2902,7 +2902,7 @@
                     "zh-cn": "B. 居民在家里的名单"
                 },
                 "type": "array",
-                "role": "list.residents.wayhomeList",
+                "role": "list",
                 "read": true,
                 "write": false,
                 "def": "[]"
@@ -2967,7 +2967,7 @@
                     "zh-cn": "任何缺席居民"
                 },
                 "type": "boolean",
-                "role": "button.residents.disabled",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3005,7 +3005,7 @@
                     "zh-cn": "移居居民返回"
                 },
                 "type": "boolean",
-                "role": "button.residents.enabled",
+                "role": "button",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3063,7 +3063,7 @@
                     "zh-cn": "避免居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.home",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3101,7 +3101,7 @@
                     "zh-cn": "避免将居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.home",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3139,7 +3139,7 @@
                     "zh-cn": "A. 居家的居民"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.night",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3177,7 +3177,7 @@
                     "zh-cn": "避免夜间睡觉居民"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.night",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3215,7 +3215,7 @@
                     "zh-cn": "避免居民离开"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.away",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3253,7 +3253,7 @@
                     "zh-cn": "避免居民留在家里"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.away",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3311,7 +3311,7 @@
                     "zh-cn": "在所有积极居民的夜间居住"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.overnight",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3349,7 +3349,7 @@
                     "zh-cn": "在所有活跃的居民中,一夜间都受到严重伤害"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.overnight",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3387,7 +3387,7 @@
                     "zh-cn": "三. 在所有积极居民的夜间重新定居"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.overnight",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3425,7 +3425,7 @@
                     "zh-cn": "无居民的住房"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.wayhome",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
@@ -3463,7 +3463,7 @@
                     "zh-cn": "所有居民的住房"
                 },
                 "type": "boolean",
-                "role": "button.mode.residents.wayhome",
+                "role": "button.mode",
                 "read": false,
                 "write": true,
                 "def": true,
