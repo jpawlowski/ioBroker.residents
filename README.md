@@ -9,7 +9,7 @@
 
 [![NPM](https://nodei.co/npm/iobroker.residents.png?downloads=true)](https://nodei.co/npm/iobroker.residents/)
 
-**Tests:** ![Test](https://github.com/jpawlowski/ioBroker.residents/workflows/Test/badge.svg) ![Test and Release](https://github.com/jpawlowski/ioBroker.residents/workflows/Test%20and%20Release/badge.svg)
+**Tests:** ![Test and Release](https://github.com/jpawlowski/ioBroker.residents/workflows/Test%20and%20Release/badge.svg)
 
 ## Residents adapter for ioBroker
 
