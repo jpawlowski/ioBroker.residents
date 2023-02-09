@@ -12,7 +12,7 @@
     "forwardPorts": [8081],
 
     // Use 'postCreateCommand' to run commands when the container is created.
-    "onCreateCommand": "npm run dev-server setup",
+    "onCreateCommand": "npm install @iobroker/dev-server && npm run dev-server setup",
 
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "npm install",
