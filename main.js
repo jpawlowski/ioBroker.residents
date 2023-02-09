@@ -1132,6 +1132,21 @@ class Residents extends utils.Adapter {
                 offLang = this.config.stateTranslations[0].icon + ' ' + offLang;
         }
 
+        const nobodyStateTexts = {
+            en: 'Nobody',
+            de: 'Niemand',
+        };
+        let nobodyLang = nobodyStateTexts[this.language] ? nobodyStateTexts[this.language] : nobodyStateTexts.en;
+        if (this.config.stateTranslations != undefined && this.config.stateTranslations[1] != undefined) {
+            if (
+                this.config.stateTranslations[1].text != '' &&
+                this.config.stateTranslations[1].text != nobodyStateTexts.en
+            )
+                nobodyLang = this.config.stateTranslations[1].text;
+            if (this.config.stateTranslations[1].icon != '')
+                nobodyLang = this.config.stateTranslations[1].icon + ' ' + nobodyLang;
+        }
+
         const focusStateTexts = {
             en: 'Focus',
             de: 'Fokus',
@@ -1376,6 +1391,22 @@ class Residents extends utils.Adapter {
                     : '');
         }
 
+        // TODO: also add roomies from other instances
+        const roomieIDsToNames = {};
+        this.roomies.forEach((roomie) => {
+            const name = roomie['name'].trim();
+            const roomieId = 'roomie.' + this.cleanNamespace(roomie['id'] ? roomie['id'] : name);
+            let icon = null;
+            if (
+                this.config.stateTranslations != undefined &&
+                this.config.stateTranslations[2] != undefined &&
+                this.config.stateTranslations[2].icon != ''
+            )
+                icon = this.config.stateTranslations[2].icon;
+            if (roomie.icon != undefined && roomie.icon != '') icon = roomie.icon;
+            roomieIDsToNames[this.namespace + '.' + roomieId] = icon ? icon + ' ' + name : name;
+        });
+
         const residentTypes = ['roomie', 'pet', 'guest'];
         for (const key1 in residentTypes) {
             const residentType = residentTypes[key1];
@@ -1393,27 +1424,55 @@ class Residents extends utils.Adapter {
                 const resident = this.config[residentType][key2];
                 const name = resident['name'].trim();
                 const id = residentType + '.' + this.cleanNamespace(resident['id'] ? resident['id'] : name);
+                const fullId = this.namespace + '.' + id;
                 this.config[residentType][key2]['id'] = id;
-
-                // TODO: see other to-do below
-                // TODO: also add roomies from other instances
-                const foreignResidents = {};
-                this.roomies.forEach((e) => {
-                    const key = e.id;
-                    if (key != id) {
-                        const value = e.name;
-                        foreignResidents[key] = value;
+                let icon = null;
+                if (this.config.stateTranslations != undefined) {
+                    if (
+                        residentType == 'roomie' &&
+                        this.config.stateTranslations[2] != undefined &&
+                        this.config.stateTranslations[2].icon != ''
+                    ) {
+                        icon = this.config.stateTranslations[2].icon;
+                    } else if (
+                        residentType == 'guest' &&
+                        this.config.stateTranslations[3] != undefined &&
+                        this.config.stateTranslations[3].icon != ''
+                    ) {
+                        icon = this.config.stateTranslations[3].icon;
+                    } else if (
+                        residentType == 'pet' &&
+                        this.config.stateTranslations[4] != undefined &&
+                        this.config.stateTranslations[4].icon != ''
+                    ) {
+                        icon = this.config.stateTranslations[4].icon;
                     }
-                });
+                }
+                if (resident.icon == undefined || resident.icon == '') {
+                    resident.icon = icon;
+                } else {
+                    icon = resident.icon;
+                }
+                const iconAndName = icon ? icon + ' ' + name : name;
+                this.config[residentType][key2]['icon'] = icon;
+                this.config[residentType][key2]['iconAndName'] = iconAndName;
+
+                const foreignResidents = { ...roomieIDsToNames };
+                if (foreignResidents[fullId]) delete foreignResidents[fullId];
 
                 await this.setObjectNotExistsAsync(id, {
                     type: 'device',
                     common: {
-                        name: name,
-                        icon: residentType + '.svg',
+                        name: icon + ' ' + name,
                     },
                     native: {},
                 });
+                // Update common.name
+                let currentObject = await this.getObjectAsync(id);
+                if (currentObject && currentObject.common.name != iconAndName) {
+                    currentObject.common.name = iconAndName;
+                    await this.setObjectAsync(id, currentObject);
+                }
 
                 await this.setObjectNotExistsAsync(
                     id + '.enabled',
@@ -1485,17 +1544,17 @@ class Residents extends utils.Adapter {
                     type: 'state',
                     common: {
                         name: {
-                            en: 'Display name for ' + this.namespace + '.' + id,
-                            de: 'Anzeigename für ' + this.namespace + '.' + id,
-                            ru: 'Имя дисплея для ' + this.namespace + '.' + id,
-                            pt: 'Nome de exibição para ' + this.namespace + '.' + id,
-                            nl: 'Vertaling ' + this.namespace + '.' + id,
-                            fr: "Nom d'affichage pour " + this.namespace + '.' + id,
-                            it: 'Visualizzazione nome per ' + this.namespace + '.' + id,
-                            es: 'Nombre de la pantalla para ' + this.namespace + '.' + id,
-                            pl: 'Dysplay name for ' + this.namespace + '.' + id,
-                            uk: 'Назва екрану для ' + this.namespace + '.' + id,
-                            'zh-cn': this.namespace + '.' + id + ' 的区别名',
+                            en: 'Display name for ' + fullId,
+                            de: 'Anzeigename für ' + fullId,
+                            ru: 'Имя дисплея для ' + fullId,
+                            pt: 'Nome de exibição para ' + fullId,
+                            nl: 'Vertaling ' + fullId,
+                            fr: "Nom d'affichage pour " + fullId,
+                            it: 'Visualizzazione nome per ' + fullId,
+                            es: 'Nombre de la pantalla para ' + fullId,
+                            pl: 'Dysplay name for ' + fullId,
+                            uk: 'Назва екрану для ' + fullId,
+                            'zh-cn': fullId + ' 的区别名',
                         },
                         type: 'string',
                         role: 'text',
@@ -1505,6 +1564,38 @@ class Residents extends utils.Adapter {
                     native: {},
                 });
                 await this.setStateChangedAsync(id + '.info.name', { val: name, ack: true });
+
+                await this.setObjectNotExistsAsync(id + '.info.icon', {
+                    type: 'state',
+                    common: {
+                        name: {
+                            en: 'Icon for ' + fullId,
+                            de: 'Symbol für ' + fullId,
+                        },
+                        type: 'string',
+                        role: 'text',
+                        read: true,
+                        write: false,
+                    },
+                    native: {},
+                });
+                await this.setStateChangedAsync(id + '.info.icon', { val: icon ? icon : '', ack: true });
+
+                await this.setObjectNotExistsAsync(id + '.info.iconAndName', {
+                    type: 'state',
+                    common: {
+                        name: {
+                            en: 'Combination of icon and display name for ' + fullId,
+                            de: 'Kombination aus Symbol und Anzeigename für ' + fullId,
+                        },
+                        type: 'string',
+                        role: 'text',
+                        read: true,
+                        write: false,
+                    },
+                    native: {},
+                });
+                await this.setStateChangedAsync(id + '.info.iconAndName', { val: iconAndName, ack: true });
 
                 await this.setObjectNotExistsAsync(id + '.info.presence', {
                     type: 'channel',
@@ -2239,7 +2330,7 @@ class Residents extends utils.Adapter {
                         },
                     );
                     // Update common.states
-                    const currentObject = await this.getObjectAsync(id + '.mood.state');
+                    currentObject = await this.getObjectAsync(id + '.mood.state');
                     if (currentObject) {
                         currentObject.common.states = moodStates;
                         await this.setObjectAsync(id + '.mood.state', currentObject);
@@ -2312,7 +2403,6 @@ class Residents extends utils.Adapter {
                     },
                 );
 
-                //TODO: use foreignResidents for states
                 await this.setObjectNotExistsAsync(
                     id + '.presenceFollowing.homePerson',
                     {
@@ -2335,7 +2425,7 @@ class Residents extends utils.Adapter {
                             role: 'string',
                             read: true,
                             write: true,
-                            def: 'none',
+                            def: '',
                             desc: {
                                 en: 'Which person is being followed?',
                                 de: 'Welcher Person wird gefolgt?',
@@ -2358,6 +2448,36 @@ class Residents extends utils.Adapter {
                         },
                     },
                 );
+                const homePersonLang = {
+                    '': nobodyLang,
+                };
+                // Update common.states
+                currentObject = await this.getObjectAsync(id + '.presenceFollowing.homePerson');
+                if (currentObject) {
+                    currentObject.common.states = Object.assign(homePersonLang, foreignResidents);
+                    await this.setObjectAsync(id + '.presenceFollowing.homePerson', currentObject);
+                }
+                let currentState = await this.getStateAsync(id + '.presenceFollowing.homePerson');
+                if (
+                    currentState &&
+                    currentState.val != '' &&
+                    currentState.val != 'none' &&
+                    currentState.val != 'nobody'
+                ) {
+                    currentObject = await this.getObjectAsync(String(currentState.val));
+                    if (currentObject && currentObject.type == 'device' && currentObject._id.startsWith('residents.')) {
+                        this.log.info(
+                            id + '.presenceFollowing.homePerson: Monitoring ' + currentState.val + '.presence.state',
+                        );
+                        if (String(currentState.val).startsWith(this.namespace)) {
+                            this.subscriptions.push(currentState.val + '.presence.state');
+                        } else {
+                            this.foreignSubscriptions.push(currentState.val + '.presence.state');
+                        }
+                    } else {
+                        this.log.error(id + '.presenceFollowing.homePerson: Invalid value: ' + currentState.val);
+                    }
+                }
 
                 const homeModeStates = {
                     en: {
@@ -2466,7 +2586,7 @@ class Residents extends utils.Adapter {
                     },
                 );
                 // Update common.states
-                const currentObject = await this.getObjectAsync(id + '.presenceFollowing.homeMode');
+                currentObject = await this.getObjectAsync(id + '.presenceFollowing.homeMode');
                 if (currentObject) {
                     currentObject.common.states = homeModeLang;
                     await this.setObjectAsync(id + '.presenceFollowing.homeMode', currentObject);
@@ -2520,7 +2640,6 @@ class Residents extends utils.Adapter {
                         },
                     );
 
-                    //TODO: use foreignResidents variable for dynamic states
                     await this.setObjectNotExistsAsync(
                         id + '.presenceFollowing.nightPerson',
                         {
@@ -2543,7 +2662,7 @@ class Residents extends utils.Adapter {
                                 role: 'string',
                                 read: true,
                                 write: true,
-                                def: 'none',
+                                def: '',
                                 desc: {
                                     en: 'Which person is being followed?',
                                     de: 'Welcher Person wird gefolgt?',
@@ -2566,6 +2685,40 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
+                    // Update common.states
+                    let currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightPerson');
+                    if (currentObject) {
+                        currentObject.common.states = Object.assign(homePersonLang, foreignResidents);
+                        await this.setObjectAsync(id + '.presenceFollowing.nightPerson', currentObject);
+                    }
+                    currentState = await this.getStateAsync(id + '.presenceFollowing.nightPerson');
+                    if (
+                        currentState &&
+                        currentState.val != '' &&
+                        currentState.val != 'none' &&
+                        currentState.val != 'nobody'
+                    ) {
+                        currentObject = await this.getObjectAsync(String(currentState.val));
+                        if (
+                            currentObject &&
+                            currentObject.type == 'device' &&
+                            currentObject._id.startsWith('residents.')
+                        ) {
+                            this.log.info(
+                                id +
+                                    '.presenceFollowing.nightPerson: Monitoring ' +
+                                    currentState.val +
+                                    '.presence.state',
+                            );
+                            if (String(currentState.val).startsWith(this.namespace)) {
+                                this.subscriptions.push(currentState.val + '.presence.state');
+                            } else {
+                                this.foreignSubscriptions.push(currentState.val + '.presence.state');
+                            }
+                        } else {
+                            this.log.error(id + '.presenceFollowing.nightPerson: Invalid value: ' + currentState.val);
+                        }
+                    }
 
                     const nightModeStates = {
                         en: {
@@ -2674,7 +2827,7 @@ class Residents extends utils.Adapter {
                         },
                     );
                     // Update common.states
-                    const currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightMode');
+                    currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightMode');
                     if (currentObject) {
                         currentObject.common.states = nightModeLang;
                         await this.setObjectAsync(id + '.presenceFollowing.nightMode', currentObject);
@@ -3059,7 +3212,7 @@ class Residents extends utils.Adapter {
                     resident['yahkaInstanceId'] != '' &&
                     resident['yahkaInstanceId'] != 'none'
                 ) {
-                    const serial = this.namespace + '.' + id;
+                    const serial = fullId;
                     const yahkaDeviceConfig = {
                         configType: 'customdevice',
                         manufacturer: 'ioBroker',
@@ -3496,7 +3649,7 @@ class Residents extends utils.Adapter {
                     // for JSON values, don't expect any ack being set
                     this.log.warn(
                         id +
-                            ": Received non-ack'ed JSON presence event which might lead to dublicate event processing. Maybe ask the maintainer for " +
+                            ": Received non-ack'ed JSON presence event which might lead to duplicate event processing. Maybe ask the maintainer for " +
                             adapterName +
                             ' adapter to write state values containing JSON with `ack=true` and also define the state object with `common.write=false`?',
                     );
@@ -4822,6 +4975,11 @@ class Residents extends utils.Adapter {
                         activityState,
                     );
                 }
+
+                // // Presence forwarding for followers
+                // if () {
+
+                // }
                 break;
             }
 
@@ -5173,6 +5331,7 @@ class Residents extends utils.Adapter {
             const presenceState = await this.getStateAsync(resident['id'] + '.presence.state');
             const moodState = await this.getStateAsync(resident['id'] + '.mood.state');
             const dndState = await this.getStateAsync(resident['id'] + '.activity.dnd');
+            const fullId = this.namespace + '.' + resident['id'];
 
             if (
                 enabledState == undefined ||
@@ -5197,8 +5356,10 @@ class Residents extends utils.Adapter {
                 this.log.debug('    - does overnight');
                 overnightSum.push({
                     name: name,
-                    id: this.namespace + '.' + resident['id'],
+                    id: fullId,
                     tc: overnightState.lc,
+                    icon: resident['icon'],
+                    iconAndName: resident['iconAndName'],
                 });
             }
 
@@ -5208,23 +5369,47 @@ class Residents extends utils.Adapter {
 
                 if (residentType == 'pet') {
                     totalPetCount++;
-                    petHomeSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: homeState.lc });
+                    petHomeSum.push({
+                        name: name,
+                        id: fullId,
+                        tc: homeState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
+                    });
                 } else {
                     totalResidentsCount++;
-                    homeSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: homeState.lc });
+                    homeSum.push({
+                        name: name,
+                        id: fullId,
+                        tc: homeState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
+                    });
                 }
 
                 if (moodState != undefined && typeof moodState.val == 'number') moodCount += moodState.val - 5;
 
                 if (dndState != undefined && dndState.val == true) {
                     this.log.debug('    - does not want to be disturbed');
-                    dndSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: dndState.lc });
+                    dndSum.push({
+                        name: name,
+                        id: fullId,
+                        tc: dndState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
+                    });
                 }
 
                 // When at sleep
                 if (presenceState.val == 2) {
                     this.log.debug('    - is at sleep');
-                    nightSum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: presenceState.lc });
+                    nightSum.push({
+                        name: name,
+                        id: fullId,
+                        tc: presenceState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
+                    });
                 }
 
                 // Activity mapping
@@ -5234,8 +5419,10 @@ class Residents extends utils.Adapter {
                             this.log.debug('    - is winding down');
                             winddownSum.push({
                                 name: name,
-                                id: this.namespace + '.' + resident['id'],
+                                id: fullId,
                                 tc: activityState.lc,
+                                icon: resident['icon'],
+                                iconAndName: resident['iconAndName'],
                             });
                             break;
 
@@ -5244,8 +5431,10 @@ class Residents extends utils.Adapter {
                             this.log.debug('    - is going to bed');
                             bedtimeSum.push({
                                 name: name,
-                                id: this.namespace + '.' + resident['id'],
+                                id: fullId,
                                 tc: activityState.lc,
+                                icon: resident['icon'],
+                                iconAndName: resident['iconAndName'],
                             });
                             break;
 
@@ -5253,8 +5442,10 @@ class Residents extends utils.Adapter {
                             this.log.debug('    - is walking at night');
                             nightwalkSum.push({
                                 name: name,
-                                id: this.namespace + '.' + resident['id'],
+                                id: fullId,
                                 tc: activityState.lc,
+                                icon: resident['icon'],
+                                iconAndName: resident['iconAndName'],
                             });
                             break;
 
@@ -5267,8 +5458,10 @@ class Residents extends utils.Adapter {
                             this.log.debug('    - has a wake up alarm');
                             wakeupSum.push({
                                 name: name,
-                                id: this.namespace + '.' + resident['id'],
+                                id: fullId,
                                 tc: activityState.lc,
+                                icon: resident['icon'],
+                                iconAndName: resident['iconAndName'],
                             });
                             break;
 
@@ -5277,8 +5470,10 @@ class Residents extends utils.Adapter {
                             this.log.debug('    - just got up from sleep');
                             gotupSum.push({
                                 name: name,
-                                id: this.namespace + '.' + resident['id'],
+                                id: fullId,
                                 tc: activityState.lc,
+                                icon: resident['icon'],
+                                iconAndName: resident['iconAndName'],
                             });
                             break;
                     }
@@ -5295,14 +5490,22 @@ class Residents extends utils.Adapter {
                     } else {
                         totalResidentsCount++;
                     }
-                    awaySum.push({ name: name, id: this.namespace + '.' + resident['id'], tc: awayState.lc });
+                    awaySum.push({
+                        name: name,
+                        id: fullId,
+                        tc: awayState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
+                    });
 
                     // When on way home
                     if (activityState != undefined && activityState.val == 2) {
                         wayhomeSum.push({
                             name: name,
-                            id: this.namespace + '.' + resident['id'],
+                            id: fullId,
                             tc: activityState.lc,
+                            icon: resident['icon'],
+                            iconAndName: resident['iconAndName'],
                         });
                     }
                 }
@@ -5312,8 +5515,10 @@ class Residents extends utils.Adapter {
                     this.log.debug('    - is disabled');
                     disabledSum.push({
                         name: name,
-                        id: this.namespace + '.' + resident['id'],
+                        id: fullId,
                         tc: enabledState.lc,
+                        icon: resident['icon'],
+                        iconAndName: resident['iconAndName'],
                     });
                 }
             }

@@ -38,6 +38,8 @@ The adapter is also designed to support a sophisticated notification routing sys
 ### **WORK IN PROGRESS**
 
 -   (jpawlowski) Update Siri Shortcuts templates
+-   (jpawlowski) Add icons/emojis for roomie, guest, and pet
+-   (jpawlowski) Add presence following
 
 ## License
 
