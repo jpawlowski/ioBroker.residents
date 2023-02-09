@@ -12,14 +12,12 @@
     "forwardPorts": [8081],
 
     // Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm run dev-server setup",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-vscode-remote.remote-containers"
-			]
-		}
-	}
+    "postCreateCommand": "npm install && npm run dev-server setup",
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-vscode-remote.remote-containers"]
+        }
+    }
 
     // Configure tool-specific properties.
     // "customizations": {},
