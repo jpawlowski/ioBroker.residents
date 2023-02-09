@@ -11,16 +11,18 @@
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     "forwardPorts": [8081],
 
+    // Use 'postCreateCommand' to run commands when the container is created.
+    "onCreateCommand": "npm run dev-server setup",
+
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "npm install && npm run dev-server setup",
+    "postCreateCommand": "npm install",
+
+    // Configure tool-specific properties.
     "customizations": {
         "vscode": {
             "extensions": ["ms-vscode-remote.remote-containers"]
         }
     }
-
-    // Configure tool-specific properties.
-    // "customizations": {},
 
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
     // "remoteUser": "root"
