@@ -10,7 +10,15 @@
             "icon": {
                 "id": "request-changes"
             },
-            "promptOnClose": true
+            "promptOnClose": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "close": false
+            }
         },
         {
             "type": "npm",
@@ -22,7 +30,15 @@
                 "id": "run"
             },
             "isBackground": true,
-            "promptOnClose": true
+            "promptOnClose": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "close": false
+            }
         },
         {
             "type": "npm",
@@ -34,7 +50,15 @@
                 "id": "eye-watch"
             },
             "isBackground": true,
-            "promptOnClose": true
+            "promptOnClose": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "close": false
+            }
         },
         {
             "type": "npm",
@@ -46,7 +70,15 @@
                 "id": "bug"
             },
             "isBackground": true,
-            "promptOnClose": true
+            "promptOnClose": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "close": false
+            }
         },
         {
             "type": "npm",
