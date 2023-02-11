@@ -91,7 +91,7 @@
     "translate": "translate-adapter",
     "release": "release-script",
     "dev-server": "dev-server",
-    "dev-server:update": "dev-server update",
+    "dev-server:update": "npm pack && dev-server update",
     "dev-server:run": "dev-server run",
     "dev-server:watch": "dev-server watch",
     "dev-server:debug": "dev-server debug",

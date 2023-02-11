@@ -12,12 +12,12 @@
             },
             "promptOnClose": true,
             "presentation": {
-                "echo": true,
+                "echo": false,
                 "reveal": "always",
-                "focus": true,
+                "focus": false,
                 "panel": "dedicated",
-                "showReuseMessage": true,
-                "close": false
+                "showReuseMessage": false,
+                "close": true
             }
         },
         {
