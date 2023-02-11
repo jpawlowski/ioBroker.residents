@@ -2667,13 +2667,13 @@ class Residents extends utils.Adapter {
                         if (this.presenceFollowingMapping[objId]['arriving'] == undefined)
                             this.presenceFollowingMapping[objId]['arriving'] = [];
                         if (followMode.val == 0 || followMode.val == 1) {
-                            this.presenceFollowingMapping[objId]['arriving'].push(fullId + '.presence.state');
+                            this.presenceFollowingMapping[objId]['arriving'].push(fullId);
                         }
 
                         if (this.presenceFollowingMapping[objId]['leaving'] == undefined)
                             this.presenceFollowingMapping[objId]['leaving'] = [];
                         if (followMode.val == 0 || followMode.val == 2)
-                            this.presenceFollowingMapping[objId]['leaving'].push(fullId + '.presence.state');
+                            this.presenceFollowingMapping[objId]['leaving'].push(fullId);
                         if (!String(followPerson.val).startsWith(this.namespace)) this.foreignSubscriptions.push(objId);
                     } else {
                         this.log.error(id + ': Home presence following: Invalid homePerson value: ' + followPerson.val);
@@ -2708,13 +2708,13 @@ class Residents extends utils.Adapter {
                             if (this.presenceFollowingMapping[objId]['sleeping'] == undefined)
                                 this.presenceFollowingMapping[objId]['sleeping'] = [];
                             if (followMode.val == 0 || followMode.val == 1) {
-                                this.presenceFollowingMapping[objId]['sleeping'].push(fullId + '.presence.state');
+                                this.presenceFollowingMapping[objId]['sleeping'].push(fullId);
                             }
 
                             if (this.presenceFollowingMapping[objId]['wakeup'] == undefined)
                                 this.presenceFollowingMapping[objId]['wakeup'] = [];
                             if (followMode.val == 0 || followMode.val == 2)
-                                this.presenceFollowingMapping[objId]['wakeup'].push(fullId + '.presence.state');
+                                this.presenceFollowingMapping[objId]['wakeup'].push(fullId);
                             if (!String(followPerson.val).startsWith(this.namespace))
                                 this.foreignSubscriptions.push(objId);
                         } else {
@@ -4497,35 +4497,80 @@ class Residents extends utils.Adapter {
 
                 // Presence forwarding for followers
                 const objId = this.namespace + '.' + id + '.presence.state';
-                const foreignState = { ...state };
-                foreignState.ack = false;
+                state.ack = false;
                 if (this.presenceFollowingMapping[objId] != undefined) {
                     if (oldState.val == 0 && state.val == 1) {
                         if (this.presenceFollowingMapping[objId]['arriving'] != undefined) {
-                            this.presenceFollowingMapping[objId]['arriving'].forEach(async (residentPresenceState) => {
-                                this.log.info(id + ': Forwarding arrival at home to ' + residentPresenceState);
-                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            this.presenceFollowingMapping[objId]['arriving'].forEach(async (resident) => {
+                                const enabledState = await this.getForeignStateAsync(resident + '.enabled');
+                                const presenceState = await this.getForeignStateAsync(resident + '.presence.state');
+                                if (enabledState == undefined || presenceState == undefined) {
+                                    this.log.error(id + ': Bogus presence forwarding reference to ' + resident);
+                                } else if (enabledState.val != true) {
+                                    this.log.debug(id + ': ' + resident + ' is disabled, skipped presence forwarding');
+                                } else if (presenceState.val != 0) {
+                                    this.log.debug(id + ': ' + resident + ' is not away, skipped presence forwarding');
+                                } else {
+                                    this.log.info(id + ': Forwarding arriving at home to ' + resident);
+                                    this.setForeignStateChangedAsync(resident + '.presence.state', state);
+                                }
                             });
                         }
                     } else if (oldState.val != 0 && state.val == 0) {
                         if (this.presenceFollowingMapping[objId]['leaving'] != undefined) {
-                            this.presenceFollowingMapping[objId]['leaving'].forEach(async (residentPresenceState) => {
-                                this.log.info(id + ': Forwarding leaving home to ' + residentPresenceState);
-                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            this.presenceFollowingMapping[objId]['leaving'].forEach(async (resident) => {
+                                const enabledState = await this.getForeignStateAsync(resident + '.enabled');
+                                const presenceState = await this.getForeignStateAsync(resident + '.presence.state');
+                                if (enabledState == undefined || presenceState == undefined) {
+                                    this.log.error(id + ': Bogus presence forwarding reference to ' + resident);
+                                } else if (enabledState.val != true) {
+                                    this.log.debug(id + ': ' + resident + ' is disabled, skipped presence forwarding');
+                                } else if (presenceState.val != 1) {
+                                    this.log.debug(
+                                        id + ': ' + resident + ' is not awake at home, skipped presence forwarding',
+                                    );
+                                } else {
+                                    this.log.info(id + ': Forwarding leaving home to ' + resident);
+                                    this.setForeignStateChangedAsync(resident + '.presence.state', state);
+                                }
                             });
                         }
                     } else if (oldState.val != 2 && state.val == 2) {
                         if (this.presenceFollowingMapping[objId]['sleeping'] != undefined) {
-                            this.presenceFollowingMapping[objId]['sleeping'].forEach(async (residentPresenceState) => {
-                                this.log.info(id + ': Forwarding sleeping to ' + residentPresenceState);
-                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            this.presenceFollowingMapping[objId]['sleeping'].forEach(async (resident) => {
+                                const enabledState = await this.getForeignStateAsync(resident + '.enabled');
+                                const presenceState = await this.getForeignStateAsync(resident + '.presence.state');
+                                if (enabledState == undefined || presenceState == undefined) {
+                                    this.log.error(id + ': Bogus presence forwarding reference to ' + resident);
+                                } else if (enabledState.val != true) {
+                                    this.log.debug(id + ': ' + resident + ' is disabled, skipped presence forwarding');
+                                } else if (presenceState.val != 1) {
+                                    this.log.debug(
+                                        id + ': ' + resident + ' is not awake at home, skipped presence forwarding',
+                                    );
+                                } else {
+                                    this.log.info(id + ': Forwarding sleeping to ' + resident);
+                                    this.setForeignStateChangedAsync(resident + '.presence.state', state);
+                                }
                             });
                         }
                     } else if (oldState.val == 2 && state.val == 1) {
                         if (this.presenceFollowingMapping[objId]['wakeup'] != undefined) {
-                            this.presenceFollowingMapping[objId]['wakeup'].forEach(async (residentPresenceState) => {
-                                this.log.info(id + ': Forwarding wakeup to ' + residentPresenceState);
-                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            this.presenceFollowingMapping[objId]['wakeup'].forEach(async (resident) => {
+                                const enabledState = await this.getForeignStateAsync(resident + '.enabled');
+                                const presenceState = await this.getForeignStateAsync(resident + '.presence.state');
+                                if (enabledState == undefined || presenceState == undefined) {
+                                    this.log.error(id + ': Bogus presence forwarding reference to ' + resident);
+                                } else if (enabledState.val != true) {
+                                    this.log.debug(id + ': ' + resident + ' is disabled, skipped presence forwarding');
+                                } else if (presenceState.val != 2) {
+                                    this.log.debug(
+                                        id + ': ' + resident + ' is not asleep at home, skipped presence forwarding',
+                                    );
+                                } else {
+                                    this.log.info(id + ': Forwarding wakeup to ' + resident);
+                                    this.setForeignStateChangedAsync(resident + '.presence.state', state);
+                                }
                             });
                         }
                     }
