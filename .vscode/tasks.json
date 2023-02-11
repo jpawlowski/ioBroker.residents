@@ -8,7 +8,7 @@
             "label": "ioBroker: Update dev-server",
             "detail": "Update ioBroker and its dependencies to the latest versions",
             "icon": {
-                "id": "request-changes"
+                "id": "package"
             },
             "promptOnClose": true,
             "presentation": {

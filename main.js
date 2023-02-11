@@ -20,10 +20,14 @@ class Residents extends utils.Adapter {
         this.pets = [];
         this.guests = [];
 
+        this.presenceFollowingMapping = {};
+
         this.subscriptions = [];
         this.foreignSubscriptions = [];
+
         this.presenceSubscriptionMapping = {};
         this.wayhomeSubscriptionMapping = {};
+
         this.states = [];
 
         this.parentInstances = [];
@@ -563,483 +567,6 @@ class Residents extends utils.Adapter {
                 2200: 'Aufwachen nach Weckruf',
                 2210: 'Aufwachen',
             },
-            // ru: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // pt: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // nl: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // fr: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // it: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // es: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // pl: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // uk: {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
-            // 'zh-cn': {
-            //     // 000-0999: Not present at home / Away
-            //     0: '',
-            //     1: '',
-            //     2: '',
-
-            //     // 100-899: Not present at home / Away: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     100: '',
-            //     101: '',
-            //     102: '',
-            //     103: '',
-            //     104: '',
-            //     105: '',
-            //     106: '',
-            //     107: '',
-
-            //     // 1000: WAKING TIME at home ///////////////////////////////////////////////////////////////////////
-            //     1000: '',
-
-            //     // 1100-1899: WAKING TIME at home: Custom Focus states (e.g. to sync with Apple Focus modes)
-            //     1100: '',
-            //     1101: '',
-            //     1102: '',
-            //     1103: '',
-            //     1104: '',
-            //     1105: '',
-            //     1106: '',
-            //     1107: '',
-
-            //     // 1900-1999: WAKING TIME at home: Transitioning to Sleeping Time
-            //     1900: '',
-            //     1901: '',
-            //     1902: '',
-
-            //     // 2000-2999: SLEEPING TIME at home ////////////////////////////////////////////////////////////////
-            //     2000: '',
-
-            //     // 2000-2099: SLEEPING TIME at home: While I should be sleeping
-            //     2010: '',
-            //     2020: '',
-
-            //     // 2100-2199: SLEEPING TIME at home: While I should get up
-            //     2100: '',
-            //     2101: '',
-            //     2102: '',
-            //     2103: '',
-            //     2104: '',
-            //     2105: '',
-
-            //     // 2200-2299: SLEEPING TIME at home: Transitioning to Waking Time
-            //     2200: '',
-            //     2210: '',
-            // },
         };
 
         const activityLang = activityStateTexts[this.language]
@@ -1697,8 +1224,13 @@ class Residents extends utils.Adapter {
                     native: {},
                 });
 
-                // Night/Awoken statistics and activity support not for pets
+                const homePersonLang = {
+                    '': nobodyLang,
+                };
+
                 if (residentType != 'pet') {
+                    // Night/Awoken statistics and activity support
+
                     await this.setObjectNotExistsAsync(id + '.info.presence.lastNight', {
                         type: 'state',
                         common: {
@@ -2257,10 +1789,8 @@ class Residents extends utils.Adapter {
                             },
                         },
                     );
-                }
+                    // Mood support not for pets
 
-                // Mood support not for pets
-                if (residentType != 'pet') {
                     await this.setObjectNotExistsAsync(id + '.mood', {
                         type: 'channel',
                         common: {
@@ -2334,6 +1864,174 @@ class Residents extends utils.Adapter {
                     if (currentObject) {
                         currentObject.common.states = moodStates;
                         await this.setObjectAsync(id + '.mood.state', currentObject);
+                    }
+
+                    // Follow-them for Night state
+
+                    await this.setObjectNotExistsAsync(
+                        id + '.presenceFollowing.nightEnabled',
+                        {
+                            type: 'state',
+                            common: {
+                                name: {
+                                    en: name + ' is inheriting a night state?',
+                                    de: name + ' erbt einen Nachtstatus?',
+                                    ru: name + ' наследует ночное состояние?',
+                                    pt: 'A ' + name + ' herda um estado nocturno?',
+                                    nl: name + ' erft een nachtstaat?',
+                                    fr: name + " hérite d'un état de nuit ?",
+                                    it: name + ' sta ereditando uno stato di notte?',
+                                    es: '¿' + name + ' hereda un estado nocturno?',
+                                    pl: name + ' dziedziczy stan nocny?',
+                                    uk: name + ' – спадщина нічного стану?',
+                                    'zh-cn': '祖国正在继承一个夜间国家?',
+                                },
+                                type: 'boolean',
+                                role: 'switch.enable',
+                                read: true,
+                                write: true,
+                                def: false,
+                                desc: {
+                                    en: 'Follow-them functionality for the night state',
+                                    de: 'Follow-them Funktion für den Nachtstatus',
+                                    ru: 'Функционал для ночного государства',
+                                    pt: 'Funcionalidade de acompanhamento para o estado noturno',
+                                    nl: 'Volg hun functie voor de nachtelijke staat',
+                                    fr: "Fonctionnalité de suivi pour l'état de nuit",
+                                    it: 'Funzionalità di follow-them per lo stato di notte',
+                                    es: 'Funcionalidad de seguimiento para el estado nocturno',
+                                    pl: 'Wstępna funkcjonalność dla nocnego stanu',
+                                    uk: 'Дотримуйтесь функціональності для нічного стану',
+                                    'zh-cn': '夜间国家的后续行动功能',
+                                },
+                            },
+                            native: {},
+                        },
+                        {
+                            preserve: {
+                                common: ['name'],
+                            },
+                        },
+                    );
+
+                    await this.setObjectNotExistsAsync(
+                        id + '.presenceFollowing.nightPerson',
+                        {
+                            type: 'state',
+                            common: {
+                                name: {
+                                    en: name + ' is following sleep state of this person',
+                                    de: name + ' folgt dem Schlafstatus dieser Person',
+                                    ru: name + ' следит за состоянием сна этого человека',
+                                    pt: name + ' está seguindo o estado de sono desta pessoa',
+                                    nl: name + ' volgt slaaptoestand van deze persoon',
+                                    fr: name + " suit l'état de sommeil de cette personne",
+                                    it: name + ' sta seguendo lo stato di sonno di questa persona',
+                                    es: name + ' sigue el estado de sueño de esta persona',
+                                    pl: name + ' jest stanem snu tej osoby',
+                                    uk: name + ' - це наступний стан сну цієї людини',
+                                    'zh-cn': name + ' 是这个人睡觉的后裔',
+                                },
+                                type: 'string',
+                                role: 'string',
+                                read: true,
+                                write: true,
+                                def: '',
+                                desc: {
+                                    en: 'Which person is being followed?',
+                                    de: 'Welcher Person wird gefolgt?',
+                                    ru: 'Какой человек следует?',
+                                    pt: 'Qual pessoa está sendo seguida?',
+                                    nl: 'Welke persoon wordt gevolgd?',
+                                    fr: 'Quelle personne est suivie ?',
+                                    it: 'Quale persona viene seguita?',
+                                    es: '¿A qué persona se le sigue?',
+                                    pl: 'Co się dzieje?',
+                                    uk: 'Яку людину слідувати?',
+                                    'zh-cn': '谁是谁?',
+                                },
+                            },
+                            native: {},
+                        },
+                        {
+                            preserve: {
+                                common: ['name'],
+                            },
+                        },
+                    );
+                    // Update common.states
+                    currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightPerson');
+                    if (currentObject) {
+                        currentObject.common.states = Object.assign(homePersonLang, foreignResidents);
+                        await this.setObjectAsync(id + '.presenceFollowing.nightPerson', currentObject);
+                    }
+
+                    const nightModeStates = {
+                        en: {
+                            0: 'Fall Asleep & Get Up',
+                            1: 'Fall Asleep only',
+                            2: 'Get Up only',
+                        },
+                        de: {
+                            0: 'Einschlafen & Aufstehen',
+                            1: 'Nur einschlafen',
+                            2: 'Nur aufstehen',
+                        },
+                    };
+                    const nightModeLang = nightModeStates[this.language]
+                        ? nightModeStates[this.language]
+                        : nightModeStates['en'];
+                    await this.setObjectNotExistsAsync(
+                        id + '.presenceFollowing.nightMode',
+                        {
+                            type: 'state',
+                            common: {
+                                name: {
+                                    en: name + ' is following these night presence events',
+                                    de: name + ' folgt diesen nächtlichen Anwesenheits-Ereignissen',
+                                    ru: name + ' следит за этими ночными событиями присутствия',
+                                    pt: name + ' está seguindo estes eventos de presença noturna',
+                                    nl: name + ' volgt deze nachtelijke gebeurtenissen',
+                                    fr: name + ' suit ces événements nocturnes',
+                                    it: name + ' segue questi eventi di presenza notturna',
+                                    es: name + ' sigue estos eventos de presencia nocturna',
+                                    pl: name + ' po tych nocnych wydarzeniach obecna jest obecna',
+                                    uk: name + ' - це наступні події нічної присутності',
+                                    'zh-cn': '第' + name + '次会议之后',
+                                },
+                                type: 'number',
+                                role: 'value',
+                                read: true,
+                                write: true,
+                                def: 0,
+                                states: nightModeLang,
+                                desc: {
+                                    en: 'Which night states is this person following?',
+                                    de: 'Welchem Nachtstatus folgt diese Person?',
+                                    ru: 'Какая ночь говорит этот человек?',
+                                    pt: 'Que noite afirma que esta pessoa está a seguir?',
+                                    nl: 'Welke nacht staat deze persoon te volgen?',
+                                    fr: 'Quelle nuit est-ce que cette personne suit ?',
+                                    it: "Qual e' la notte in cui sta seguendo questa persona?",
+                                    es: '¿Qué estados de noche es esta persona que sigue?',
+                                    pl: 'Co nocne stany to osoba następująca?',
+                                    uk: 'Які нічні стани є такою особою:?',
+                                    'zh-cn': '哪一个夜间州是谁?',
+                                },
+                            },
+                            native: {},
+                        },
+                        {
+                            preserve: {
+                                common: ['name'],
+                            },
+                        },
+                    );
+                    // Update common.states
+                    currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightMode');
+                    if (currentObject) {
+                        currentObject.common.states = nightModeLang;
+                        await this.setObjectAsync(id + '.presenceFollowing.nightMode', currentObject);
                     }
                 }
 
@@ -2448,35 +2146,11 @@ class Residents extends utils.Adapter {
                         },
                     },
                 );
-                const homePersonLang = {
-                    '': nobodyLang,
-                };
                 // Update common.states
                 currentObject = await this.getObjectAsync(id + '.presenceFollowing.homePerson');
                 if (currentObject) {
                     currentObject.common.states = Object.assign(homePersonLang, foreignResidents);
                     await this.setObjectAsync(id + '.presenceFollowing.homePerson', currentObject);
-                }
-                let currentState = await this.getStateAsync(id + '.presenceFollowing.homePerson');
-                if (
-                    currentState &&
-                    currentState.val != '' &&
-                    currentState.val != 'none' &&
-                    currentState.val != 'nobody'
-                ) {
-                    currentObject = await this.getObjectAsync(String(currentState.val));
-                    if (currentObject && currentObject.type == 'device' && currentObject._id.startsWith('residents.')) {
-                        this.log.info(
-                            id + '.presenceFollowing.homePerson: Monitoring ' + currentState.val + '.presence.state',
-                        );
-                        if (String(currentState.val).startsWith(this.namespace)) {
-                            this.subscriptions.push(currentState.val + '.presence.state');
-                        } else {
-                            this.foreignSubscriptions.push(currentState.val + '.presence.state');
-                        }
-                    } else {
-                        this.log.error(id + '.presenceFollowing.homePerson: Invalid value: ' + currentState.val);
-                    }
                 }
 
                 const homeModeStates = {
@@ -2590,248 +2264,6 @@ class Residents extends utils.Adapter {
                 if (currentObject) {
                     currentObject.common.states = homeModeLang;
                     await this.setObjectAsync(id + '.presenceFollowing.homeMode', currentObject);
-                }
-
-                // Follow-them for Night state not for pets
-                if (residentType != 'pet') {
-                    await this.setObjectNotExistsAsync(
-                        id + '.presenceFollowing.nightEnabled',
-                        {
-                            type: 'state',
-                            common: {
-                                name: {
-                                    en: name + ' is inheriting a night state?',
-                                    de: name + ' erbt einen Nachtstatus?',
-                                    ru: name + ' наследует ночное состояние?',
-                                    pt: 'A ' + name + ' herda um estado nocturno?',
-                                    nl: name + ' erft een nachtstaat?',
-                                    fr: name + " hérite d'un état de nuit ?",
-                                    it: name + ' sta ereditando uno stato di notte?',
-                                    es: '¿' + name + ' hereda un estado nocturno?',
-                                    pl: name + ' dziedziczy stan nocny?',
-                                    uk: name + ' – спадщина нічного стану?',
-                                    'zh-cn': '祖国正在继承一个夜间国家?',
-                                },
-                                type: 'boolean',
-                                role: 'switch.enable',
-                                read: true,
-                                write: true,
-                                def: false,
-                                desc: {
-                                    en: 'Follow-them functionality for the night state',
-                                    de: 'Follow-them Funktion für den Nachtstatus',
-                                    ru: 'Функционал для ночного государства',
-                                    pt: 'Funcionalidade de acompanhamento para o estado noturno',
-                                    nl: 'Volg hun functie voor de nachtelijke staat',
-                                    fr: "Fonctionnalité de suivi pour l'état de nuit",
-                                    it: 'Funzionalità di follow-them per lo stato di notte',
-                                    es: 'Funcionalidad de seguimiento para el estado nocturno',
-                                    pl: 'Wstępna funkcjonalność dla nocnego stanu',
-                                    uk: 'Дотримуйтесь функціональності для нічного стану',
-                                    'zh-cn': '夜间国家的后续行动功能',
-                                },
-                            },
-                            native: {},
-                        },
-                        {
-                            preserve: {
-                                common: ['name'],
-                            },
-                        },
-                    );
-
-                    await this.setObjectNotExistsAsync(
-                        id + '.presenceFollowing.nightPerson',
-                        {
-                            type: 'state',
-                            common: {
-                                name: {
-                                    en: name + ' is following sleep state of this person',
-                                    de: name + ' folgt dem Schlafstatus dieser Person',
-                                    ru: name + ' следит за состоянием сна этого человека',
-                                    pt: name + ' está seguindo o estado de sono desta pessoa',
-                                    nl: name + ' volgt slaaptoestand van deze persoon',
-                                    fr: name + " suit l'état de sommeil de cette personne",
-                                    it: name + ' sta seguendo lo stato di sonno di questa persona',
-                                    es: name + ' sigue el estado de sueño de esta persona',
-                                    pl: name + ' jest stanem snu tej osoby',
-                                    uk: name + ' - це наступний стан сну цієї людини',
-                                    'zh-cn': name + ' 是这个人睡觉的后裔',
-                                },
-                                type: 'string',
-                                role: 'string',
-                                read: true,
-                                write: true,
-                                def: '',
-                                desc: {
-                                    en: 'Which person is being followed?',
-                                    de: 'Welcher Person wird gefolgt?',
-                                    ru: 'Какой человек следует?',
-                                    pt: 'Qual pessoa está sendo seguida?',
-                                    nl: 'Welke persoon wordt gevolgd?',
-                                    fr: 'Quelle personne est suivie ?',
-                                    it: 'Quale persona viene seguita?',
-                                    es: '¿A qué persona se le sigue?',
-                                    pl: 'Co się dzieje?',
-                                    uk: 'Яку людину слідувати?',
-                                    'zh-cn': '谁是谁?',
-                                },
-                            },
-                            native: {},
-                        },
-                        {
-                            preserve: {
-                                common: ['name'],
-                            },
-                        },
-                    );
-                    // Update common.states
-                    let currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightPerson');
-                    if (currentObject) {
-                        currentObject.common.states = Object.assign(homePersonLang, foreignResidents);
-                        await this.setObjectAsync(id + '.presenceFollowing.nightPerson', currentObject);
-                    }
-                    currentState = await this.getStateAsync(id + '.presenceFollowing.nightPerson');
-                    if (
-                        currentState &&
-                        currentState.val != '' &&
-                        currentState.val != 'none' &&
-                        currentState.val != 'nobody'
-                    ) {
-                        currentObject = await this.getObjectAsync(String(currentState.val));
-                        if (
-                            currentObject &&
-                            currentObject.type == 'device' &&
-                            currentObject._id.startsWith('residents.')
-                        ) {
-                            this.log.info(
-                                id +
-                                    '.presenceFollowing.nightPerson: Monitoring ' +
-                                    currentState.val +
-                                    '.presence.state',
-                            );
-                            if (String(currentState.val).startsWith(this.namespace)) {
-                                this.subscriptions.push(currentState.val + '.presence.state');
-                            } else {
-                                this.foreignSubscriptions.push(currentState.val + '.presence.state');
-                            }
-                        } else {
-                            this.log.error(id + '.presenceFollowing.nightPerson: Invalid value: ' + currentState.val);
-                        }
-                    }
-
-                    const nightModeStates = {
-                        en: {
-                            0: 'Fall Asleep & Get Up',
-                            1: 'Fall Asleep only',
-                            2: 'Get Up only',
-                        },
-                        de: {
-                            0: 'Einschlafen & Aufstehen',
-                            1: 'Nur einschlafen',
-                            2: 'Nur aufstehen',
-                        },
-                        // ru: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // pt: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // nl: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // fr: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // it: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // es: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // pl: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // uk: {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                        // 'zh-cn': {
-                        //     0: '',
-                        //     1: '',
-                        //     2: '',
-                        // },
-                    };
-                    const nightModeLang = nightModeStates[this.language]
-                        ? nightModeStates[this.language]
-                        : nightModeStates['en'];
-                    await this.setObjectNotExistsAsync(
-                        id + '.presenceFollowing.nightMode',
-                        {
-                            type: 'state',
-                            common: {
-                                name: {
-                                    en: name + ' is following these night presence events',
-                                    de: name + ' folgt diesen nächtlichen Anwesenheits-Ereignissen',
-                                    ru: name + ' следит за этими ночными событиями присутствия',
-                                    pt: name + ' está seguindo estes eventos de presença noturna',
-                                    nl: name + ' volgt deze nachtelijke gebeurtenissen',
-                                    fr: name + ' suit ces événements nocturnes',
-                                    it: name + ' segue questi eventi di presenza notturna',
-                                    es: name + ' sigue estos eventos de presencia nocturna',
-                                    pl: name + ' po tych nocnych wydarzeniach obecna jest obecna',
-                                    uk: name + ' - це наступні події нічної присутності',
-                                    'zh-cn': '第' + name + '次会议之后',
-                                },
-                                type: 'number',
-                                role: 'value',
-                                read: true,
-                                write: true,
-                                def: 0,
-                                states: nightModeLang,
-                                desc: {
-                                    en: 'Which night states is this person following?',
-                                    de: 'Welchem Nachtstatus folgt diese Person?',
-                                    ru: 'Какая ночь говорит этот человек?',
-                                    pt: 'Que noite afirma que esta pessoa está a seguir?',
-                                    nl: 'Welke nacht staat deze persoon te volgen?',
-                                    fr: 'Quelle nuit est-ce que cette personne suit ?',
-                                    it: "Qual e' la notte in cui sta seguendo questa persona?",
-                                    es: '¿Qué estados de noche es esta persona que sigue?',
-                                    pl: 'Co nocne stany to osoba następująca?',
-                                    uk: 'Які нічні стани є такою особою:?',
-                                    'zh-cn': '哪一个夜间州是谁?',
-                                },
-                            },
-                            native: {},
-                        },
-                        {
-                            preserve: {
-                                common: ['name'],
-                            },
-                        },
-                    );
-                    // Update common.states
-                    currentObject = await this.getObjectAsync(id + '.presenceFollowing.nightMode');
-                    if (currentObject) {
-                        currentObject.common.states = nightModeLang;
-                        await this.setObjectAsync(id + '.presenceFollowing.nightMode', currentObject);
-                    }
                 }
 
                 await this.setObjectNotExistsAsync(id + '.presence', {
@@ -3122,6 +2554,7 @@ class Residents extends utils.Adapter {
                 this.subscriptions.push(id + '.presence.*');
                 this.subscriptions.push(id + '.presenceFollowing.*');
 
+                // Mirror/monitor external/foreign presence objects
                 if (
                     resident.foreignPresenceObjectId != undefined &&
                     typeof resident.foreignPresenceObjectId == 'string' &&
@@ -3161,6 +2594,7 @@ class Residents extends utils.Adapter {
                     }
                 }
 
+                // Mirror/monitor external/foreign way home objects
                 if (
                     resident.foreignWayhomeObjectId != undefined &&
                     typeof resident.foreignWayhomeObjectId == 'string' &&
@@ -3203,6 +2637,91 @@ class Residents extends utils.Adapter {
                         this.log.error(
                             id + ': Foreign way home datapoint ' + resident.foreignWayhomeObjectId + ' is invalid',
                         );
+                    }
+                }
+
+                // Presence following: Arriving + Leaving
+                let followEnabled = await this.getStateAsync(id + '.presenceFollowing.homeEnabled');
+                let followPerson = await this.getStateAsync(id + '.presenceFollowing.homePerson');
+                let followMode = await this.getStateAsync(id + '.presenceFollowing.homeMode');
+                if (
+                    followEnabled != undefined &&
+                    followPerson != undefined &&
+                    followMode != undefined &&
+                    followEnabled.val == true &&
+                    followPerson.val != '' &&
+                    followPerson.val != 'none' &&
+                    followPerson.val != 'nobody'
+                ) {
+                    const objId = followPerson.val + '.presence.state';
+                    const followPersonObj = await this.getForeignObjectAsync(String(followPerson.val));
+                    if (
+                        followPersonObj != undefined &&
+                        followPersonObj.type == 'device' &&
+                        followPersonObj._id.startsWith('residents.')
+                    ) {
+                        this.log.info(id + ': Following home presence of ' + followPerson.val);
+                        if (this.presenceFollowingMapping[objId] == undefined)
+                            this.presenceFollowingMapping[objId] = {};
+
+                        if (this.presenceFollowingMapping[objId]['arriving'] == undefined)
+                            this.presenceFollowingMapping[objId]['arriving'] = [];
+                        if (followMode.val == 0 || followMode.val == 1) {
+                            this.presenceFollowingMapping[objId]['arriving'].push(fullId + '.presence.state');
+                        }
+
+                        if (this.presenceFollowingMapping[objId]['leaving'] == undefined)
+                            this.presenceFollowingMapping[objId]['leaving'] = [];
+                        if (followMode.val == 0 || followMode.val == 2)
+                            this.presenceFollowingMapping[objId]['leaving'].push(fullId + '.presence.state');
+                        if (!String(followPerson.val).startsWith(this.namespace)) this.foreignSubscriptions.push(objId);
+                    } else {
+                        this.log.error(id + ': Home presence following: Invalid homePerson value: ' + followPerson.val);
+                    }
+                }
+
+                // Presence following: Sleeping + Wakeup
+                if (residentType != 'pet') {
+                    followEnabled = await this.getStateAsync(id + '.presenceFollowing.nightEnabled');
+                    followPerson = await this.getStateAsync(id + '.presenceFollowing.nightPerson');
+                    followMode = await this.getStateAsync(id + '.presenceFollowing.nightMode');
+                    if (
+                        followEnabled != undefined &&
+                        followPerson != undefined &&
+                        followMode != undefined &&
+                        followEnabled.val == true &&
+                        followPerson.val != '' &&
+                        followPerson.val != 'none' &&
+                        followPerson.val != 'nobody'
+                    ) {
+                        const objId = followPerson.val + '.presence.state';
+                        const followPersonObj = await this.getForeignObjectAsync(String(followPerson.val));
+                        if (
+                            followPersonObj != undefined &&
+                            followPersonObj.type == 'device' &&
+                            followPersonObj._id.startsWith('residents.')
+                        ) {
+                            this.log.info(id + ': Following night presence of ' + followPerson.val);
+                            if (this.presenceFollowingMapping[objId] == undefined)
+                                this.presenceFollowingMapping[objId] = {};
+
+                            if (this.presenceFollowingMapping[objId]['sleeping'] == undefined)
+                                this.presenceFollowingMapping[objId]['sleeping'] = [];
+                            if (followMode.val == 0 || followMode.val == 1) {
+                                this.presenceFollowingMapping[objId]['sleeping'].push(fullId + '.presence.state');
+                            }
+
+                            if (this.presenceFollowingMapping[objId]['wakeup'] == undefined)
+                                this.presenceFollowingMapping[objId]['wakeup'] = [];
+                            if (followMode.val == 0 || followMode.val == 2)
+                                this.presenceFollowingMapping[objId]['wakeup'].push(fullId + '.presence.state');
+                            if (!String(followPerson.val).startsWith(this.namespace))
+                                this.foreignSubscriptions.push(objId);
+                        } else {
+                            this.log.error(
+                                id + ': Night presence following: Invalid nightPerson value: ' + followPerson.val,
+                            );
+                        }
                     }
                 }
 
@@ -4976,10 +4495,41 @@ class Residents extends utils.Adapter {
                     );
                 }
 
-                // // Presence forwarding for followers
-                // if () {
-
-                // }
+                // Presence forwarding for followers
+                const objId = this.namespace + '.' + id + '.presence.state';
+                const foreignState = { ...state };
+                foreignState.ack = false;
+                if (this.presenceFollowingMapping[objId] != undefined) {
+                    if (oldState.val == 0 && state.val == 1) {
+                        if (this.presenceFollowingMapping[objId]['arriving'] != undefined) {
+                            this.presenceFollowingMapping[objId]['arriving'].forEach(async (residentPresenceState) => {
+                                this.log.info(id + ': Forwarding arrival at home to ' + residentPresenceState);
+                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            });
+                        }
+                    } else if (oldState.val != 0 && state.val == 0) {
+                        if (this.presenceFollowingMapping[objId]['leaving'] != undefined) {
+                            this.presenceFollowingMapping[objId]['leaving'].forEach(async (residentPresenceState) => {
+                                this.log.info(id + ': Forwarding leaving home to ' + residentPresenceState);
+                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            });
+                        }
+                    } else if (oldState.val != 2 && state.val == 2) {
+                        if (this.presenceFollowingMapping[objId]['sleeping'] != undefined) {
+                            this.presenceFollowingMapping[objId]['sleeping'].forEach(async (residentPresenceState) => {
+                                this.log.info(id + ': Forwarding sleeping to ' + residentPresenceState);
+                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            });
+                        }
+                    } else if (oldState.val == 2 && state.val == 1) {
+                        if (this.presenceFollowingMapping[objId]['wakeup'] != undefined) {
+                            this.presenceFollowingMapping[objId]['wakeup'].forEach(async (residentPresenceState) => {
+                                this.log.info(id + ': Forwarding wakeup to ' + residentPresenceState);
+                                this.setForeignStateChangedAsync(residentPresenceState, foreignState);
+                            });
+                        }
+                    }
+                }
                 break;
             }
 
