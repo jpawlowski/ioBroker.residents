@@ -4498,6 +4498,7 @@ class Residents extends utils.Adapter {
                 // Presence forwarding for followers
                 const objId = this.namespace + '.' + id + '.presence.state';
                 state.ack = false;
+                state.from = this.namespace + '.' + id;
                 if (this.presenceFollowingMapping[objId] != undefined) {
                     if (oldState.val == 0 && state.val == 1) {
                         if (this.presenceFollowingMapping[objId]['arriving'] != undefined) {
