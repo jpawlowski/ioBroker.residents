@@ -4668,9 +4668,281 @@ class Residents extends utils.Adapter {
      */
     async setResidentDevicePresenceFollowing(residentType, device, command, state, oldState) {
         const id = residentType + '.' + device;
+        const fullId = this.namespace + '.' + id;
         if (!oldState) oldState = state;
+
+        switch (command) {
+            case 'homeEnabled':
+            case 'nightEnabled': {
+                if (state.val == true) {
+                    let followPerson = null;
+                    if (command == 'homeEnabled')
+                        followPerson = await this.getStateAsync(id + '.presenceFollowing.homePerson');
+                    if (command == 'nightEnabled')
+                        followPerson = await this.getStateAsync(id + '.presenceFollowing.nightPerson');
+
+                    if (
+                        followPerson == undefined ||
+                        followPerson.val == '' ||
+                        followPerson.val == 'none' ||
+                        followPerson.val == 'nobody'
+                    ) {
+                        if (command == 'homeEnabled')
+                            this.log.warn(
+                                device + ': Home presence following can not be enabled: Set a person to follow first',
+                            );
+                        if (command == 'nightEnabled')
+                            this.log.warn(
+                                device + ': Night presence following can not be enabled: Set a person to follow first',
+                            );
+                        state.val = false;
+                        state.q = 0x40;
+                        break;
+                    }
+
+                    const followPersonObj = await this.getForeignObjectAsync(String(followPerson.val));
+                    if (
+                        followPersonObj == undefined ||
+                        followPersonObj.type != 'device' ||
+                        !followPersonObj._id.startsWith('residents.')
+                    ) {
+                        if (command == 'homeEnabled')
+                            this.log.error(
+                                device + ': Home presence following: Invalid homePerson value: ' + followPerson.val,
+                            );
+                        if (command == 'nightEnabled')
+                            this.log.error(
+                                device + ': Night presence following: Invalid nightPerson value: ' + followPerson.val,
+                            );
+                        state.val = false;
+                        state.q = 0x40;
+                        break;
+                    }
+
+                    let followMode = null;
+                    if (command == 'homeEnabled')
+                        followMode = await this.getStateAsync(id + '.presenceFollowing.homeMode');
+                    if (command == 'nightEnabled')
+                        followMode = await this.getStateAsync(id + '.presenceFollowing.nightMode');
+                    if (followMode == undefined) {
+                        if (command == 'homeEnabled')
+                            this.log.error(device + ': Home presence following: Missing mode definition');
+                        if (command == 'nightEnabled')
+                            this.log.error(device + ': Night presence following: Missing mode definition');
+                        state.val = false;
+                        state.q = 0x40;
+                        break;
+                    }
+
+                    if (command == 'homeEnabled')
+                        this.log.info(device + ': Following home presence of ' + followPerson.val);
+                    if (command == 'nightEnabled')
+                        this.log.info(device + ': Following night presence of ' + followPerson.val);
+                    const objId = followPerson.val + '.presence.state';
+
+                    if (this.presenceFollowingMapping[objId] == undefined) this.presenceFollowingMapping[objId] = {};
+
+                    if (command == 'homeEnabled') {
+                        if (this.presenceFollowingMapping[objId]['arriving'] == undefined)
+                            this.presenceFollowingMapping[objId]['arriving'] = [];
+                        if (followMode.val == 0 || followMode.val == 1) {
+                            this.presenceFollowingMapping[objId]['arriving'].push(fullId);
+                        }
+
+                        if (this.presenceFollowingMapping[objId]['leaving'] == undefined)
+                            this.presenceFollowingMapping[objId]['leaving'] = [];
+                        if (followMode.val == 0 || followMode.val == 2)
+                            this.presenceFollowingMapping[objId]['leaving'].push(fullId);
+                    }
+
+                    if (command == 'nightEnabled') {
+                        if (this.presenceFollowingMapping[objId]['sleeping'] == undefined)
+                            this.presenceFollowingMapping[objId]['sleeping'] = [];
+                        if (followMode.val == 0 || followMode.val == 1) {
+                            this.presenceFollowingMapping[objId]['sleeping'].push(fullId);
+                        }
+
+                        if (this.presenceFollowingMapping[objId]['wakeup'] == undefined)
+                            this.presenceFollowingMapping[objId]['wakeup'] = [];
+                        if (followMode.val == 0 || followMode.val == 2)
+                            this.presenceFollowingMapping[objId]['wakeup'].push(fullId);
+                    }
+
+                    if (!String(followPerson.val).startsWith(this.namespace)) {
+                        const stateList = await this.getForeignStatesAsync(String(followPerson.val));
+                        for (const id in stateList) {
+                            this.states[id] = stateList[id];
+                            this.log.silly('Subscribing to foreign events for ' + id);
+                            this.subscribeForeignStates(id);
+                        }
+                    }
+                } else {
+                    if (command == 'homeEnabled') this.log.info(device + ': Disabled home presence following');
+                    if (command == 'nightEnabled') this.log.info(device + ': Disabled night following');
+
+                    for (const objId in this.presenceFollowingMapping) {
+                        if (
+                            command == 'homeEnabled' &&
+                            this.presenceFollowingMapping[objId]['arriving'] != undefined &&
+                            this.presenceFollowingMapping[objId]['arriving'].includes(fullId)
+                        ) {
+                            this.presenceFollowingMapping[objId]['arriving'].splice(
+                                this.presenceFollowingMapping[objId]['arriving'].indexOf(fullId),
+                                1,
+                            );
+                        }
+
+                        if (
+                            command == 'homeEnabled' &&
+                            this.presenceFollowingMapping[objId]['leaving'] != undefined &&
+                            this.presenceFollowingMapping[objId]['leaving'].includes(fullId)
+                        ) {
+                            this.presenceFollowingMapping[objId]['leaving'].splice(
+                                this.presenceFollowingMapping[objId]['leaving'].indexOf(fullId),
+                                1,
+                            );
+                        }
+
+                        if (
+                            command == 'nightEnabled' &&
+                            this.presenceFollowingMapping[objId]['sleeping'] != undefined &&
+                            this.presenceFollowingMapping[objId]['sleeping'].includes(fullId)
+                        ) {
+                            this.presenceFollowingMapping[objId]['sleeping'].splice(
+                                this.presenceFollowingMapping[objId]['sleeping'].indexOf(fullId),
+                                1,
+                            );
+                        }
+
+                        if (
+                            command == 'nightEnabled' &&
+                            this.presenceFollowingMapping[objId]['wakeup'] != undefined &&
+                            this.presenceFollowingMapping[objId]['wakeup'].includes(fullId)
+                        ) {
+                            this.presenceFollowingMapping[objId]['wakeup'].splice(
+                                this.presenceFollowingMapping[objId]['wakeup'].indexOf(fullId),
+                                1,
+                            );
+                        }
+                    }
+                }
+
+                break;
+            }
+
+            case 'homeMode':
+            case 'nightMode':
+            case 'homePerson':
+            case 'nightPerson': {
+                if (['homeMode', 'nightMode'].includes(command) && ![0, 1, 2].includes(Number(state.val))) {
+                    if (command == 'homeMode')
+                        this.log.error(device + ': Home presence following: Invalid homeMode value: ' + state.val);
+                    if (command == 'nightMode')
+                        this.log.error(device + ': Night presence following: Invalid nightMode value: ' + state.val);
+                    state.val = oldState.val;
+                    state.q = 0x40;
+                    break;
+                }
+
+                if (['homePerson', 'nightPerson'].includes(command) && state.val != '') {
+                    const followPersonObj = await this.getForeignObjectAsync(String(state.val));
+                    if (
+                        followPersonObj == undefined ||
+                        followPersonObj.type != 'device' ||
+                        !followPersonObj._id.startsWith('residents.')
+                    ) {
+                        if (command == 'homePerson')
+                            this.log.error(
+                                device + ': Home presence following: Invalid homePerson value: ' + state.val,
+                            );
+                        if (command == 'nightPerson')
+                            this.log.error(
+                                device + ': Night presence following: Invalid nightPerson value: ' + state.val,
+                            );
+                        state.val = oldState.val;
+                        state.q = 0x40;
+                        break;
+                    }
+                }
+
+                state.ack = true;
+                await this.setStateAsync(id + '.presenceFollowing.' + command, state);
+
+                let enabledState = null;
+                if (['homeMode', 'homePerson'].includes(command))
+                    enabledState = await this.getStateAsync(id + '.presenceFollowing.homeEnabled');
+                if (['nightMode', 'nightPerson'].includes(command))
+                    enabledState = await this.getStateAsync(id + '.presenceFollowing.nightEnabled');
+                if (enabledState != undefined && enabledState.val == true) {
+                    if (['homePerson', 'nightPerson'].includes(command) && state.val == '') {
+                        state.ack = false;
+                        state.val = false;
+                        if (command == 'homePerson')
+                            await this.setStateAsync(id + '.presenceFollowing.homeEnabled', state);
+                        if (command == 'nightPerson')
+                            await this.setStateAsync(id + '.presenceFollowing.nightEnabled', state);
+                    } else {
+                        for (const objId in this.presenceFollowingMapping) {
+                            if (
+                                ['homePerson', 'homeMode'].includes(command) &&
+                                this.presenceFollowingMapping[objId]['arriving'] != undefined &&
+                                this.presenceFollowingMapping[objId]['arriving'].includes(fullId)
+                            ) {
+                                this.presenceFollowingMapping[objId]['arriving'].splice(
+                                    this.presenceFollowingMapping[objId]['arriving'].indexOf(fullId),
+                                    1,
+                                );
+                            }
+
+                            if (
+                                ['homePerson', 'homeMode'].includes(command) &&
+                                this.presenceFollowingMapping[objId]['leaving'] != undefined &&
+                                this.presenceFollowingMapping[objId]['leaving'].includes(fullId)
+                            ) {
+                                this.presenceFollowingMapping[objId]['leaving'].splice(
+                                    this.presenceFollowingMapping[objId]['leaving'].indexOf(fullId),
+                                    1,
+                                );
+                            }
+
+                            if (
+                                ['nightPerson', 'nightMode'].includes(command) &&
+                                this.presenceFollowingMapping[objId]['sleeping'] != undefined &&
+                                this.presenceFollowingMapping[objId]['sleeping'].includes(fullId)
+                            ) {
+                                this.presenceFollowingMapping[objId]['sleeping'].splice(
+                                    this.presenceFollowingMapping[objId]['sleeping'].indexOf(fullId),
+                                    1,
+                                );
+                            }
+
+                            if (
+                                ['nightPerson', 'nightMode'].includes(command) &&
+                                this.presenceFollowingMapping[objId]['wakeup'] != undefined &&
+                                this.presenceFollowingMapping[objId]['wakeup'].includes(fullId)
+                            ) {
+                                this.presenceFollowingMapping[objId]['wakeup'].splice(
+                                    this.presenceFollowingMapping[objId]['wakeup'].indexOf(fullId),
+                                    1,
+                                );
+                            }
+                        }
+
+                        state.ack = false;
+                        state.val = true;
+                        if (['homePerson', 'homeMode'].includes(command))
+                            this.setStateAsync(id + '.presenceFollowing.homeEnabled', state);
+                        if (['nightPerson', 'nightMode'].includes(command))
+                            this.setStateAsync(id + '.presenceFollowing.nightEnabled', state);
+                    }
+                }
+
+                return;
+            }
+        }
+
         state.ack = true;
-        await this.setStateChangedAsync(id + '.presenceFollowing.' + command, state);
+        await this.setStateAsync(id + '.presenceFollowing.' + command, state);
     }
 
     /**
