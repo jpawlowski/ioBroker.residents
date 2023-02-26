@@ -34,6 +34,7 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
 ### 0.1.0-beta.0 (2023-02-26)
 
 -   (jpawlowski) Update Siri Shortcuts templates
@@ -44,7 +45,7 @@ The adapter is also designed to support a sophisticated notification routing sys
 
 MIT License
 
-Copyright (c) 2022-2023 Julian Pawlowski <julian.pawlowski@gmail.com>
+Copyright (c) 2022-2023 Julian Pawlowski <metres_topaz.0v@icloud.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
