@@ -58,6 +58,33 @@ class Residents extends utils.Adapter {
         if (this.config.language != '') this.language = this.config.language;
 
         ///////////////////////////
+        // Update adapter instance configuration
+        const adapterObj = await this.getForeignObjectAsync('system.adapter.residents');
+        const instanceObj = await this.getForeignObjectAsync('system.adapter.' + this.namespace);
+        if (adapterObj != undefined && instanceObj != undefined) {
+            let updatedInstanceObj = Boolean(false);
+
+            ['stateTranslations'].forEach((property) => {
+                if (instanceObj.native[property] == undefined) {
+                    instanceObj.native[property] = adapterObj.native[property];
+                    updatedInstanceObj = true;
+                } else {
+                    for (const element in adapterObj.native[property]) {
+                        if (instanceObj.native[property][element] == undefined) {
+                            instanceObj.native[property].push(adapterObj.native[property][element]);
+                            updatedInstanceObj = true;
+                        }
+                    }
+                }
+            });
+
+            if (updatedInstanceObj == true) {
+                await this.setForeignObjectAsync('system.adapter.' + this.namespace, instanceObj);
+                this.log.info('Updated adapter instance configuration after adapter update');
+            }
+        }
+
+        ///////////////////////////
         // Create/Update global objects
         const residentialStateTexts = {
             en: {

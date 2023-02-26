@@ -35,11 +35,9 @@ The adapter is also designed to support a sophisticated notification routing sys
     ### **WORK IN PROGRESS**
 -->
 
-### 0.1.0-beta.0 (2023-02-26)
+### **WORK IN PROGRESS**
 
--   (jpawlowski) Update Siri Shortcuts templates
--   (jpawlowski) Add icons/emojis for roomie, guest, and pet
--   (jpawlowski) Add presence following
+-   (jpawlowski) Update adapter instance config after update
 
 ## License
 
