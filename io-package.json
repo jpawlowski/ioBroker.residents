@@ -1,20 +1,20 @@
 {
     "common": {
         "name": "residents",
-        "version": "0.0.3-beta.12",
+        "version": "0.1.0-beta.0",
         "news": {
-            "0.0.3-beta.12": {
-                "en": "change object roles to standard definitions\nprepare for first release in ioBroker latest repository",
-                "de": "Objektrollen zu Standarddefinitionen geändert\nVorbereitung auf die erste Veröffentlichung im ioBroker Latest Repository",
-                "ru": "изменить роль объекта к стандартным определениям\nподготовиться к первому выпуску в ioBroker последней репозитории",
-                "pt": "mudar funções de objeto para definições padrão\nprepare-se para a primeira versão no repositório mais recente do ioBroker",
-                "nl": "veranderingsrollen naar standaard definities\nbereid je voor op de eerste vrijlating in ioBroker laatste herberg",
-                "fr": "changer les rôles des objets aux définitions standard\npréparer pour la première version de ioBroker dernier dépôt",
-                "it": "modificare i ruoli degli oggetti nelle definizioni standard\npreparare per la prima release in ioBroker ultimo repository",
-                "es": "cambiar las funciones de objeto a las definiciones estándar\nprepararse para la primera versión en ioBroker último repositorio",
-                "pl": "funkcje zmiennych do standardowej definicji\npierwsze wydanie ioBrokera",
-                "uk": "змінити ролі об'єкта до стандартних визначень\nпідготовка до першого випуску в ioBroker",
-                "zh-cn": "改变目标对标准定义的作用\n准备在万布罗克最近的存放处首次释放"
+            "0.1.0-beta.0": {
+                "en": "Update Siri Shortcuts templates\nAdd icons/emojis for roomie, guest, and pet\nAdd presence following",
+                "de": "Vorlagen von Siri Shortcuts aktualisieren\nIcons/Emojis für Zimmermann, Gast und Haustier hinzufügen\nAnwesenheit hinzufügen",
+                "ru": "Обновление шаблонов Siri Shortcuts\nДобавьте иконки / Emojis для roomie, гостя и питомца\nДобавить присутствие следующее",
+                "pt": "Atualizar modelos de atalhos Siri\nAdicione ícones/emojis para roomie, hóspede e animal de estimação\nAdicionar presença a seguir",
+                "nl": "Quality over Quantity (QoQ) Releases Vertaling:\nVoeg icons/emojis toe voor kamergenoot, gast en huisdier\nVertaling:",
+                "fr": "Mettre à jour les modèles de raccourcis Siri\nAjouter des icônes/emojis pour roomie, invité et animal de compagnie\nAdd presence following",
+                "it": "Aggiornare i modelli di collegamenti Siri\nAggiungi icone/emojis per roomie, guest e pet\nAggiungi la presenza seguente",
+                "es": "Actualizar plantillas Siri Shortcuts\nAñadir iconos/emojis para roomie, huésped y mascota\nAgregar presencia después",
+                "pl": "Szablon Siri Shortcuts\nAddd ikon/emojis for roomie, gość i zwierzęta domowe\nStrona Addicji",
+                "uk": "Оновлення шаблонів сирі\nДодайте іконки / смайлики для кімнатної, гостьової та домашньої тварини\nДодати присутність",
+                "zh-cn": "最新执行模板\n增加会议室、客座和时间\n增 编"
             }
         },
         "titleLang": {
