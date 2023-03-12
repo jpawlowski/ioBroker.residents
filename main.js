@@ -961,6 +961,22 @@ class Residents extends utils.Adapter {
             roomieIDsToNames[this.namespace + '.' + roomieId] = icon ? icon + ' ' + name : name;
         });
 
+        // TODO: also add guests from other instances
+        const guestIDsToNames = {};
+        this.guests.forEach((guest) => {
+            const name = guest['name'].trim();
+            const guestId = 'guest.' + this.cleanNamespace(guest['id'] ? guest['id'] : name);
+            let icon = null;
+            if (
+                this.config.stateTranslations != undefined &&
+                this.config.stateTranslations[2] != undefined &&
+                this.config.stateTranslations[2].icon != ''
+            )
+                icon = this.config.stateTranslations[2].icon;
+            if (guest.icon != undefined && guest.icon != '') icon = guest.icon;
+            guestIDsToNames[this.namespace + '.' + guestId] = icon ? icon + ' ' + name : name;
+        });
+
         const residentTypes = ['roomie', 'pet', 'guest'];
         for (const key1 in residentTypes) {
             const residentType = residentTypes[key1];
@@ -1011,7 +1027,12 @@ class Residents extends utils.Adapter {
                 this.config[residentType][key2]['icon'] = icon;
                 this.config[residentType][key2]['iconAndName'] = iconAndName;
 
-                const foreignResidents = { ...roomieIDsToNames };
+                let foreignResidents = null;
+                if (residentType == 'pet') {
+                    foreignResidents = { ...roomieIDsToNames, ...guestIDsToNames };
+                } else {
+                    foreignResidents = { ...roomieIDsToNames };
+                }
                 if (foreignResidents[fullId]) delete foreignResidents[fullId];
 
                 await this.setObjectNotExistsAsync(id, {

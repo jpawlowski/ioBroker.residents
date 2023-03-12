@@ -34,9 +34,10 @@ The adapter is also designed to support a sophisticated notification routing sys
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 0.1.0-beta.1 (2023-02-26)
 
--   (jpawlowski) Update adapter instance config after update
+### **WORK IN PROGRESS**
+
+-   (jpawlowski) Pets are now allowed to follow the presence of guest residents
 
 ## License
 
