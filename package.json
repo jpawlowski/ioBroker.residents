@@ -38,7 +38,7 @@
     "url": "git@github.com:jpawlowski/ioBroker.residents.git"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 18"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.8"
