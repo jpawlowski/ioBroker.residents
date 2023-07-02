@@ -1492,7 +1492,11 @@ class Residents extends utils.Adapter {
                         currentObject.common.states = focusStates['away'];
 
                         const presenceState = await this.getStateAsync(id + '.presence.state');
-                        if (presenceState != undefined && presenceState.val != undefined && presenceState.val > 0)
+                        if (
+                            presenceState != undefined &&
+                            presenceState.val != undefined &&
+                            Number(presenceState.val) > 0
+                        )
                             currentObject.common.states = focusStates['home'];
                         await this.setObjectAsync(id + '.activity.focus', currentObject);
                     }
@@ -3954,10 +3958,10 @@ class Residents extends utils.Adapter {
                 if (state.val < 100 || (state.val >= 300 && state.val < 1100) || state.val >= 1300) state.val = 0;
                 await this.setStateAsync(id + '.activity.focus', state);
 
-                if (presenceState.val == 2 && changePresenceToHome) {
+                if (Number(presenceState.val) === 2 && changePresenceToHome) {
                     await this.setStateAsync(id + '.presence.night', { val: false, ack: true });
                     await this.setStateAsync(id + '.presence.state', { val: 1, ack: true });
-                } else if (presenceState.val > 0 && changePresenceToAway) {
+                } else if (Number(presenceState.val) > 0 && changePresenceToAway) {
                     await this.setStateAsync(id + '.presence.night', { val: false, ack: true });
                     await this.setStateAsync(id + '.presence.home', { val: false, ack: true });
                     await this.setStateAsync(id + '.presence.away', { val: true, ack: true });
@@ -4470,7 +4474,7 @@ class Residents extends utils.Adapter {
                         stateNight = true;
 
                         // change activity state to the correct range
-                        if (activityState && activityState.val != undefined) {
+                        if (activityState && activityState.val != undefined && typeof activityState.val == 'number') {
                             if (activityState.val < 2000) {
                                 stateActivity = 2000;
                             } else if (activityState.val < 2100) {
@@ -4485,7 +4489,11 @@ class Residents extends utils.Adapter {
                                 stateActivity = Number(activityState.val);
                             }
                         }
-                    } else if (activityState && activityState.val != undefined) {
+                    } else if (
+                        activityState &&
+                        activityState.val != undefined &&
+                        typeof activityState.val == 'number'
+                    ) {
                         // Activity change from away to home or when transitioning from night to home
                         if (activityState.val < 1000 || activityState.val >= 2200) {
                             stateActivity = 1000;
@@ -4514,7 +4522,7 @@ class Residents extends utils.Adapter {
                         enabledState.val == true &&
                         activityState &&
                         activityState.val != undefined &&
-                        activityState.val < 1000
+                        Number(activityState.val) < 1000
                     ) {
                         stateActivity = Number(activityState.val);
                     }
@@ -4671,7 +4679,7 @@ class Residents extends utils.Adapter {
                 if (state.val == true) {
                     state.val = 2;
                 } else {
-                    state.val = presenceState.val > 0 ? 1 : 0;
+                    state.val = Number(presenceState.val) > 0 ? 1 : 0;
                 }
                 await this.setStateAsync(id + '.presence.state', state);
                 break;
@@ -5752,7 +5760,7 @@ class Residents extends utils.Adapter {
                 if (!parentState || parentState.val == undefined) continue;
 
                 // For presence at home, aim for the lower (= more awake) number
-                if (groupStateVal >= 4 && parentState.val >= 4) {
+                if (groupStateVal >= 4 && typeof parentState.val == 'number' && parentState.val >= 4) {
                     if (parentState.val < groupStateVal) {
                         leadingInstance = parentInstance;
                         this.log.debug(
@@ -5769,12 +5777,12 @@ class Residents extends utils.Adapter {
                 }
 
                 // Otherwise, aim for the higher value
-                else if (parentState.val > groupStateVal) {
+                else if (typeof parentState.val == 'number' && parentState.val > groupStateVal) {
                     leadingInstance = parentInstance;
                     this.log.debug(
                         '  Group state: Leading higher parent value from ' + parentInstance + ': ' + parentState.val,
                     );
-                    groupStateVal = Number(parentState.val);
+                    groupStateVal = parentState.val;
                 }
             }
 
