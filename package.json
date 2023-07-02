@@ -96,7 +96,8 @@
     "dev-server:watch": "dev-server watch",
     "dev-server:debug": "dev-server debug",
     "dev-server:upload": "dev-server upload",
-    "dev-server:backup": "dev-server backup"
+    "dev-server:backup": "dev-server backup",
+    "dev-server:setup": "dev-server setup"
   },
   "bugs": {
     "url": "https://github.com/jpawlowski/ioBroker.residents/issues"
