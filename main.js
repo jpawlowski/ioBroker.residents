@@ -3990,6 +3990,7 @@ class Residents extends utils.Adapter {
                     this.log.warn(device + ': Awake state can only be controlled during night time');
                     state.ack = true;
                     state.val = oldState.val;
+                    // @ts-ignore
                     state.q = 0x40;
                     await this.setStateAsync(id + '.activity.awake', state);
                 } else {
@@ -4056,6 +4057,7 @@ class Residents extends utils.Adapter {
                 } else {
                     this.log.warn(device + ': Presence at home is required to start bedtime process');
                     state.val = 0;
+                    // @ts-ignore
                     state.q = 0x40;
                     await this.setStateAsync(id + '.activity.bedtime', state);
                 }
@@ -4082,10 +4084,12 @@ class Residents extends utils.Adapter {
                 if (presenceState.val == 0) {
                     this.log.warn(device + ': Do Not Disturb can only be controlled during presence at home');
                     state.val = false;
+                    // @ts-ignore
                     state.q = 0x40;
                 } else if (presenceState.val == 2) {
                     this.log.warn(device + ': Do Not Disturb can not be controlled during night time');
                     state.val = true;
+                    // @ts-ignore
                     state.q = 0x40;
                 } else {
                     this.setResidentDeviceActivity(
@@ -4157,6 +4161,7 @@ class Residents extends utils.Adapter {
                     this.log.debug(device + ': A focus can not be set during night time');
                     state.ack = true;
                     state.val = oldState.val;
+                    // @ts-ignore
                     state.q = 0x40;
                     await this.setStateAsync(id + '.activity.focus', state);
                 } else {
@@ -4209,6 +4214,7 @@ class Residents extends utils.Adapter {
                     if (state.val == true) {
                         this.log.warn(device + ': A wake-up alarm can only be triggered during night time at home');
                         state.val = false;
+                        // @ts-ignore
                         state.q = 0x40;
                     }
                     await this.setStateAsync(id + '.activity.wakeup', state);
@@ -4274,6 +4280,7 @@ class Residents extends utils.Adapter {
                     this.log.warn(device + ': Wayhome state can only be controlled during absence');
                     state.ack = true;
                     state.val = oldState.val;
+                    // @ts-ignore
                     state.q = 0x40;
                     await this.setStateAsync(id + '.activity.wayhome', state);
                     break;
@@ -4339,6 +4346,7 @@ class Residents extends utils.Adapter {
         if (presenceState.val != 1) {
             this.log.warn(device + ': Mood can only be controlled during waking time at home');
             state.val = oldState.val;
+            // @ts-ignore
             state.q = 0x40;
         }
 
@@ -4752,6 +4760,7 @@ class Residents extends utils.Adapter {
                                 device + ': Night presence following can not be enabled: Set a person to follow first',
                             );
                         state.val = false;
+                        // @ts-ignore
                         state.q = 0x40;
                         break;
                     }
@@ -4771,6 +4780,7 @@ class Residents extends utils.Adapter {
                                 device + ': Night presence following: Invalid nightPerson value: ' + followPerson.val,
                             );
                         state.val = false;
+                        // @ts-ignore
                         state.q = 0x40;
                         break;
                     }
@@ -4786,6 +4796,7 @@ class Residents extends utils.Adapter {
                         if (command == 'nightEnabled')
                             this.log.error(device + ': Night presence following: Missing mode definition');
                         state.val = false;
+                        // @ts-ignore
                         state.q = 0x40;
                         break;
                     }
@@ -4896,6 +4907,7 @@ class Residents extends utils.Adapter {
                     if (command == 'nightMode')
                         this.log.error(device + ': Night presence following: Invalid nightMode value: ' + state.val);
                     state.val = oldState.val;
+                    // @ts-ignore
                     state.q = 0x40;
                     break;
                 }
@@ -4916,6 +4928,7 @@ class Residents extends utils.Adapter {
                                 device + ': Night presence following: Invalid nightPerson value: ' + state.val,
                             );
                         state.val = oldState.val;
+                        // @ts-ignore
                         state.q = 0x40;
                         break;
                     }
