@@ -1,15 +1,10 @@
 module.exports = {
     languageOptions: {
+        ecmaVersion: 2021,
+        sourceType: 'module',
         globals: {
-            es2021: true,
             node: true,
             mocha: true,
-        },
-        ecmaFeatures: {
-            globalReturn: true,
-            impliedStrict: true,
-            jsx: true,
-            experimentalObjectRestSpread: true,
         },
     },
     extends: ['eslint:recommended'],
