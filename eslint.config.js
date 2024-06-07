@@ -1,8 +1,16 @@
 module.exports = {
-    env: {
-        es6: true,
-        node: true,
-        mocha: true,
+    languageOptions: {
+        globals: {
+            es2021: true,
+            node: true,
+            mocha: true,
+        },
+        ecmaFeatures: {
+            globalReturn: true,
+            impliedStrict: true,
+            jsx: true,
+            experimentalObjectRestSpread: true,
+        },
     },
     extends: ['eslint:recommended'],
     plugins: [],
@@ -34,13 +42,5 @@ module.exports = {
             },
         ],
         semi: ['error', 'always'],
-    },
-    parserOptions: {
-        ecmaFeatures: {
-            globalReturn: true,
-            impliedStrict: true,
-            jsx: true,
-            experimentalObjectRestSpread: true,
-        },
     },
 };
