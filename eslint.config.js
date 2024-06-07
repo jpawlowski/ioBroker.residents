@@ -1,5 +1,4 @@
 module.exports = {
-    root: true,
     env: {
         es6: true,
         node: true,
@@ -37,7 +36,11 @@ module.exports = {
         semi: ['error', 'always'],
     },
     parserOptions: {
-        ecmaVersion: 2020,
+        ecmaFeatures: {
+            globalReturn: true,
+            impliedStrict: true,
+            jsx: true,
+            experimentalObjectRestSpread: true,
+        },
     },
-    ignorePatterns: ['.prettierrc.js', 'node_modules/', 'dist/', 'coverage/', 'test/'],
 };
