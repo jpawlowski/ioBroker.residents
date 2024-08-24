@@ -3274,6 +3274,7 @@ class Residents extends utils.Adapter {
             }
 
             callback();
+            // eslint-disable-next-line no-unused-vars
         } catch (e) {
             callback();
         }
@@ -5114,6 +5115,7 @@ class Residents extends utils.Adapter {
                 if (jsonObj.date != undefined && typeof jsonObj.date == 'string' && jsonObj.date.match(regexISO8601))
                     try {
                         state.ts = new Date(jsonObj.date).getTime();
+                        // eslint-disable-next-line no-unused-vars
                     } catch (e) {
                         //
                     }
@@ -6043,6 +6045,7 @@ class Residents extends utils.Adapter {
             const result = JSON.parse(string);
             const type = Object.prototype.toString.call(result);
             return type === '[object Object]' || type === '[object Array]';
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             return false;
         }

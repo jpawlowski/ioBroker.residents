@@ -1,5 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
-/* eslint-disable-next-line no-undef */
 /* eslint-env jquery, browser */ // https://eslint.org/docs/user-guide/configuring#specifying-environments
 /* global values2table, table2values, M */ // for eslint
 
@@ -12,6 +10,8 @@ let customFocusStates = [];
 let roomie = [];
 let guest = [];
 let pet = [];
+
+const $ = require('jquery');
 
 /* eslint-disable-next-line no-unused-vars */
 function load(settings, onChange) {
