@@ -29,25 +29,12 @@ The adapter is also designed to support a sophisticated notification routing sys
 -   [Dokumentation (Deutsch)](docs/de/residents.md)
 
 ## Changelog
-
-### **WORK IN PROGRESS** - 2024 Maintenance Release
+### 1.0.0 (2024-08-24) - 2024 Maintenance Release
 
 -   (jpawlowski) Set minimum Node version to 18.x
 -   (jpawlowski) Set minimum JS-Controller version to 5.0.19
 -   (jpawlowski) Update package dependencies
 -   (jpawlowski) Some minor internal housekeeping
-
-### 0.1.1 (2023-09-09)
-
--   (jpawlowski) Update package dependencies
-
-### 0.1.0 (2023-06-29)
-
--   (jpawlowski) First stable version
-
-### 0.1.0-beta.2 (2023-03-12)
-
--   (jpawlowski) Pets are now allowed to follow the presence of guest residents
 
 ## License
 
