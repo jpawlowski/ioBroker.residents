@@ -30,10 +30,13 @@ The adapter is also designed to support a sophisticated notification routing sys
 
 ## Changelog
 
-<!--
-    Placeholder for the next version (at the beginning of the line):
-    ### **WORK IN PROGRESS**
--->
+### **WORK IN PROGRESS** - 2024 Maintenance Release
+
+-   (jpawlowski) Set minimum Node version to 18.x
+-   (jpawlowski) Set minimum JS-Controller version to 5.0.19
+-   (jpawlowski) Update package dependencies
+-   (jpawlowski) Some minor internal housekeeping
+
 ### 0.1.1 (2023-09-09)
 
 -   (jpawlowski) Update package dependencies
@@ -50,7 +53,7 @@ The adapter is also designed to support a sophisticated notification routing sys
 
 MIT License
 
-Copyright (c) 2022-2023 Julian Pawlowski <metres_topaz.0v@icloud.com>
+Copyright (c) 2022-2024 Julian Pawlowski <metres_topaz.0v@icloud.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
