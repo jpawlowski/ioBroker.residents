@@ -29,6 +29,9 @@ The adapter is also designed to support a sophisticated notification routing sys
 -   [Dokumentation (Deutsch)](docs/de/residents.md)
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (iobroker-bot) Adapter requires node.js >= 20 now.
 ### 1.0.0 (2024-08-24) - 2024 Maintenance Release
 
 -   (jpawlowski) Set minimum Node version to 18.x
