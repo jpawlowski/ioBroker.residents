@@ -98,6 +98,42 @@
                 "showReuseMessage": false,
                 "close": true
             }
+        },
+        {
+            "type": "npm",
+            "script": "build:watch",
+            "problemMatcher": [],
+            "label": "ioBroker: Watch React build",
+            "detail": "Watch admin/src/ and recompile React on every change",
+            "icon": {
+                "id": "eye-watch"
+            },
+            "isBackground": true,
+            "promptOnClose": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "close": false
+            }
+        },
+        {
+            "label": "ioBroker: Run dev-server + Watch React",
+            "detail": "Run dev-server and auto-rebuild React on file changes (reload browser manually after build)",
+            "icon": {
+                "id": "run-all"
+            },
+            "dependsOn": [
+                "ioBroker: Watch React build",
+                "ioBroker: Run dev-server"
+            ],
+            "dependsOrder": "parallel",
+            "group": "build",
+            "isBackground": true,
+            "promptOnClose": true,
+            "problemMatcher": []
         }
     ]
 }
