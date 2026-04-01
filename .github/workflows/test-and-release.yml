@@ -14,9 +14,10 @@ on:
     pull_request: {}
 
 # Cancel previous PR/branch runs when a new commit is pushed
+# Tag pushes (releases) are never cancelled to avoid broken deploys
 concurrency:
     group: ${{ github.ref }}
-    cancel-in-progress: true
+    cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 jobs:
     # Performs quick checks before the expensive test runs
