@@ -12,16 +12,17 @@ let roomie = [];
 let guest = [];
 let pet = [];
 
-/* eslint-disable-next-line no-unused-vars */
 function load(settings, onChange) {
     // select elements with id=key and class=value and insert value
-    if (!settings) return;
+    if (!settings) {
+        return;
+    }
     console.log('##on change');
 
     // select elements with id=key and class=value and insert value
     for (const key in settings) {
         // if (!settings.prototype.hasOwnProperty.call(key)) continue;
-        const value = $('#' + key + '.value');
+        const value = $(`#${key}.value`);
         if (value.attr('type') === 'checkbox') {
             value.prop('checked', settings[key]).on('change', function () {
                 showHideSettings();
@@ -75,7 +76,9 @@ function load(settings, onChange) {
         twelveHour: false,
     });
 
-    if (M) M.updateTextFields();
+    if (M) {
+        M.updateTextFields();
+    }
 
     //++++++++++ TABS ++++++++++
     //Enhance Tabs with onShow-Function
@@ -105,7 +108,6 @@ function load(settings, onChange) {
     }
 }
 
-/* eslint-disable-next-line no-unused-vars */
 function save(callback) {
     // select elements with class=value and build settings object
     const obj = {};
@@ -137,7 +139,7 @@ function showHideSettings() {
 }
 
 function setValue(id, value, onChange) {
-    const objectId = $('#' + id + '.value');
+    const objectId = $(`#${id}.value`);
 
     if (objectId.attr('type') === 'checkbox') {
         //
