@@ -1,6 +1,4 @@
-/* eslint-disable no-undef */
-/* eslint-env jquery, browser */ // https://eslint.org/docs/user-guide/configuring#specifying-environments
-/* global values2table, table2values, M */ // for eslint
+/* global $, values2table, table2values, M */ // browser + jQuery globals for ESLint flat config
 
 let stateTranslations = [];
 let residentialStates = [];
@@ -12,6 +10,7 @@ let roomie = [];
 let guest = [];
 let pet = [];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- ioBroker admin framework entry point
 function load(settings, onChange) {
     // select elements with id=key and class=value and insert value
     if (!settings) {
@@ -108,6 +107,7 @@ function load(settings, onChange) {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- ioBroker admin framework entry point
 function save(callback) {
     // select elements with class=value and build settings object
     const obj = {};
