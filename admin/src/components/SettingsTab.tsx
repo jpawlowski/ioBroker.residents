@@ -54,18 +54,31 @@ interface FocusEntry {
     away: boolean;
 }
 
+/** Persistent adapter configuration stored in native */
 export interface SettingsNative {
+    /** UI language code */
     language: string;
+    /** Custom state translation labels and icons */
     stateTranslations: IconTextEntry[];
+    /** Custom residential state labels and icons */
     residentialStates: IconTextEntry[];
+    /** Custom mood state labels and icons */
     moodStates: IconTextEntry[];
+    /** Custom activity state overrides */
     activityStates: ActivityEntry[];
+    /** Built-in focus mode configurations */
     focusStates: FocusEntry[];
+    /** User-defined custom focus modes */
     customFocusStates: FocusEntry[];
+    /** Whether the daily absent-residents disable timer is active */
     disableAbsentResidentsDailyTimerEnabled: boolean;
+    /** Time of day for the absent-residents disable timer (HH:MM or HH:MM:SS) */
     disableAbsentResidentsDailyTimer: string;
+    /** Whether the daily overnight-reset timer is active */
     resetOvernightDailyTimerEnabled: boolean;
+    /** Time of day for the overnight-reset timer (HH:MM or HH:MM:SS) */
     resetOvernightDailyTimer: string;
+    /** Linked parent residents adapter instance IDs */
     residentsParentInstanceIDs: string | string[];
 }
 
@@ -714,7 +727,15 @@ const HeaderCell: React.FC<{
 const isValidEmoji = (icon: string): boolean => !icon || [...new Intl.Segmenter().segment(icon)].length === 1;
 const isValidTime = (time: string): boolean => !time || /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(time);
 
-/** Editable table for rows with icon + text columns */
+/**
+ * Editable table for rows with icon + text columns
+ *
+ * @param root0 - Component props
+ * @param root0.rows - Current table row data
+ * @param root0.onChange - Callback invoked with updated rows
+ * @param root0.addButton - Whether to show an "Add" button
+ * @param root0.defaults - Default entries used to pre-populate fixed rows
+ */
 const IconTextTable: React.FC<{
     rows: IconTextEntry[];
     onChange: (rows: IconTextEntry[]) => void;
@@ -846,7 +867,14 @@ const IconTextTable: React.FC<{
     );
 };
 
-/** Editable table for activity state overrides (id, icon, text) */
+/**
+ * Editable table for activity state overrides (id, icon, text)
+ *
+ * @param root0 - Component props
+ * @param root0.rows - Current activity entry rows
+ * @param root0.onChange - Callback invoked with updated rows
+ * @param root0.lang - Current UI language code
+ */
 const ActivityTable: React.FC<{
     rows: ActivityEntry[];
     onChange: (rows: ActivityEntry[]) => void;
@@ -995,7 +1023,15 @@ const ActivityTable: React.FC<{
     );
 };
 
-/** Editable table for focus modes (enabled, icon, text, dnd, home, away) */
+/**
+ * Editable table for focus modes (enabled, icon, text, dnd, home, away)
+ *
+ * @param root0 - Component props
+ * @param root0.rows - Current focus entry rows
+ * @param root0.onChange - Callback invoked with updated rows
+ * @param root0.addButton - Whether to show an "Add" button for custom entries
+ * @param root0.defaults - Default focus mode definitions for fixed rows
+ */
 const FocusTable: React.FC<{
     rows: FocusEntry[];
     onChange: (rows: FocusEntry[]) => void;

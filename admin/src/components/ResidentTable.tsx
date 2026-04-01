@@ -32,12 +32,19 @@ import {
     type AdminConnection,
 } from '@iobroker/adapter-react-v5';
 
+/** Represents a single resident (roomie, guest, or pet) */
 export interface ResidentEntry {
+    /** Display name of the resident */
     name: string;
+    /** Unique device ID (alphanumeric + underscore) */
     id: string;
+    /** Emoji icon for the resident */
     icon: string;
+    /** Associated yahka HomeKit instance ID */
     yahkaInstanceId: string;
+    /** Optional foreign object ID for presence state */
     foreignPresenceObjectId?: string;
+    /** Optional foreign object ID for way-home state */
     foreignWayhomeObjectId?: string;
 }
 

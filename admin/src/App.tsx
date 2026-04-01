@@ -36,7 +36,9 @@ interface AppNative extends SettingsNative {
     pet: ResidentEntry[];
 }
 
+/** Main application component for the residents adapter admin UI */
 class App extends GenericApp<GenericAppProps, GenericAppState> {
+    /** @param props - Component properties passed by GenericApp */
     constructor(props: GenericAppProps) {
         const extendedProps: GenericAppSettings = {
             ...props,
@@ -58,10 +60,16 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
         super(props, extendedProps);
     }
 
+    /** Called when the ioBroker connection is ready */
     onConnectionReady(): void {
         // executed when connection is ready
     }
 
+    /**
+     * Validates settings before saving and shows an error toast if invalid.
+     *
+     * @param settings - The current adapter configuration values
+     */
     onPrepareSave(settings: Record<string, any>): boolean {
         const hasIncompleteResident = (['roomie', 'guest', 'pet'] as const).some(
             key => Array.isArray(settings[key]) && settings[key].some((r: { name?: string }) => !r.name?.trim()),
@@ -112,6 +120,7 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
         return true;
     }
 
+    /** Renders the admin UI */
     render(): React.JSX.Element {
         if (!this.state.loaded) {
             return <Loader themeType={this.state.themeType} />;
