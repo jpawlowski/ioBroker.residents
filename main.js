@@ -28,7 +28,7 @@ class Residents extends utils.Adapter {
         this.presenceSubscriptionMapping = {};
         this.wayhomeSubscriptionMapping = {};
 
-        this.states = [];
+        this.states = {};
 
         this.parentInstances = [];
 
@@ -817,13 +817,13 @@ class Residents extends utils.Adapter {
             },
         };
 
+        const activityStatesMap = new Map(
+            this.config.activityStates != undefined
+                ? this.config.activityStates.map(obj => [Number(obj.id), obj])
+                : [],
+        );
         for (const key in activityLang) {
-            let customActivityState;
-            if (this.config.activityStates != undefined) {
-                customActivityState = this.config.activityStates.filter(obj => {
-                    return obj.id == Number(key);
-                })[0];
-            }
+            const customActivityState = activityStatesMap.get(Number(key));
             activityLang[key] = {
                 text:
                     customActivityState != undefined &&
@@ -3402,383 +3402,409 @@ class Residents extends utils.Adapter {
 
         switch (levels2_3) {
             case 'state.disableAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const away = await this.getStateAsync(`${resident['id']}.presence.away`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const away = await this.getStateAsync(`${resident['id']}.presence.away`);
 
-                    if (!enabled || !away) {
-                        return;
-                    }
+                        if (!enabled || !away) {
+                            continue;
+                        }
 
-                    if (enabled.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already 'disabled', therefore it is not changed.`,
-                        );
-                    } else if (away.val == false) {
-                        this.log.debug(`${allLevels}: ${resident['id']} is not 'away', therefore it is not disabled.`);
-                    } else {
-                        this.log.info(`${allLevels}: Disabling absent device ${resident['id']}.`);
-                        await this.setStateChangedAsync(`${resident['id']}.enabled`, {
-                            val: false,
-                            ack: false,
-                        });
+                        if (enabled.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already 'disabled', therefore it is not changed.`,
+                            );
+                        } else if (away.val == false) {
+                            this.log.debug(`${allLevels}: ${resident['id']} is not 'away', therefore it is not disabled.`);
+                        } else {
+                            this.log.info(`${allLevels}: Disabling absent device ${resident['id']}.`);
+                            await this.setStateChangedAsync(`${resident['id']}.enabled`, {
+                                val: false,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'state.enableAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
 
-                    if (!enabled) {
-                        return;
-                    }
+                        if (!enabled) {
+                            continue;
+                        }
 
-                    if (enabled.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already 'enabled', therefore it is not changed.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Enabling device ${resident['id']}.`);
-                        await this.setStateChangedAsync(`${resident['id']}.enabled`, {
-                            val: true,
-                            ack: false,
-                        });
+                        if (enabled.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already 'enabled', therefore it is not changed.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Enabling device ${resident['id']}.`);
+                            await this.setStateChangedAsync(`${resident['id']}.enabled`, {
+                                val: true,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.setHomeAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const home = await this.getStateAsync(`${resident['id']}.presence.home`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const home = await this.getStateAsync(`${resident['id']}.presence.home`);
 
-                    if (!enabled || !home) {
-                        return;
-                    }
+                        if (!enabled || !home) {
+                            continue;
+                        }
 
-                    if (home.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already 'home', therefore it is not changed.`,
-                        );
-                    } else if (enabled.val == true) {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to 'home'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.home`, {
-                            val: true,
-                            ack: false,
-                        });
-                    } else {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is 'disabled', therefore it is excluded from group control.`,
-                        );
+                        if (home.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already 'home', therefore it is not changed.`,
+                            );
+                        } else if (enabled.val == true) {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to 'home'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.home`, {
+                                val: true,
+                                ack: false,
+                            });
+                        } else {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is 'disabled', therefore it is excluded from group control.`,
+                            );
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.unsetHomeAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const home = await this.getStateAsync(`${resident['id']}.presence.home`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const home = await this.getStateAsync(`${resident['id']}.presence.home`);
 
-                    if (!enabled || !home) {
-                        return;
-                    }
+                        if (!enabled || !home) {
+                            continue;
+                        }
 
-                    if (home.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already 'away', therefore it is not changed.`,
-                        );
-                    } else if (enabled.val == true) {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to 'away'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.home`, {
-                            val: false,
-                            ack: false,
-                        });
-                    } else {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is 'disabled', therefore it is excluded from group control.`,
-                        );
+                        if (home.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already 'away', therefore it is not changed.`,
+                            );
+                        } else if (enabled.val == true) {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to 'away'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.home`, {
+                                val: false,
+                                ack: false,
+                            });
+                        } else {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is 'disabled', therefore it is excluded from group control.`,
+                            );
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.setNightAll': {
-                this.residents.forEach(async resident => {
-                    const home = await this.getStateAsync(`${resident['id']}.presence.home`);
-                    const night = await this.getStateAsync(`${resident['id']}.presence.night`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const home = await this.getStateAsync(`${resident['id']}.presence.home`);
+                        const night = await this.getStateAsync(`${resident['id']}.presence.night`);
 
-                    if (!home || !night) {
-                        return;
-                    }
+                        if (!home || !night) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
-                    } else if (night.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already at 'night', therefore it is not changed.`,
-                        );
-                    } else if (home.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is not 'home', therefore it is excluded from group control.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to 'night'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.night`, {
-                            val: true,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
+                        } else if (night.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already at 'night', therefore it is not changed.`,
+                            );
+                        } else if (home.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is not 'home', therefore it is excluded from group control.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to 'night'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.night`, {
+                                val: true,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.unsetNightAll': {
-                this.residents.forEach(async resident => {
-                    const home = await this.getStateAsync(`${resident['id']}.presence.home`);
-                    const night = await this.getStateAsync(`${resident['id']}.presence.night`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const home = await this.getStateAsync(`${resident['id']}.presence.home`);
+                        const night = await this.getStateAsync(`${resident['id']}.presence.night`);
 
-                    if (!home || !night) {
-                        return;
-                    }
+                        if (!home || !night) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
-                    } else if (night.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already not 'night', therefore it is not changed.`,
-                        );
-                    } else if (home.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is not 'home', therefore it is excluded from group control.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to not 'night'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.night`, {
-                            val: false,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
+                        } else if (night.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already not 'night', therefore it is not changed.`,
+                            );
+                        } else if (home.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is not 'home', therefore it is excluded from group control.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to not 'night'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.night`, {
+                                val: false,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.setAwayAll': {
-                this.residents.forEach(async resident => {
-                    const away = await this.getStateAsync(`${resident['id']}.presence.away`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const away = await this.getStateAsync(`${resident['id']}.presence.away`);
 
-                    if (!away) {
-                        return;
-                    }
+                        if (!away) {
+                            continue;
+                        }
 
-                    if (away.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already at 'away', therefore it is not changed.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to 'away'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.away`, {
-                            val: true,
-                            ack: false,
-                        });
+                        if (away.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already at 'away', therefore it is not changed.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to 'away'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.away`, {
+                                val: true,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'presence.unsetAwayAll': {
-                this.residents.forEach(async resident => {
-                    const away = await this.getStateAsync(`${resident['id']}.presence.away`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const away = await this.getStateAsync(`${resident['id']}.presence.away`);
 
-                    if (!away) {
-                        return;
-                    }
+                        if (!away) {
+                            continue;
+                        }
 
-                    if (away.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} is already at not 'away', therefore it is not changed.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Changing ${resident['id']} to not 'away'.`);
-                        await this.setStateChangedAsync(`${resident['id']}.presence.away`, {
-                            val: false,
-                            ack: false,
-                        });
+                        if (away.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is already at not 'away', therefore it is not changed.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Changing ${resident['id']} to not 'away'.`);
+                            await this.setStateChangedAsync(`${resident['id']}.presence.away`, {
+                                val: false,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'activity.setOvernightAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
 
-                    if (!enabled || !overnight) {
-                        return;
-                    }
+                        if (!enabled || !overnight) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
-                    } else if (overnight.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } activity 'overnight' is already active, therefore it is not changed.`,
-                        );
-                    } else if (enabled.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is 'disabled', therefore it is excluded from group control.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Enabling ${resident['id']}for 'overnight'.`);
-                        await this.setStateAsync(`${resident['id']}.activity.overnight`, {
-                            val: true,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
+                        } else if (overnight.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } activity 'overnight' is already active, therefore it is not changed.`,
+                            );
+                        } else if (enabled.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is 'disabled', therefore it is excluded from group control.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Enabling ${resident['id']}for 'overnight'.`);
+                            await this.setStateAsync(`${resident['id']}.activity.overnight`, {
+                                val: true,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'activity.unsetOvernightAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
 
-                    if (!enabled || !overnight) {
-                        return;
-                    }
+                        if (!enabled || !overnight) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
-                    } else if (overnight.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } activity 'overnight' is already disabled, therefore it is not changed.`,
-                        );
-                    } else if (enabled.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is 'disabled', therefore it is excluded from group control.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Disabling ${resident['id']}for 'overnight'.`);
-                        await this.setStateAsync(`${resident['id']}.activity.overnight`, {
-                            val: false,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
+                        } else if (overnight.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } activity 'overnight' is already disabled, therefore it is not changed.`,
+                            );
+                        } else if (enabled.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is 'disabled', therefore it is excluded from group control.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Disabling ${resident['id']}for 'overnight'.`);
+                            await this.setStateAsync(`${resident['id']}.activity.overnight`, {
+                                val: false,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'activity.resetOvernightAll': {
-                this.residents.forEach(async resident => {
-                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                    const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
-                    const overnightObj = await this.getObjectAsync(`${resident['id']}.activity.overnight`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                        const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
+                        const overnightObj = await this.getObjectAsync(`${resident['id']}.activity.overnight`);
 
-                    if (!enabled || !overnight || !overnightObj) {
-                        return;
-                    }
+                        if (!enabled || !overnight || !overnightObj) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
-                    } else if (overnight.val == overnightObj.common.def) {
-                        this.log.debug(
-                            `${allLevels}: ${resident['id']} activity 'overnight' is already ${
-                                overnightObj.common.def
-                            }, therefore it is not changed.`,
-                        );
-                    } else if (enabled.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } is 'disabled', therefore it is excluded from group control.`,
-                        );
-                    } else {
-                        this.log.info(
-                            `${allLevels}: Resetting 'overnight' for ${resident['id']} to ${overnightObj.common.def}.`,
-                        );
-                        await this.setStateAsync(`${resident['id']}.activity.overnight`, {
-                            val: overnightObj.common.def,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without night state - ignoring.`);
+                        } else if (overnight.val == overnightObj.common.def) {
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} activity 'overnight' is already ${
+                                    overnightObj.common.def
+                                }, therefore it is not changed.`,
+                            );
+                        } else if (enabled.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } is 'disabled', therefore it is excluded from group control.`,
+                            );
+                        } else {
+                            this.log.info(
+                                `${allLevels}: Resetting 'overnight' for ${resident['id']} to ${overnightObj.common.def}.`,
+                            );
+                            await this.setStateAsync(`${resident['id']}.activity.overnight`, {
+                                val: overnightObj.common.def,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'activity.setWayhomeAll': {
-                this.residents.forEach(async resident => {
-                    const wayhome = await this.getStateAsync(`${resident['id']}.activity.wayhome`);
-                    const away = await this.getStateAsync(`${resident['id']}.presence.away`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const wayhome = await this.getStateAsync(`${resident['id']}.activity.wayhome`);
+                        const away = await this.getStateAsync(`${resident['id']}.presence.away`);
 
-                    if (!wayhome || !away) {
-                        return;
-                    }
+                        if (!wayhome || !away) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
-                    } else if (away.val == false) {
-                        this.log.debug(`${allLevels}: ${resident['id']} is already at home - ignoring.`);
-                    } else if (wayhome.val == true) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } activity 'wayhome' is already active, therefore it is not changed.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Enabling ${resident['id']} for 'wayhome'.`);
-                        await this.setStateAsync(`${resident['id']}.activity.wayhome`, {
-                            val: true,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
+                        } else if (away.val == false) {
+                            this.log.debug(`${allLevels}: ${resident['id']} is already at home - ignoring.`);
+                        } else if (wayhome.val == true) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } activity 'wayhome' is already active, therefore it is not changed.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Enabling ${resident['id']} for 'wayhome'.`);
+                            await this.setStateAsync(`${resident['id']}.activity.wayhome`, {
+                                val: true,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
             case 'activity.unsetWayhomeAll': {
-                this.residents.forEach(async resident => {
-                    const wayhome = await this.getStateAsync(`${resident['id']}.activity.wayhome`);
+                (async () => {
+                    for (const resident of this.residents) {
+                        const wayhome = await this.getStateAsync(`${resident['id']}.activity.wayhome`);
 
-                    if (!wayhome) {
-                        return;
-                    }
+                        if (!wayhome) {
+                            continue;
+                        }
 
-                    if (resident['type'] == 'pet') {
-                        this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
-                    } else if (wayhome.val == false) {
-                        this.log.debug(
-                            `${allLevels}: ${
-                                resident['id']
-                            } activity 'wayhome' is already disabled, therefore it is not changed.`,
-                        );
-                    } else {
-                        this.log.info(`${allLevels}: Disabling ${resident['id']}for 'wayhome'.`);
-                        await this.setStateAsync(`${resident['id']}.activity.wayhome`, {
-                            val: false,
-                            ack: false,
-                        });
+                        if (resident['type'] == 'pet') {
+                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
+                        } else if (wayhome.val == false) {
+                            this.log.debug(
+                                `${allLevels}: ${
+                                    resident['id']
+                                } activity 'wayhome' is already disabled, therefore it is not changed.`,
+                            );
+                        } else {
+                            this.log.info(`${allLevels}: Disabling ${resident['id']}for 'wayhome'.`);
+                            await this.setStateAsync(`${resident['id']}.activity.wayhome`, {
+                                val: false,
+                                ack: false,
+                            });
+                        }
                     }
-                });
+                })().catch(e => this.log.error(`${allLevels}: ${e.message}`));
                 break;
             }
 
@@ -5378,18 +5404,20 @@ class Residents extends utils.Adapter {
         for (const resident of this.residents) {
             const name = resident['name'];
             const residentType = resident['id'].split('.')[0];
-            const enabledState = await this.getStateAsync(`${resident['id']}.enabled`);
-            const awayState = await this.getStateAsync(`${resident['id']}.presence.away`);
-            const homeState = await this.getStateAsync(`${resident['id']}.presence.home`);
-            const activityState = await this.getStateAsync(`${resident['id']}.activity.state`);
+            const prefix = `${this.namespace}.${resident['id']}`;
+            const enabledState = this.states[`${prefix}.enabled`];
+            const awayState = this.states[`${prefix}.presence.away`];
+            const homeState = this.states[`${prefix}.presence.home`];
+            const activityStateRaw = this.states[`${prefix}.activity.state`];
+            const activityState = activityStateRaw ? { ...activityStateRaw } : undefined;
             if (activityState != undefined && typeof activityState.val == 'number' && activityState.val >= 10000) {
                 activityState.val -= 10000;
             }
-            const overnightState = await this.getStateAsync(`${resident['id']}.activity.overnight`);
-            const presenceState = await this.getStateAsync(`${resident['id']}.presence.state`);
-            const moodState = await this.getStateAsync(`${resident['id']}.mood.state`);
-            const dndState = await this.getStateAsync(`${resident['id']}.activity.dnd`);
-            const fullId = `${this.namespace}.${resident['id']}`;
+            const overnightState = this.states[`${prefix}.activity.overnight`];
+            const presenceState = this.states[`${prefix}.presence.state`];
+            const moodState = this.states[`${prefix}.mood.state`];
+            const dndState = this.states[`${prefix}.activity.dnd`];
+            const fullId = prefix;
 
             if (
                 enabledState == undefined ||
@@ -5745,105 +5773,111 @@ class Residents extends utils.Adapter {
         }
 
         // Write Lists
-        await this.setStateAsync('info.state.disabledList', { val: JSON.stringify(disabledSum), ack: true });
-        await this.setStateAsync('info.presence.awayList', { val: JSON.stringify(awaySum), ack: true });
-        await this.setStateAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeSum), ack: true });
-        await this.setStateAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeSum), ack: true });
-        await this.setStateAsync('info.presence.homeList', { val: JSON.stringify(homeSum), ack: true });
-        await this.setStateAsync('info.activity.winddownList', { val: JSON.stringify(winddownSum), ack: true });
-        await this.setStateAsync('info.activity.bedtimeList', { val: JSON.stringify(bedtimeSum), ack: true });
-        await this.setStateAsync('info.activity.gotupList', { val: JSON.stringify(gotupSum), ack: true });
-        await this.setStateAsync('info.activity.nightwalkList', { val: JSON.stringify(nightwalkSum), ack: true });
-        await this.setStateAsync('info.activity.wakeupList', { val: JSON.stringify(wakeupSum), ack: true });
-        await this.setStateAsync('info.presence.nightList', { val: JSON.stringify(nightSum), ack: true });
-        await this.setStateAsync('info.activity.dndList', { val: JSON.stringify(dndSum), ack: true });
-        await this.setStateAsync('info.activity.overnightList', { val: JSON.stringify(overnightSum), ack: true });
+        await Promise.all([
+            this.setStateAsync('info.state.disabledList', { val: JSON.stringify(disabledSum), ack: true }),
+            this.setStateAsync('info.presence.awayList', { val: JSON.stringify(awaySum), ack: true }),
+            this.setStateAsync('info.presence.petsHomeList', { val: JSON.stringify(petHomeSum), ack: true }),
+            this.setStateAsync('info.activity.wayhomeList', { val: JSON.stringify(wayhomeSum), ack: true }),
+            this.setStateAsync('info.presence.homeList', { val: JSON.stringify(homeSum), ack: true }),
+            this.setStateAsync('info.activity.winddownList', { val: JSON.stringify(winddownSum), ack: true }),
+            this.setStateAsync('info.activity.bedtimeList', { val: JSON.stringify(bedtimeSum), ack: true }),
+            this.setStateAsync('info.activity.gotupList', { val: JSON.stringify(gotupSum), ack: true }),
+            this.setStateAsync('info.activity.nightwalkList', { val: JSON.stringify(nightwalkSum), ack: true }),
+            this.setStateAsync('info.activity.wakeupList', { val: JSON.stringify(wakeupSum), ack: true }),
+            this.setStateAsync('info.presence.nightList', { val: JSON.stringify(nightSum), ack: true }),
+            this.setStateAsync('info.activity.dndList', { val: JSON.stringify(dndSum), ack: true }),
+            this.setStateAsync('info.activity.overnightList', { val: JSON.stringify(overnightSum), ack: true }),
+        ]);
 
         // Write Counter
-        await this.setStateAsync('info.state.disabledCount', { val: disabledSum.length, ack: true });
-        await this.setStateAsync('info.presence.awayCount', { val: awaySum.length, ack: true });
-        await this.setStateAsync('info.presence.petsHomeCount', { val: petHomeSum.length, ack: true });
-        await this.setStateAsync('info.activity.wayhomeCount', { val: wayhomeSum.length, ack: true });
-        await this.setStateAsync('info.presence.homeCount', { val: homeSum.length, ack: true });
-        await this.setStateAsync('info.activity.winddownCount', { val: winddownSum.length, ack: true });
-        await this.setStateAsync('info.activity.bedtimeCount', { val: bedtimeSum.length, ack: true });
-        await this.setStateAsync('info.activity.gotupCount', { val: gotupSum.length, ack: true });
-        await this.setStateAsync('info.activity.nightwalkCount', { val: nightwalkSum.length, ack: true });
-        await this.setStateAsync('info.activity.wakeupCount', { val: wakeupSum.length, ack: true });
-        await this.setStateAsync('info.presence.nightCount', { val: nightSum.length, ack: true });
-        await this.setStateAsync('info.activity.dndCount', { val: dndSum.length, ack: true });
-        await this.setStateAsync('info.activity.overnightCount', { val: overnightSum.length, ack: true });
-        await this.setStateAsync('info.state.totalPetsCount', { val: totalPetCount, ack: true });
-        await this.setStateAsync('info.state.totalResidentsCount', { val: totalResidentsCount, ack: true });
-        await this.setStateAsync('info.state.totalCount', { val: totalResidentsCount + totalPetCount, ack: true });
+        await Promise.all([
+            this.setStateAsync('info.state.disabledCount', { val: disabledSum.length, ack: true }),
+            this.setStateAsync('info.presence.awayCount', { val: awaySum.length, ack: true }),
+            this.setStateAsync('info.presence.petsHomeCount', { val: petHomeSum.length, ack: true }),
+            this.setStateAsync('info.activity.wayhomeCount', { val: wayhomeSum.length, ack: true }),
+            this.setStateAsync('info.presence.homeCount', { val: homeSum.length, ack: true }),
+            this.setStateAsync('info.activity.winddownCount', { val: winddownSum.length, ack: true }),
+            this.setStateAsync('info.activity.bedtimeCount', { val: bedtimeSum.length, ack: true }),
+            this.setStateAsync('info.activity.gotupCount', { val: gotupSum.length, ack: true }),
+            this.setStateAsync('info.activity.nightwalkCount', { val: nightwalkSum.length, ack: true }),
+            this.setStateAsync('info.activity.wakeupCount', { val: wakeupSum.length, ack: true }),
+            this.setStateAsync('info.presence.nightCount', { val: nightSum.length, ack: true }),
+            this.setStateAsync('info.activity.dndCount', { val: dndSum.length, ack: true }),
+            this.setStateAsync('info.activity.overnightCount', { val: overnightSum.length, ack: true }),
+            this.setStateAsync('info.state.totalPetsCount', { val: totalPetCount, ack: true }),
+            this.setStateAsync('info.state.totalResidentsCount', { val: totalResidentsCount, ack: true }),
+            this.setStateAsync('info.state.totalCount', { val: totalResidentsCount + totalPetCount, ack: true }),
+        ]);
 
         // Write Indicators
-        await this.setStateAsync('info.reachable', { val: totalResidentsCount > 0, ack: true });
-        await this.setStateAsync('info.state.disabled', { val: disabledSum.length > 0, ack: true });
-        await this.setStateAsync('info.state.disabledAll', { val: totalResidentsCount == 0, ack: true });
-        await this.setStateAsync('info.presence.away', {
-            val: totalResidentsCount == 0 || awaySum.length > 0,
-            ack: true,
-        });
-        await this.setStateAsync('info.presence.awayAll', {
-            val: totalResidentsCount == 0 || homeSum.length == 0,
-            ack: true,
-        });
-        await this.setStateAsync('info.presence.petsHome', { val: petHomeSum.length > 0, ack: true });
-        await this.setStateAsync('info.presence.petsHomeAlone', {
-            val: petHomeSum.length > 0 && homeSum.length == 0,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.wayhome', { val: wayhomeSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.wayhomeAll', {
-            val: wayhomeSum.length > 0 && wayhomeSum.length == awaySum.length,
-            ack: true,
-        });
-        await this.setStateAsync('info.presence.home', { val: homeSum.length > 0, ack: true });
-        await this.setStateAsync('info.presence.homeAll', {
-            val: homeSum.length > 0 && homeSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.winddown', { val: winddownSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.winddownAll', {
-            val: winddownSum.length > 0 && winddownSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.bedtime', { val: bedtimeSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.bedtimeAll', {
-            val: bedtimeSum.length > 0 && bedtimeSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.gotup', { val: gotupSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.gotupAll', {
-            val: gotupSum.length > 0 && gotupSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.nightwalk', { val: nightwalkSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.nightwalkAll', {
-            val: nightwalkSum.length > 0 && nightwalkSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.wakeup', { val: wakeupSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.wakeupAll', {
-            val: wakeupSum.length > 0 && wakeupSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.presence.night', { val: nightSum.length > 0, ack: true });
-        await this.setStateAsync('info.presence.nightAll', {
-            val: nightSum.length > 0 && nightSum.length == homeSum.length,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.dnd', { val: dndSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.dndAll', {
-            val: dndSum.length > 0 && dndSum.length == totalResidentsCount,
-            ack: true,
-        });
-        await this.setStateAsync('info.activity.overnight', { val: overnightSum.length > 0, ack: true });
-        await this.setStateAsync('info.activity.overnightAll', {
-            val: overnightSum.length > 0 && overnightSum.length == totalResidentsCount,
-            ack: true,
-        });
+        await Promise.all([
+            this.setStateAsync('info.reachable', { val: totalResidentsCount > 0, ack: true }),
+            this.setStateAsync('info.state.disabled', { val: disabledSum.length > 0, ack: true }),
+            this.setStateAsync('info.state.disabledAll', { val: totalResidentsCount == 0, ack: true }),
+            this.setStateAsync('info.presence.away', {
+                val: totalResidentsCount == 0 || awaySum.length > 0,
+                ack: true,
+            }),
+            this.setStateAsync('info.presence.awayAll', {
+                val: totalResidentsCount == 0 || homeSum.length == 0,
+                ack: true,
+            }),
+            this.setStateAsync('info.presence.petsHome', { val: petHomeSum.length > 0, ack: true }),
+            this.setStateAsync('info.presence.petsHomeAlone', {
+                val: petHomeSum.length > 0 && homeSum.length == 0,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.wayhome', { val: wayhomeSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.wayhomeAll', {
+                val: wayhomeSum.length > 0 && wayhomeSum.length == awaySum.length,
+                ack: true,
+            }),
+            this.setStateAsync('info.presence.home', { val: homeSum.length > 0, ack: true }),
+            this.setStateAsync('info.presence.homeAll', {
+                val: homeSum.length > 0 && homeSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.winddown', { val: winddownSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.winddownAll', {
+                val: winddownSum.length > 0 && winddownSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.bedtime', { val: bedtimeSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.bedtimeAll', {
+                val: bedtimeSum.length > 0 && bedtimeSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.gotup', { val: gotupSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.gotupAll', {
+                val: gotupSum.length > 0 && gotupSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.nightwalk', { val: nightwalkSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.nightwalkAll', {
+                val: nightwalkSum.length > 0 && nightwalkSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.wakeup', { val: wakeupSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.wakeupAll', {
+                val: wakeupSum.length > 0 && wakeupSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.presence.night', { val: nightSum.length > 0, ack: true }),
+            this.setStateAsync('info.presence.nightAll', {
+                val: nightSum.length > 0 && nightSum.length == homeSum.length,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.dnd', { val: dndSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.dndAll', {
+                val: dndSum.length > 0 && dndSum.length == totalResidentsCount,
+                ack: true,
+            }),
+            this.setStateAsync('info.activity.overnight', { val: overnightSum.length > 0, ack: true }),
+            this.setStateAsync('info.activity.overnightAll', {
+                val: overnightSum.length > 0 && overnightSum.length == totalResidentsCount,
+                ack: true,
+            }),
+        ]);
 
         // Calculate overall residential state
         let residentsStateVal = 0;
