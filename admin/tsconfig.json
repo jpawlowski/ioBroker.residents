@@ -1,11 +1,27 @@
 {
-    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "target": "es2018",
+        "lib": [
+            "es2022",
+            "dom"
+        ],
+        "jsx": "react",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "outDir": "./build"
+    },
     "include": [
-        "./admin.d.ts",
-        "./**/*.js",
-        // Include the adapter-config definition if it exists.
-        // It should be at either on of these paths:
-        "../lib/adapter-config.d.ts", // JS
-        "../src/lib/adapter-config.d.ts" // TS
+        "./src/**/*.tsx",
+        "./src/**/*.ts",
+        "./admin.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "./build"
     ]
 }
