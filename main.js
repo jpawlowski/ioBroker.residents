@@ -6180,8 +6180,8 @@ class Residents extends utils.Adapter {
             .replace(/\./g, '_') // Replace dots with underscores
             .replace(/\s/g, '_') // Replace whitespaces with underscores
             .replace(/[^\p{Ll}\p{Lu}\p{Nd}]+/gu, '_') // Replace not allowed chars with underscore
-            .replace(/_+$/g, '') // Remove underscores end
-            .replace(/^_+/g, '') // Remove underscores beginning
+            .replace(/_$/g, '') // Remove underscore end
+            .replace(/^_/g, '') // Remove underscore beginning
             .replace(/_+/g, '_') // Replace multiple underscores with one
             .toLowerCase()
             .replace(/ä/g, 'ae') // Replace a Umlaut

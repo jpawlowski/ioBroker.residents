@@ -98,6 +98,21 @@
     "dev-server:backup": "dev-server backup",
     "dev-server:setup": "dev-server setup"
   },
+  "overrides": {
+    "serialize-javascript": "7.0.5",
+    "qs": "6.14.2",
+    "esbuild": "0.25.12",
+    "teeny-request": {
+      "http-proxy-agent": "7.0.2"
+    },
+    "request": {
+      "form-data": "2.5.5",
+      "tough-cookie": "4.1.3"
+    },
+    "jsdom": {
+      "tough-cookie": "4.1.3"
+    }
+  },
   "bugs": {
     "url": "https://github.com/jpawlowski/ioBroker.residents/issues"
   },
