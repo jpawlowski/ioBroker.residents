@@ -9,7 +9,8 @@
 
 // tslint:disable:no-unused-expression
 
-const { expect } = require('chai');
+const _testingDir = require('path').dirname(require.resolve('@iobroker/testing/package.json'));
+const { expect } = require(require.resolve('chai', { paths: [_testingDir] }));
 // import { functionToTest } from "./moduleToTest";
 
 describe('module to test => function to test', () => {
