@@ -818,9 +818,7 @@ class Residents extends utils.Adapter {
         };
 
         const activityStatesMap = new Map(
-            this.config.activityStates != undefined
-                ? this.config.activityStates.map(obj => [Number(obj.id), obj])
-                : [],
+            this.config.activityStates != undefined ? this.config.activityStates.map(obj => [Number(obj.id), obj]) : [],
         );
         for (const key in activityLang) {
             const customActivityState = activityStatesMap.get(Number(key));
@@ -3416,7 +3414,9 @@ class Residents extends utils.Adapter {
                                 `${allLevels}: ${resident['id']} is already 'disabled', therefore it is not changed.`,
                             );
                         } else if (away.val == false) {
-                            this.log.debug(`${allLevels}: ${resident['id']} is not 'away', therefore it is not disabled.`);
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is not 'away', therefore it is not disabled.`,
+                            );
                         } else {
                             this.log.info(`${allLevels}: Disabling absent device ${resident['id']}.`);
                             await this.setStateChangedAsync(`${resident['id']}.enabled`, {
@@ -3758,7 +3758,9 @@ class Residents extends utils.Adapter {
                         }
 
                         if (resident['type'] == 'pet') {
-                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`,
+                            );
                         } else if (away.val == false) {
                             this.log.debug(`${allLevels}: ${resident['id']} is already at home - ignoring.`);
                         } else if (wayhome.val == true) {
@@ -3789,7 +3791,9 @@ class Residents extends utils.Adapter {
                         }
 
                         if (resident['type'] == 'pet') {
-                            this.log.debug(`${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`);
+                            this.log.debug(
+                                `${allLevels}: ${resident['id']} is a pet without way home state - ignoring.`,
+                            );
                         } else if (wayhome.val == false) {
                             this.log.debug(
                                 `${allLevels}: ${
