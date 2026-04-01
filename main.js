@@ -255,13 +255,18 @@ class Residents extends utils.Adapter {
             residentialLang[i] = {
                 text:
                     this.config.residentialStates != undefined &&
+                    this.config.residentialStates[i] != undefined &&
                     this.config.residentialStates[i].text != '' &&
                     this.config.residentialStates[i].text != residentialStateTexts['en'][i]
                         ? this.config.residentialStates[i].text
                         : residentialLang[i],
             };
             residentialLang[i]['state'] = residentialLang[i].text;
-            if (this.config.residentialStates != undefined && this.config.residentialStates[i].icon != '') {
+            if (
+                this.config.residentialStates != undefined &&
+                this.config.residentialStates[i] != undefined &&
+                this.config.residentialStates[i].icon != ''
+            ) {
                 residentialLang[i]['icon'] = this.config.residentialStates[i].icon;
                 residentialLang[i]['state'] = `${this.config.residentialStates[i].icon} ${residentialLang[i].text}`;
             }
@@ -427,13 +432,18 @@ class Residents extends utils.Adapter {
             moodLang[key] = {
                 text:
                     this.config.moodStates != undefined &&
+                    this.config.moodStates[key] != undefined &&
                     this.config.moodStates[key].text != '' &&
                     this.config.moodStates[key].text != moodStateTexts['en'][key]
                         ? this.config.moodStates[key].text
                         : moodLang[key],
             };
             moodLang[key]['state'] = moodLang[key].text;
-            if (this.config.moodStates != undefined && this.config.moodStates[key].icon != '') {
+            if (
+                this.config.moodStates != undefined &&
+                this.config.moodStates[key] != undefined &&
+                this.config.moodStates[key].icon != ''
+            ) {
                 moodLang[key]['icon'] = this.config.moodStates[key].icon;
                 moodLang[key]['state'] = `${this.config.moodStates[key].icon} ${moodLang[key].text}`;
             }
@@ -607,11 +617,7 @@ class Residents extends utils.Adapter {
         };
 
         // add Focus Modes
-        if (
-            this.config.focusStates != undefined &&
-            typeof this.config.focusStates == 'object' &&
-            this.config.focusStates.length > 0
-        ) {
+        if (this.config.focusStates != undefined && typeof this.config.focusStates == 'object') {
             for (const key in this.config.focusStates) {
                 const awayFocusKey = Number(key) + 100;
                 const homeFocusKey = Number(key) + 100 + 1000;
@@ -631,7 +637,7 @@ class Residents extends utils.Adapter {
                     activityLang[homeFocusKey] = this.config.focusStates[key].text;
                 }
             }
-        } else {
+        } else if (this.config.focusStates != undefined) {
             this.log.error('Configuration error: config.focusStates has invalid format');
         }
 
@@ -695,6 +701,15 @@ class Residents extends utils.Adapter {
         const nobodyStateTexts = {
             en: 'Nobody',
             de: 'Niemand',
+            ru: 'Никого',
+            pt: 'Ninguém',
+            nl: 'Niemand',
+            fr: 'Personne',
+            it: 'Nessuno',
+            es: 'Nadie',
+            pl: 'Nikt',
+            uk: 'Нікого',
+            'zh-cn': '没有人',
         };
         let nobodyLang = nobodyStateTexts[this.language] ? nobodyStateTexts[this.language] : nobodyStateTexts.en;
         if (this.config.stateTranslations != undefined && this.config.stateTranslations[1] != undefined) {
@@ -706,6 +721,75 @@ class Residents extends utils.Adapter {
             }
             if (this.config.stateTranslations[1].icon != '') {
                 nobodyLang = `${this.config.stateTranslations[1].icon} ${nobodyLang}`;
+            }
+        }
+
+        const roomieStateTexts = {
+            en: 'Roomie',
+            de: 'Mitbewohner',
+            ru: 'Сосед',
+            pt: 'Colega de quarto',
+            nl: 'Huisgenoot',
+            fr: 'Colocataire',
+            it: 'Coinquilino',
+            es: 'Compañero',
+            pl: 'Współlokator',
+            uk: 'Сусід',
+            'zh-cn': '室友',
+        };
+        let roomieLang = roomieStateTexts[this.language] ? roomieStateTexts[this.language] : roomieStateTexts.en;
+        if (this.config.stateTranslations != undefined && this.config.stateTranslations[2] != undefined) {
+            if (
+                this.config.stateTranslations[2].text != '' &&
+                this.config.stateTranslations[2].text != roomieStateTexts.en
+            ) {
+                roomieLang = this.config.stateTranslations[2].text;
+            }
+        }
+
+        const guestStateTexts = {
+            en: 'Guest',
+            de: 'Gast',
+            ru: 'Гость',
+            pt: 'Convidado',
+            nl: 'Gast',
+            fr: 'Invité',
+            it: 'Ospite',
+            es: 'Invitado',
+            pl: 'Gość',
+            uk: 'Гість',
+            'zh-cn': '客人',
+        };
+        let guestLang = guestStateTexts[this.language] ? guestStateTexts[this.language] : guestStateTexts.en;
+        if (this.config.stateTranslations != undefined && this.config.stateTranslations[3] != undefined) {
+            if (
+                this.config.stateTranslations[3].text != '' &&
+                this.config.stateTranslations[3].text != guestStateTexts.en
+            ) {
+                guestLang = this.config.stateTranslations[3].text;
+            }
+        }
+
+        const petStateTexts = {
+            en: 'Pet',
+            de: 'Haustier',
+            ru: 'Питомец',
+            pt: 'Mascote',
+            nl: 'Huisdier',
+            fr: 'Animal',
+            it: 'Animale',
+            es: 'Mascota',
+            pl: 'Zwierzę',
+            uk: 'Тварина',
+            'zh-cn': '宠物',
+        };
+        let petLang = petStateTexts[this.language] ? petStateTexts[this.language] : petStateTexts.en;
+        if (this.config.stateTranslations != undefined && this.config.stateTranslations[4] != undefined) {
+            if (
+                this.config.stateTranslations[4].text != '' &&
+                this.config.stateTranslations[4].text != petStateTexts.en
+            ) {
+                petLang = this.config.stateTranslations[4].text;
             }
         }
 
@@ -829,13 +913,19 @@ class Residents extends utils.Adapter {
                     activityLang[key].icon = residentialLang[1].icon;
                 } else if ((Number(key) >= 100 && Number(key) < 200) || (Number(key) >= 1100 && Number(key) < 1200)) {
                     // Focus modes
-                    if (this.config.focusStates[focusIndex].icon != '') {
+                    if (
+                        this.config.focusStates[focusIndex] != undefined &&
+                        this.config.focusStates[focusIndex].icon != ''
+                    ) {
                         activityLang[key].icon = this.config.focusStates[focusIndex].icon;
                     }
                 } else if ((Number(key) >= 200 && Number(key) < 300) || (Number(key) >= 1200 && Number(key) < 1300)) {
                     // Custom Focus modes
                     // @ts-expect-error -- TODO: add proper TypeScript types
-                    if (this.config.customFocusStates[customFocusIndex].icon != '') {
+                    if (
+                        this.config.customFocusStates[customFocusIndex] != undefined &&
+                        this.config.customFocusStates[customFocusIndex].icon != ''
+                    ) {
                         activityLang[key].icon = this.config.customFocusStates[customFocusIndex].icon;
                     }
                 } else if (Number(key) == 1900) {
@@ -886,11 +976,17 @@ class Residents extends utils.Adapter {
                 }
 
                 // Check away usage for Focus Modes
-                if (Number(key) >= 100 && Number(key) < 200 && this.config.focusStates[focusIndex].away == true) {
+                if (
+                    Number(key) >= 100 &&
+                    Number(key) < 200 &&
+                    this.config.focusStates[focusIndex] != undefined &&
+                    this.config.focusStates[focusIndex].away == true
+                ) {
                     focusStates['away'][key] = stateVal;
                 } else if (
                     Number(key) >= 1100 &&
                     Number(key) < 1200 &&
+                    this.config.focusStates[focusIndex] != undefined &&
                     this.config.focusStates[focusIndex].home == true
                 ) {
                     // Check home usage for Focus Modes
@@ -899,6 +995,8 @@ class Residents extends utils.Adapter {
                     Number(key) >= 200 &&
                     Number(key) < 300 &&
                     // @ts-expect-error -- TODO: add proper TypeScript types
+                    this.config.customFocusStates[customFocusIndex] != undefined &&
+                    // @ts-expect-error -- TODO: add proper TypeScript types
                     this.config.customFocusStates[customFocusIndex].away == true
                 ) {
                     // Check away usage Custom Focus Modes
@@ -906,6 +1004,8 @@ class Residents extends utils.Adapter {
                 } else if (
                     Number(key) >= 1200 &&
                     Number(key) < 1300 &&
+                    // @ts-expect-error -- TODO: add proper TypeScript types
+                    this.config.customFocusStates[customFocusIndex] != undefined &&
                     // @ts-expect-error -- TODO: add proper TypeScript types
                     this.config.customFocusStates[customFocusIndex].home == true
                 ) {
@@ -969,6 +1069,12 @@ class Residents extends utils.Adapter {
             guestIDsToNames[`${this.namespace}.${guestId}`] = icon ? `${icon} ${name}` : name;
         });
 
+        const residentTypeLang = {
+            roomie: roomieLang,
+            guest: guestLang,
+            pet: petLang,
+        };
+        const updatedFolders = new Set();
         const residentTypes = ['roomie', 'pet', 'guest'];
         for (const key1 in residentTypes) {
             const residentType = residentTypes[key1];
@@ -984,6 +1090,12 @@ class Residents extends utils.Adapter {
                     },
                     native: {},
                 });
+                if (!updatedFolders.has(residentType)) {
+                    updatedFolders.add(residentType);
+                    await this.extendObjectAsync(residentType, {
+                        common: { name: residentTypeLang[residentType] },
+                    });
+                }
 
                 const resident = this.config[residentType][key2];
                 const name = resident['name'].trim();
