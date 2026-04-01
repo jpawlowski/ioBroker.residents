@@ -23,9 +23,14 @@ import {
     InfoOutlined as InfoOutlinedIcon,
     SearchOutlined as SearchOutlinedIcon,
 } from '@mui/icons-material';
-import { I18n, DialogSelectID } from '@iobroker/adapter-react-v5';
-import type { IobTheme, ThemeName, ThemeType } from '@iobroker/adapter-react-v5';
-import type { AdminConnection } from '@iobroker/adapter-react-v5';
+import {
+    I18n,
+    DialogSelectID,
+    type IobTheme,
+    type ThemeName,
+    type ThemeType,
+    type AdminConnection,
+} from '@iobroker/adapter-react-v5';
 
 export interface ResidentEntry {
     name: string;
@@ -148,7 +153,9 @@ const ResidentTable: React.FC<ResidentTableProps> = ({
     };
 
     const handleUndoClose = (_event: React.SyntheticEvent | Event, reason?: string): void => {
-        if (reason === 'clickaway') return;
+        if (reason === 'clickaway') {
+            return;
+        }
         setUndoSnackbar(s => ({ ...s, open: false }));
     };
 
@@ -238,7 +245,9 @@ const ResidentTable: React.FC<ResidentTableProps> = ({
                                         onChange={e => {
                                             const newName = e.target.value;
                                             const updated = residents.map((r, i) => {
-                                                if (i !== index) return r;
+                                                if (i !== index) {
+                                                    return r;
+                                                }
                                                 const entry = { ...r, name: newName };
                                                 const currentSlug = r.name
                                                     .toLowerCase()

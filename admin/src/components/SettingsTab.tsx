@@ -473,7 +473,7 @@ const FOCUS_ICONS = ['👤', '💼', '🧘', '💪', '📙', '🚀', '🚘', '�
 const STATE_TRANSLATION_ICONS = ['🔲', '😶\u200d🌫️', '🧑', '🧳', '🐶'];
 
 const l = (map: LangMap | Record<string, string[]>, lang: string): string | string[] =>
-    (map as Record<string, string | string[]>)[lang] ?? (map as Record<string, string | string[]>)['en'];
+    (map as Record<string, string | string[]>)[lang] ?? (map as Record<string, string | string[]>).en;
 
 const getStateTranslationDefaults = (lang: string): DefaultEntry[] => {
     const texts = [

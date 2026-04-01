@@ -2,14 +2,7 @@ import React from 'react';
 import { Box, Chip, Tab, Tabs } from '@mui/material';
 import { TuneOutlined as TuneOutlinedIcon } from '@mui/icons-material';
 import { GenericApp, I18n, Loader, Logo } from '@iobroker/adapter-react-v5';
-import type {
-    GenericAppProps,
-    GenericAppSettings,
-    GenericAppState,
-    IobTheme,
-    ThemeName,
-    ThemeType,
-} from '@iobroker/adapter-react-v5';
+import type { GenericAppProps, GenericAppSettings, GenericAppState } from '@iobroker/adapter-react-v5';
 
 import ResidentTable from './components/ResidentTable';
 import type { ResidentEntry } from './components/ResidentTable';
@@ -85,7 +78,9 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
                 settings[key].some((r: { id?: string }) => r.id && !/^[a-zA-Z0-9_]+$/.test(r.id)),
         );
         const hasDuplicateDeviceName = (['roomie', 'guest', 'pet'] as const).some(key => {
-            if (!Array.isArray(settings[key])) return false;
+            if (!Array.isArray(settings[key])) {
+                return false;
+            }
             const nonEmptyIds: string[] = settings[key]
                 .map((r: { id?: string }) => r.id)
                 .filter((id: string | undefined): id is string => Boolean(id));
@@ -123,7 +118,7 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
         }
 
         const native = this.state.native as AppNative;
-        const selectedTab = this.state.selectedTab as string;
+        const selectedTab = this.state.selectedTab;
         const currentTab = selectedTab || 'roomies';
 
         return (
@@ -266,9 +261,9 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
                             residents={native.roomie ?? []}
                             onChange={residents => this.updateNativeValue('roomie', residents)}
                             socket={this.socket}
-                            theme={this.state.theme as IobTheme}
-                            themeType={this.state.themeType as ThemeType}
-                            themeName={this.state.themeName as ThemeName}
+                            theme={this.state.theme}
+                            themeType={this.state.themeType}
+                            themeName={this.state.themeName}
                         />
                     </TabPanel>
 
@@ -281,9 +276,9 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
                             residents={native.guest ?? []}
                             onChange={residents => this.updateNativeValue('guest', residents)}
                             socket={this.socket}
-                            theme={this.state.theme as IobTheme}
-                            themeType={this.state.themeType as ThemeType}
-                            themeName={this.state.themeName as ThemeName}
+                            theme={this.state.theme}
+                            themeType={this.state.themeType}
+                            themeName={this.state.themeName}
                         />
                     </TabPanel>
 
@@ -296,9 +291,9 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
                             residents={native.pet ?? []}
                             onChange={residents => this.updateNativeValue('pet', residents)}
                             socket={this.socket}
-                            theme={this.state.theme as IobTheme}
-                            themeType={this.state.themeType as ThemeType}
-                            themeName={this.state.themeName as ThemeName}
+                            theme={this.state.theme}
+                            themeType={this.state.themeType}
+                            themeName={this.state.themeName}
                         />
                     </TabPanel>
 
@@ -310,7 +305,7 @@ class App extends GenericApp<GenericAppProps, GenericAppState> {
                             native={native}
                             onChange={(attr, value) => this.updateNativeValue(attr, value)}
                             socket={this.socket}
-                            instance={this.adapterName + '.' + this.instance}
+                            instance={`${this.adapterName}.${this.instance}`}
                         />
                     </TabPanel>
                 </Box>
