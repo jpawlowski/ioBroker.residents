@@ -4,7 +4,7 @@ const utils = require('@iobroker/adapter-core');
 
 class Residents extends utils.Adapter {
     /**
-     * @param {Partial<utils.AdapterOptions>} [options]
+     * @param {Partial<utils.AdapterOptions>} [options] - Adapter options
      */
     constructor(options) {
         super({
@@ -3128,9 +3128,8 @@ class Residents extends utils.Adapter {
     /**
      * Distribute state events
      *
-     * @param {string} id
-     * @param {ioBroker.State | null | undefined} state
-     * @returns void
+     * @param {string} id - State ID
+     * @param {ioBroker.State | null | undefined} state - New state value
      */
     onStateChange(id, state) {
         const a = id.split('.');
@@ -3239,8 +3238,7 @@ class Residents extends utils.Adapter {
     /**
      * Adapter instance shutdown
      *
-     * @param {() => void} callback
-     * @returns void
+     * @param {() => void} callback - Callback to signal completion
      */
     onUnload(callback) {
         try {
@@ -3269,9 +3267,8 @@ class Residents extends utils.Adapter {
     /**
      * Process global events of this residents instance
      *
-     * @param {string} id
-     * @param {ioBroker.State} state
-     * @returns void
+     * @param {string} id - State ID
+     * @param {ioBroker.State} state - New state value
      */
     processGlobalControlCommand(id, state) {
         const a = id.split('.');
@@ -3687,9 +3684,8 @@ class Residents extends utils.Adapter {
     /**
      * Process device control events that are handled by this residents instance
      *
-     * @param {string} id
-     * @param {ioBroker.State} state
-     * @returns void
+     * @param {string} id - State ID
+     * @param {ioBroker.State} state - New state value
      */
     processResidentDeviceControlCommand(id, state) {
         const a = id.split('.');
@@ -3751,9 +3747,8 @@ class Residents extends utils.Adapter {
     /**
      * Process device update events that are handled by this residents instance
      *
-     * @param {string} id
-     * @param {ioBroker.State} state
-     * @returns void
+     * @param {string} id - State ID
+     * @param {ioBroker.State} state - New state value
      */
     processResidentDeviceUpdateEvent(id, state) {
         const a = id.split('.');
@@ -3813,12 +3808,12 @@ class Residents extends utils.Adapter {
     /**
      * Update all activity states for a particular residents device
      *
-     * @param {string} residentType
-     * @param {string} device
-     * @param {string} command
-     * @param {ioBroker.State} state
-     * @param {ioBroker.State} [oldState]
-     * @returns void
+     * @param {string} residentType - Type of resident (roomie/pet/guest)
+     * @param {string} device - Device ID within its type folder
+     * @param {string} command - Activity sub-state to control
+     * @param {ioBroker.State} state - New state value
+     * @param {ioBroker.State} [oldState] - Previous state value
+     * @returns {Promise<boolean|void>} Returns false on unknown command, void otherwise
      */
     async setResidentDeviceActivity(residentType, device, command, state, oldState) {
         const id = `${residentType}.${device}`;
@@ -4299,11 +4294,10 @@ class Residents extends utils.Adapter {
     /**
      * Update all mood states for a particular residents device
      *
-     * @param {string} residentType
-     * @param {string} device
-     * @param {ioBroker.State} state
-     * @param {ioBroker.State} [oldState]
-     * @returns void
+     * @param {string} residentType - Type of resident (roomie/pet/guest)
+     * @param {string} device - Device ID within its type folder
+     * @param {ioBroker.State} state - New state value
+     * @param {ioBroker.State} [oldState] - Previous state value
      */
     async setResidentDeviceMood(residentType, device, state, oldState) {
         const id = `${residentType}.${device}`;
@@ -4343,12 +4337,11 @@ class Residents extends utils.Adapter {
     /**
      * Update all presence states for a particular residents device
      *
-     * @param {string} residentType
-     * @param {string} device
-     * @param {string} command
-     * @param {ioBroker.State} state
-     * @param {ioBroker.State} [oldState]
-     * @returns void
+     * @param {string} residentType - Type of resident (roomie/pet/guest)
+     * @param {string} device - Device ID within its type folder
+     * @param {string} command - Presence sub-state to control
+     * @param {ioBroker.State} state - New state value
+     * @param {ioBroker.State} [oldState] - Previous state value
      */
     async setResidentDevicePresence(residentType, device, command, state, oldState) {
         const id = `${residentType}.${device}`;
@@ -4703,12 +4696,11 @@ class Residents extends utils.Adapter {
     /**
      * Update all follow-them presence states for a particular residents device
      *
-     * @param {string} residentType
-     * @param {string} device
-     * @param {string} command
-     * @param {ioBroker.State} state
-     * @param {ioBroker.State} [oldState]
-     * @returns void
+     * @param {string} residentType - Type of resident (roomie/pet/guest)
+     * @param {string} device - Device ID within its type folder
+     * @param {string} command - presenceFollowing sub-state to control
+     * @param {ioBroker.State} state - New state value
+     * @param {ioBroker.State} [oldState] - Previous state value
      */
     async setResidentDevicePresenceFollowing(residentType, device, command, state, oldState) {
         const id = `${residentType}.${device}`;
@@ -5033,11 +5025,11 @@ class Residents extends utils.Adapter {
     /**
      * Change residents device presence or activity state from foreign presence event
      *
-     * @param {string} id
-     * @param {ioBroker.State} state
-     * @param {boolean} [dryrun]
-     * @param {ioBroker.StateObject} [_stateObj] function internal only
-     * @returns boolean
+     * @param {string} id - Foreign state ID being monitored
+     * @param {ioBroker.State} state - Current value of the foreign state
+     * @param {boolean} [dryrun] - If true, only validate the datapoint without applying changes
+     * @param {ioBroker.StateObject} [_stateObj] - For internal recursive calls only
+     * @returns {Promise<boolean>} true if the event was processed successfully, false otherwise
      */
     async setResidentDevicePresenceFromEvent(id, state, dryrun, _stateObj) {
         const stateObj = _stateObj ? _stateObj : await this.getForeignObjectAsync(id);
@@ -5191,11 +5183,12 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {string} residentType
-     * @param {string} device
-     * @param {ioBroker.State} state
-     * @param {ioBroker.State} [oldState]
-     * @returns void
+     * Enable or disable a resident device and update its presence/activity accordingly
+     *
+     * @param {string} residentType - Type of resident (roomie/pet/guest)
+     * @param {string} device - Device ID within its type folder
+     * @param {ioBroker.State} state - New enabled state value
+     * @param {ioBroker.State} [oldState] - Previous enabled state value
      */
     async enableResidentDevice(residentType, device, state, oldState) {
         const id = `${residentType}.${device}`;
@@ -5234,8 +5227,7 @@ class Residents extends utils.Adapter {
     /**
      * Calculate residents summary from resident devices
      *
-     * @param {boolean} [_run]
-     * @returns void
+     * @param {boolean} [_run] - If true, run immediately; if falsy, debounce by 1 second
      */
     async setResidentsSummary(_run) {
         // Debounce re-calculation when multiple changes occure in a short time
@@ -5856,8 +5848,7 @@ class Residents extends utils.Adapter {
     /**
      * Disable any resident that is currently away, assuming to be away for the day as there was no overnight
      *
-     * @param {boolean} [initialize]
-     * @returns void
+     * @param {boolean} [initialize] - If true, only schedule the timer without running the disable logic
      */
     timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
@@ -5910,7 +5901,7 @@ class Residents extends utils.Adapter {
     /**
      * Set overnight to default for roomies that stayed overnight
      *
-     * @param {boolean} [initialize]
+     * @param {boolean} [initialize] - If true, only schedule the timer without running the reset logic
      */
     timeoutResetOvernight(initialize) {
         if (!initialize) {
@@ -6016,8 +6007,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {number} duration
-     * @returns string HH:mm
+     * @param {number} duration - Duration in milliseconds
+     * @returns {string} Duration formatted as HH:mm:ss
      */
     convertMillisecondsToDuration(duration) {
         const seconds = Math.floor((duration / 1000) % 60);
@@ -6030,8 +6021,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {string} id
-     * @returns string
+     * @param {string} id - Raw namespace/ID string to sanitize
+     * @returns {string} Cleaned camelCase namespace-safe string
      */
     cleanNamespace(id) {
         return id
@@ -6053,8 +6044,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {any} string
-     * @returns ioBroker.CommonState common.type
+     * @param {any} string - Value to determine the ioBroker common.type from
+     * @returns {string|null} ioBroker common.type string, or null if undetermined
      */
     getDatatypeFromString(string) {
         let type = null;
@@ -6083,8 +6074,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {any} string
-     * @returns boolean
+     * @param {any} string - Value to check for a JSON object/array structure
+     * @returns {boolean} true if the value is a JSON-encoded object or array
      */
     hasJsonStructure(string) {
         if (typeof string !== 'string') {
@@ -6100,8 +6091,8 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {any} string
-     * @returns object
+     * @param {any} string - JSON string to parse
+     * @returns {[Error|null, any]} Tuple of [error, parsed value]; error is null on success
      */
     safeJsonParse(string) {
         try {
@@ -6112,9 +6103,9 @@ class Residents extends utils.Adapter {
     }
 
     /**
-     * @param {object} a
-     * @param {object} b
-     * @returns number
+     * @param {object} a - First list entry with a `tc` timecode property
+     * @param {object} b - Second list entry with a `tc` timecode property
+     * @returns {number} Sort comparator result (-1, 0, or 1)
      */
     reverseSortResidentsListByTimecode(a, b) {
         if (a.tc == undefined || b.tc == undefined) {
@@ -6133,7 +6124,7 @@ class Residents extends utils.Adapter {
 if (require.main != module) {
     // Export the constructor in compact mode
     /**
-     * @param {Partial<utils.AdapterOptions>} [options]
+     * @param {Partial<utils.AdapterOptions>} [options] - Adapter options
      */
     module.exports = options => new Residents(options);
 } else {
