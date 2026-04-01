@@ -65,7 +65,7 @@ class Residents extends utils.Adapter {
         const adapterObj = await this.getForeignObjectAsync('system.adapter.residents');
         const instanceObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
         if (adapterObj != undefined && instanceObj != undefined) {
-            let updatedInstanceObj = Boolean(false);
+            let updatedInstanceObj = false;
 
             ['stateTranslations'].forEach(property => {
                 if (instanceObj.native[property] == undefined) {
@@ -3155,14 +3155,8 @@ class Residents extends utils.Adapter {
                         this.processGlobalControlCommand(id, state);
                         break;
                     }
-                    case 'roomie': {
-                        this.processResidentDeviceControlCommand(id, state);
-                        break;
-                    }
-                    case 'pet': {
-                        this.processResidentDeviceControlCommand(id, state);
-                        break;
-                    }
+                    case 'roomie':
+                    case 'pet':
                     case 'guest': {
                         this.processResidentDeviceControlCommand(id, state);
                         break;
@@ -3266,7 +3260,8 @@ class Residents extends utils.Adapter {
             }
 
             callback();
-        } catch {
+        } catch (e) {
+            this.log.error(`Error during adapter unload: ${e.message}`);
             callback();
         }
     }
@@ -4262,7 +4257,7 @@ class Residents extends utils.Adapter {
                     await this.setStateAsync(`${id}.activity.wayhome`, state);
                     return;
                 }
-                const away = await this.getStateAsync(`${device}.presence.away`);
+                const away = await this.getStateAsync(`${id}.presence.away`);
                 if (away && away.val == false) {
                     this.log.warn(`${device}: Wayhome state can only be controlled during absence`);
                     state.ack = true;
@@ -4555,77 +4550,85 @@ class Residents extends utils.Adapter {
                 if (this.presenceFollowingMapping[objId] != undefined) {
                     if (oldState.val == 0 && state.val == 1) {
                         if (this.presenceFollowingMapping[objId]['arriving'] != undefined) {
-                            this.presenceFollowingMapping[objId]['arriving'].forEach(async resident => {
-                                const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
-                                const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
-                                if (enabledState == undefined || presenceState == undefined) {
-                                    this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
-                                } else if (enabledState.val != true) {
-                                    this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
-                                } else if (presenceState.val != 0) {
-                                    this.log.debug(`${id}: ${resident} is not away, skipped presence forwarding`);
-                                } else {
-                                    this.log.info(`${id}: Forwarding arriving at home to ${resident}`);
-                                    this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                            (async () => {
+                                for (const resident of this.presenceFollowingMapping[objId]['arriving']) {
+                                    const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
+                                    const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
+                                    if (enabledState == undefined || presenceState == undefined) {
+                                        this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
+                                    } else if (enabledState.val != true) {
+                                        this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
+                                    } else if (presenceState.val != 0) {
+                                        this.log.debug(`${id}: ${resident} is not away, skipped presence forwarding`);
+                                    } else {
+                                        this.log.info(`${id}: Forwarding arriving at home to ${resident}`);
+                                        await this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                                    }
                                 }
-                            });
+                            })().catch(e => this.log.error(`${id}: Error forwarding arriving: ${e.message}`));
                         }
                     } else if (oldState.val != 0 && state.val == 0) {
                         if (this.presenceFollowingMapping[objId]['leaving'] != undefined) {
-                            this.presenceFollowingMapping[objId]['leaving'].forEach(async resident => {
-                                const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
-                                const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
-                                if (enabledState == undefined || presenceState == undefined) {
-                                    this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
-                                } else if (enabledState.val != true) {
-                                    this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
-                                } else if (presenceState.val != 1) {
-                                    this.log.debug(
-                                        `${id}: ${resident} is not awake at home, skipped presence forwarding`,
-                                    );
-                                } else {
-                                    this.log.info(`${id}: Forwarding leaving home to ${resident}`);
-                                    this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                            (async () => {
+                                for (const resident of this.presenceFollowingMapping[objId]['leaving']) {
+                                    const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
+                                    const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
+                                    if (enabledState == undefined || presenceState == undefined) {
+                                        this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
+                                    } else if (enabledState.val != true) {
+                                        this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
+                                    } else if (presenceState.val != 1) {
+                                        this.log.debug(
+                                            `${id}: ${resident} is not awake at home, skipped presence forwarding`,
+                                        );
+                                    } else {
+                                        this.log.info(`${id}: Forwarding leaving home to ${resident}`);
+                                        await this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                                    }
                                 }
-                            });
+                            })().catch(e => this.log.error(`${id}: Error forwarding leaving: ${e.message}`));
                         }
                     } else if (oldState.val != 2 && state.val == 2) {
                         if (this.presenceFollowingMapping[objId]['sleeping'] != undefined) {
-                            this.presenceFollowingMapping[objId]['sleeping'].forEach(async resident => {
-                                const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
-                                const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
-                                if (enabledState == undefined || presenceState == undefined) {
-                                    this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
-                                } else if (enabledState.val != true) {
-                                    this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
-                                } else if (presenceState.val != 1) {
-                                    this.log.debug(
-                                        `${id}: ${resident} is not awake at home, skipped presence forwarding`,
-                                    );
-                                } else {
-                                    this.log.info(`${id}: Forwarding sleeping to ${resident}`);
-                                    this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                            (async () => {
+                                for (const resident of this.presenceFollowingMapping[objId]['sleeping']) {
+                                    const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
+                                    const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
+                                    if (enabledState == undefined || presenceState == undefined) {
+                                        this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
+                                    } else if (enabledState.val != true) {
+                                        this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
+                                    } else if (presenceState.val != 1) {
+                                        this.log.debug(
+                                            `${id}: ${resident} is not awake at home, skipped presence forwarding`,
+                                        );
+                                    } else {
+                                        this.log.info(`${id}: Forwarding sleeping to ${resident}`);
+                                        await this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                                    }
                                 }
-                            });
+                            })().catch(e => this.log.error(`${id}: Error forwarding sleeping: ${e.message}`));
                         }
                     } else if (oldState.val == 2 && state.val == 1) {
                         if (this.presenceFollowingMapping[objId]['wakeup'] != undefined) {
-                            this.presenceFollowingMapping[objId]['wakeup'].forEach(async resident => {
-                                const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
-                                const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
-                                if (enabledState == undefined || presenceState == undefined) {
-                                    this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
-                                } else if (enabledState.val != true) {
-                                    this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
-                                } else if (presenceState.val != 2) {
-                                    this.log.debug(
-                                        `${id}: ${resident} is not asleep at home, skipped presence forwarding`,
-                                    );
-                                } else {
-                                    this.log.info(`${id}: Forwarding wakeup to ${resident}`);
-                                    this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                            (async () => {
+                                for (const resident of this.presenceFollowingMapping[objId]['wakeup']) {
+                                    const enabledState = await this.getForeignStateAsync(`${resident}.enabled`);
+                                    const presenceState = await this.getForeignStateAsync(`${resident}.presence.state`);
+                                    if (enabledState == undefined || presenceState == undefined) {
+                                        this.log.error(`${id}: Bogus presence forwarding reference to ${resident}`);
+                                    } else if (enabledState.val != true) {
+                                        this.log.debug(`${id}: ${resident} is disabled, skipped presence forwarding`);
+                                    } else if (presenceState.val != 2) {
+                                        this.log.debug(
+                                            `${id}: ${resident} is not asleep at home, skipped presence forwarding`,
+                                        );
+                                    } else {
+                                        this.log.info(`${id}: Forwarding wakeup to ${resident}`);
+                                        await this.setForeignStateChangedAsync(`${resident}.presence.state`, state);
+                                    }
                                 }
-                            });
+                            })().catch(e => this.log.error(`${id}: Error forwarding wakeup: ${e.message}`));
                         }
                     }
                 }
@@ -5858,32 +5861,34 @@ class Residents extends utils.Adapter {
      */
     timeoutDisableAbsentResidents(initialize) {
         if (!initialize) {
-            this.residents.forEach(async resident => {
-                const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
-                const away = await this.getStateAsync(`${resident['id']}.presence.away`);
+            (async () => {
+                for (const resident of this.residents) {
+                    const enabled = await this.getStateAsync(`${resident['id']}.enabled`);
+                    const away = await this.getStateAsync(`${resident['id']}.presence.away`);
 
-                if (!enabled || !away) {
-                    return;
-                }
+                    if (!enabled || !away) {
+                        continue;
+                    }
 
-                if (enabled.val == false) {
-                    this.log.debug(
-                        `timeoutDisableAbsentResidents: ${
-                            resident['id']
-                        } is already 'disabled', therefore it is not changed.`,
-                    );
-                } else if (away.val == false) {
-                    this.log.debug(
-                        `timeoutDisableAbsentResidents: ${resident['id']} is not 'away', therefore it is not disabled.`,
-                    );
-                } else {
-                    this.log.info(`timeoutDisableAbsentResidents: Disabling absent device ${resident['id']}.`);
-                    await this.setStateAsync(`${resident['id']}.enabled`, {
-                        val: false,
-                        ack: false,
-                    });
+                    if (enabled.val == false) {
+                        this.log.debug(
+                            `timeoutDisableAbsentResidents: ${
+                                resident['id']
+                            } is already 'disabled', therefore it is not changed.`,
+                        );
+                    } else if (away.val == false) {
+                        this.log.debug(
+                            `timeoutDisableAbsentResidents: ${resident['id']} is not 'away', therefore it is not disabled.`,
+                        );
+                    } else {
+                        this.log.info(`timeoutDisableAbsentResidents: Disabling absent device ${resident['id']}.`);
+                        await this.setStateAsync(`${resident['id']}.enabled`, {
+                            val: false,
+                            ack: false,
+                        });
+                    }
                 }
-            });
+            })().catch(e => this.log.error(`timeoutDisableAbsentResidents: ${e.message}`));
         }
 
         // Create new timeout
@@ -5909,43 +5914,49 @@ class Residents extends utils.Adapter {
      */
     timeoutResetOvernight(initialize) {
         if (!initialize) {
-            this.residents.forEach(async resident => {
-                const home = await this.getStateAsync(`${resident['id']}.presence.home`);
-                const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
-                const overnightObj = await this.getObjectAsync(`${resident['id']}.activity.overnight`);
+            (async () => {
+                for (const resident of this.residents) {
+                    const home = await this.getStateAsync(`${resident['id']}.presence.home`);
+                    const overnight = await this.getStateAsync(`${resident['id']}.activity.overnight`);
+                    const overnightObj = await this.getObjectAsync(`${resident['id']}.activity.overnight`);
 
-                if (!home || !overnight || !overnightObj) {
-                    return;
-                }
+                    if (!home || !overnight || !overnightObj) {
+                        continue;
+                    }
 
-                if (resident['type'] == 'pet') {
-                    this.log.debug(`timeoutResetOvernight: ${resident['id']} is a pet without night state - ignoring.`);
-                } else if (resident['type'] == 'guest') {
-                    this.log.debug(
-                        `timeoutResetOvernight: ${
-                            resident['id']
-                        } is a guest, therefore is excluded from automatic reset.`,
-                    );
-                } else if (overnight.val == overnightObj.common.def) {
-                    this.log.debug(
-                        `timeoutResetOvernight: ${resident['id']} activity 'overnight' is already ${
-                            overnightObj.common.def
-                        }, therefore is not changed.`,
-                    );
-                } else if (home.val == false) {
-                    this.log.debug(`timeoutResetOvernight: ${resident['id']} is not at home, therefore is excluded.`);
-                } else {
-                    this.log.info(
-                        `timeoutResetOvernight: Resetting 'overnight' for ${resident['id']} to ${
-                            overnightObj.common.def
-                        }.`,
-                    );
-                    await this.setStateChangedAsync(`${resident['id']}.activity.overnight`, {
-                        val: overnightObj.common.def,
-                        ack: false,
-                    });
+                    if (resident['type'] == 'pet') {
+                        this.log.debug(
+                            `timeoutResetOvernight: ${resident['id']} is a pet without night state - ignoring.`,
+                        );
+                    } else if (resident['type'] == 'guest') {
+                        this.log.debug(
+                            `timeoutResetOvernight: ${
+                                resident['id']
+                            } is a guest, therefore is excluded from automatic reset.`,
+                        );
+                    } else if (overnight.val == overnightObj.common.def) {
+                        this.log.debug(
+                            `timeoutResetOvernight: ${resident['id']} activity 'overnight' is already ${
+                                overnightObj.common.def
+                            }, therefore is not changed.`,
+                        );
+                    } else if (home.val == false) {
+                        this.log.debug(
+                            `timeoutResetOvernight: ${resident['id']} is not at home, therefore is excluded.`,
+                        );
+                    } else {
+                        this.log.info(
+                            `timeoutResetOvernight: Resetting 'overnight' for ${resident['id']} to ${
+                                overnightObj.common.def
+                            }.`,
+                        );
+                        await this.setStateChangedAsync(`${resident['id']}.activity.overnight`, {
+                            val: overnightObj.common.def,
+                            ack: false,
+                        });
+                    }
                 }
-            });
+            })().catch(e => this.log.error(`timeoutResetOvernight: ${e.message}`));
         }
 
         // Create new timeout
