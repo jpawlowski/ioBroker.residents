@@ -1,9 +1,22 @@
 {
   "common": {
     "name": "residents",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "tier": 1,
     "news": {
+      "1.1.1": {
+        "en": "Fix missing admin build in the published package\nVerify package contents before release\nPrevent incompatible MUI major updates from Dependabot",
+        "de": "Fehlerhafte Admin-Erstellung im veröffentlichten Paket behoben\nPaketinhalte vor der Veröffentlichung überprüfen\nVerhindern Sie unkompatible MUI wichtige Updates von Dependabot",
+        "ru": "Исправление отсутствующей сборки администратора в опубликованном пакете\nПроверьте содержимое пакета перед выпуском\nПредотвращение несовместимых основных обновлений MUI от Dependabot",
+        "pt": "Corrigir a compilação de administrador ausente no pacote publicado\nVerificar o conteúdo do pacote antes de ser lançado\nEvitar as principais atualizações incompatíveis do MUI de Dedicabot",
+        "nl": "Fix ontbrekende admin build in het gepubliceerde pakket\nControleer de inhoud van de verpakking vóór vrijgave\nIncompatibele MUI belangrijke updates van Dependabot voorkomen",
+        "fr": "Correction de build admin manquant dans le paquet publié\nVérifier le contenu du colis avant la libération\nPrévenir les mises à jour majeures de MUI incompatibles de Dependabot",
+        "it": "Fissare la costruzione di amministratore mancante nel pacchetto pubblicato\nVerifica il contenuto del pacchetto prima del rilascio\nEvitare aggiornamenti MUI incompatibili da Dependabot",
+        "es": "Fijar administración perdida construir en el paquete publicado\nVerificar el contenido del paquete antes de la liberación\nPrevent incompatible MUI actualizaciones importantes de Dependabot",
+        "pl": "Popraw brakującą budowę admin w opublikowanym pakiecie\nSprawdzić zawartość pakietu przed zwolnieniem\nZapobieganie niezgodnym z zasadami MUI głównych aktualizacji z Dependabot",
+        "uk": "Виправлено відсутній адмінбудування в опублікованому пакеті\nПеревірити вміст пакету до релізу\nЗапобігання несумісних MUI основних оновлень від залежності",
+        "zh-cn": "修复已发布的软件包中缺少的管理员构建\n发布前验证包内容\n从 Dependabot 防止不兼容的 MUI 主要更新"
+      },
       "1.1.0": {
         "en": "Migrate admin UI to React 18 with TypeScript and MUI v6\nRemove Siri Shortcuts integration\nFix wayhome presence state path bug\nFix async/await issues in presence forwarding and timer callbacks\nFix ReDoS vulnerability and transitive dependency CVEs\nFix null guards and multilingual resident type translations in admin UI\nOptimize memory usage and processing speed\nUpdate minimum js-controller version to >= 6.0.11\nNode.js >= 20 now required\nUpdate package dependencies",
         "de": "Admin-Oberfläche auf React 18 mit TypeScript und MUI v6 migriert\nSiri Shortcuts-Integration entfernt\nFehler im Wayhome-Anwesenheitsstatus-Pfad behoben\nAsync/await-Probleme in der Präsenzweiterleitung und Timer-Callbacks behoben\nReDoS-Sicherheitslücke und transitive Abhängigkeits-CVEs behoben\nNull-Prüfungen und mehrsprachige Bewohnertyp-Übersetzungen in der Admin-Oberfläche behoben\nSpeicherverbrauch und Verarbeitungsgeschwindigkeit optimiert\nMindest-JS-Controller-Version auf >= 6.0.11 erhöht\nNode.js >= 20 ist jetzt erforderlich\nPaketabhängigkeiten aktualisiert",

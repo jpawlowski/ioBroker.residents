@@ -29,7 +29,7 @@ The adapter is also designed to support a sophisticated notification routing sys
 -   [Dokumentation (Deutsch)](docs/de/residents.md)
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 1.1.1 (2026-04-25)
 
 -   (jpawlowski) Fix missing admin build in the published package
 -   (jpawlowski) Verify package contents before release
