@@ -26,6 +26,11 @@ updates:
             update-types: ['version-update:semver-major']
           - dependency-name: '@types/react-dom'
             update-types: ['version-update:semver-major']
+          # Keep MUI on major version 6 until @iobroker/adapter-react-v5 supports a newer MUI major
+          - dependency-name: '@mui/material'
+            update-types: ['version-update:semver-major']
+          - dependency-name: '@mui/icons-material'
+            update-types: ['version-update:semver-major']
 
     - package-ecosystem: 'github-actions'
       directory: '/'
