@@ -54,7 +54,7 @@
     "@iobroker/dev-server": "^0.8.0",
     "@iobroker/eslint-config": "^2.2.0",
     "@iobroker/testing": "^5.2.2",
-    "@mui/icons-material": "^9.0.0",
+    "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
     "@tsconfig/node18": "^18.2.6",
     "@types/jquery": "^4.0.0",
