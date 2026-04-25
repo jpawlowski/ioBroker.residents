@@ -29,6 +29,12 @@ The adapter is also designed to support a sophisticated notification routing sys
 -   [Dokumentation (Deutsch)](docs/de/residents.md)
 
 ## Changelog
+### **WORK IN PROGRESS**
+
+-   (jpawlowski) Fix missing admin build in the published package
+-   (jpawlowski) Verify package contents before release
+-   (jpawlowski) Prevent incompatible MUI major updates from Dependabot
+
 ### 1.1.0 (2026-04-01)
 
 -   (iobroker-bot) Adapter requires Node.js >= 20 now
