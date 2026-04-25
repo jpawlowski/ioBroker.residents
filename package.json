@@ -85,6 +85,8 @@
     "test": "npm run test:js && npm run test:package",
     "check": "tsc --noEmit -p tsconfig.check.json",
     "lint": "eslint -c eslint.config.mjs .",
+    "prepack": "npm run build",
+    "verify:package": "node scripts/verify-package-contents.mjs",
     "build": "build-adapter react",
     "build:watch": "build-adapter react --watch",
     "translate": "translate-adapter",

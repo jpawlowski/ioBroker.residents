@@ -52,9 +52,27 @@ jobs:
                   # Uncomment the following line if your adapter cannot be installed using 'npm ci'
                   # install-command: 'npm install'
 
+    package-check:
+        needs: [check-and-lint]
+        if: contains(github.event.head_commit.message, '[skip ci]') == false
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: '24.x'
+                  cache: npm
+
+            - run: npm ci
+
+            - run: npm run verify:package
+
     # Deploys the final package to NPM
     deploy:
-        needs: [check-and-lint, adapter-tests]
+        needs: [check-and-lint, adapter-tests, package-check]
 
         # Trigger this step only when a commit on any branch is tagged with a version number
         if: |
