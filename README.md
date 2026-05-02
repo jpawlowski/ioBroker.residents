@@ -29,6 +29,9 @@ The adapter is also designed to support a sophisticated notification routing sys
 -   [Dokumentation (Deutsch)](docs/de/residents.md)
 
 ## Changelog
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 ### 1.1.1 (2026-04-25)
 
 -   (jpawlowski) Fix missing admin build in the published package
