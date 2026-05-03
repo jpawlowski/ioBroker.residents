@@ -56,7 +56,7 @@
     "@iobroker/testing": "^5.2.2",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
-    "@tsconfig/node18": "^18.2.6",
+    "@tsconfig/node22": "^22.0.5",
     "@types/jquery": "^4.0.0",
     "@types/node": "^25.6.0",
     "@types/proxyquire": "^1.3.31",
