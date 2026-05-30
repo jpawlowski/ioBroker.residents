@@ -20,7 +20,7 @@
     // Use 'postCreateCommand' to run commands when the container is created.
     "onCreateCommand": "npm install @iobroker/dev-server && npm run dev-server setup",
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "npm install",
+    "postCreateCommand": "git config --global pull.rebase true && npm install",
     // Configure tool-specific properties.
     "customizations": {
         "vscode": {
