@@ -128,7 +128,7 @@
     ],
     "licenseInformation": {
       "license": "MIT",
-      "link": "https://github.com/jpawlowski/ioBroker.residents/blob/main/LICENSE",
+      "link": "https://opensource.org/licenses/MIT",
       "type": "free"
     },
     "platform": "Javascript/Node.js",
