@@ -30,7 +30,8 @@ function main() {
         for (const file of missingFiles) {
             console.error(`- ${file}`);
         }
-        process.exit(1);
+        process.exitCode = 1;
+        return;
     }
 
     console.log('Package verification passed. Required admin files are included.');
