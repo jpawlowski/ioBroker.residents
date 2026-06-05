@@ -25,11 +25,13 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode-remote.remote-containers",
+                "Anthropic.claude-code",
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
                 "github.vscode-github-actions",
-                "github.vscode-pull-request-github"
+                "github.vscode-pull-request-github",
+                "ms-vscode-remote.remote-containers",
+                "openai.chatgpt"
             ]
         }
     },
