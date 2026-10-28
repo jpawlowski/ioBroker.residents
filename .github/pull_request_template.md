@@ -10,6 +10,5 @@ Closes #
 -   [ ] `npm run check` passes
 -   [ ] `npm test` passes
 -   [ ] `npm run build` passes (when the admin UI changed)
--   [ ] Translations are updated with `npm run translate` (when texts changed)
 -   [ ] Documentation in `docs/` is updated (when behavior changed)
 -   [ ] Changelog entry added under `WORK IN PROGRESS` in `README.md` (user-facing changes only)
