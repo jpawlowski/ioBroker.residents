@@ -21,7 +21,7 @@ npm run check
 npm test
 ```
 
-Run `npm run build` as well if you changed the admin UI, and `npm run translate` if you changed texts.
+Run `npm run build` as well if you changed the admin UI.
 
 Add an entry under `WORK IN PROGRESS` in the changelog section of `README.md` for user-facing changes. Keep pull requests small and focused on one topic.
 
